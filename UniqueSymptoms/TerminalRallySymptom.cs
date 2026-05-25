@@ -10,7 +10,7 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class TerminalRallySymptom
     {
-        const string symptomName = "Terminal Rally";
+        public const string symptomName = "Terminal Rally";
         public static HashSet<EnemyAI> affectedEnemies = new HashSet<EnemyAI>();
         internal static bool localPlayerAffected;
 
@@ -48,7 +48,7 @@ namespace LethalDiseases.UniqueSymptoms
                 __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect(() =>
                 {
                     __instance.KillEnemyOnOwnerClient();
-                }, "Terminal Rally", "Terminal Rally Death", 10f));
+                }, TerminalRallySymptom.symptomName, "Terminal Rally Death", 10f));
 
                 return false;
             }
@@ -73,7 +73,7 @@ namespace LethalDiseases.UniqueSymptoms
                 __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect(() =>
                 {
                     __instance.KillPlayer(Vector3.zero);
-                }, "Terminal Rally", "Terminal Rally Death", 10f));
+                }, TerminalRallySymptom.symptomName, "Terminal Rally Death", 10f));
 
                 return false;
             }

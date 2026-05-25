@@ -13,9 +13,11 @@ namespace LethalDiseases.UniqueSymptoms.Unfinished
 {
     internal static class ScopophobiaSymptom
     {
+        public const string symptomName = "Scopophobia";
+
         internal static bool localPlayerAffected;
 
-        [Symptom("Scopophobia", "They are watching", Symptom.SymptomType.Bad, 50)]
+        [Symptom(symptomName, "They are watching", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Scopophobia(Disease disease)
         {
             if (disease.player != null)
@@ -24,7 +26,7 @@ namespace LethalDiseases.UniqueSymptoms.Unfinished
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected = false;
-            }, disease.id, "Scopophobia", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

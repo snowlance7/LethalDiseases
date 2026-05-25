@@ -16,11 +16,9 @@ namespace LethalDiseases
     [BepInDependency(DawnLib.PLUGIN_GUID)]
     public class Plugin : BaseUnityPlugin
     {
-#pragma warning disable CS8618
-        public static Plugin Instance { get; private set; }
-        public static ManualLogSource logger { get; private set; }
-        public static DuskMod Mod { get; private set; }
-#pragma warning restore CS8618
+        public static Plugin Instance { get; private set; } = null!;
+        public static ManualLogSource logger { get; private set; } = null!;
+        public static DuskMod Mod { get; private set; } = null!;
 
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }

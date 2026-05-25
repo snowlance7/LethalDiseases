@@ -13,18 +13,20 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class BodyOdorSymptom
     {
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedPlayers.symptomAffectedPlayers["Body Odor"];
+        public const string symptomName = "Body Odor";
 
-        [Symptom("Body Odor", "Enemies prioritize targetting you first", Symptom.SymptomType.Bad, 100)]
+        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedObjects[symptomName];
+
+        [Symptom(symptomName, "Enemies prioritize targetting you first", Symptom.SymptomType.Bad, 100)]
         public static StatusEffect BodyOdor(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc("Body Odor", disease.player.actualClientId); // TODO CONTINUE
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId); // TODO CONTINUE
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc("Body Odor", disease.player.actualClientId);
-            }, disease.id, "Body Odor", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

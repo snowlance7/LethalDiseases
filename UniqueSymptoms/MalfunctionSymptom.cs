@@ -8,9 +8,11 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class MalfunctionSymptom
     {
+        public const string symptomName = "Malfunction";
+
         public static bool localPlayerAffected;
 
-        [Symptom("Malfunction", "Your scanner doesnt work", Symptom.SymptomType.Bad, 50)]
+        [Symptom(symptomName, "Your scanner doesnt work", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Malfunction(Disease disease)
         {
             if (disease.player != null)
@@ -19,7 +21,7 @@ namespace LethalDiseases.UniqueSymptoms
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected = false;
-            }, disease.id, "Malfunction", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

@@ -8,9 +8,11 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class ShopaholicSymptom
     {
+        public const string symptomName = "Shopaholic";
+
         public static bool localPlayerAffected;
 
-        [Symptom("Shopaholic", "25% chance to buy a random item when using the terminal", Symptom.SymptomType.Bad, 50)]
+        [Symptom(symptomName, "25% chance to buy a random item when using the terminal", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Shopaholic(Disease disease)
         {
             if (disease.player != null)
@@ -19,7 +21,7 @@ namespace LethalDiseases.UniqueSymptoms
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected = false;
-            }, disease.id, "Shopaholic", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

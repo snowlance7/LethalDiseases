@@ -172,40 +172,29 @@ namespace LethalDiseases
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void AddSymptomAffectedPlayerServerRpc(string symptomName, ulong clientId)
+        public void AddSymptomAffectedObjectServerRpc(string symptomName, NetworkObjectReference netRef)
         {
             if (!IsServer) { return; }
-            AddSymptomAffectedPlayerClientRpc(symptomName, clientId);
+            AddSymptomAffectedObjectClientRpc(symptomName, netRef);
         }
 
         [ClientRpc]
-        private void AddSymptomAffectedPlayerClientRpc(string symptomName, ulong clientId)
+        private void AddSymptomAffectedObjectClientRpc(string symptomName, NetworkObjectReference netRef)
         {
-            PlayerControllerB? player = PlayerFromId(clientId);
-            if (player == null) { return; }
-
-            if (!SymptomAffectedPlayers.symptomAffectedPlayers.ContainsKey(symptomName))
-                SymptomAffectedPlayers.symptomAffectedPlayers.Add(symptomName, new HashSet<PlayerControllerB>());
-
-            SymptomAffectedPlayers.symptomAffectedPlayers[symptomName].Add(player);
+            SymptomAffectedObjects.AddSymptomAffectedObject(symptomName, netRef);
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void RemoveSymptomAffectedPlayerServerRpc(string symptomName, ulong clientId)
+        public void RemoveSymptomAffectedObjectServerRpc(string symptomName, NetworkObjectReference netRef)
         {
             if (!IsServer) { return; }
-            RemoveSymptomAffectedPlayerClientRpc(symptomName, clientId);
+            RemoveSymptomAffectedObjectClientRpc(symptomName, netRef);
         }
 
         [ClientRpc]
-        private void RemoveSymptomAffectedPlayerClientRpc(string symptomName, ulong clientId)
+        private void RemoveSymptomAffectedObjectClientRpc(string symptomName, NetworkObjectReference netRef)
         {
-            PlayerControllerB? player = PlayerFromId(clientId);
-            if (player == null) { return; }
-
-            if (!SymptomAffectedPlayers.symptomAffectedPlayers.ContainsKey(symptomName)) { return; }
-
-            SymptomAffectedPlayers.symptomAffectedPlayers[symptomName].Remove(player);
+            SymptomAffectedObjects.RemoveSymptomAffectedObject(symptomName, netRef);
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -258,6 +247,12 @@ namespace LethalDiseases
         private void SpawnExplosionClientRpc(Vector3 explosionPosition, bool spawnExplosionEffect = false, float killRange = 1f, float damageRange = 1f, int nonLethalDamage = 50, float physicsForce = 0f, bool goThroughCar = false)
         {
             Landmine.SpawnExplosion(explosionPosition, spawnExplosionEffect, killRange, damageRange, nonLethalDamage, physicsForce, null, goThroughCar);
+        }
+
+        [ClientRpc]
+        public void SpawnItFollowsEntityClientRpc(NetworkObjectReference netRef)
+        {
+            
         }
     }
 

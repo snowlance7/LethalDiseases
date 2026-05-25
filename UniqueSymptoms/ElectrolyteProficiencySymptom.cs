@@ -8,9 +8,11 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class ElectrolyteProficiencySymptom
     {
+        public const string symptomName = "Electrolyte Proficiency";
+
         public static bool localPlayerAffected;
 
-        [Symptom("Electrolyte Proficiency", "You charge items you hold instead of depleting them", Symptom.SymptomType.Good, 50)]
+        [Symptom(symptomName, "You charge items you hold instead of depleting them", Symptom.SymptomType.Good, 50)]
         public static StatusEffect ElectrolyteProficiency(Disease disease)
         {
             if (disease.player != null)
@@ -19,7 +21,7 @@ namespace LethalDiseases.UniqueSymptoms
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected = false;
-            }, disease.id, "Electrolyte Proficiency", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

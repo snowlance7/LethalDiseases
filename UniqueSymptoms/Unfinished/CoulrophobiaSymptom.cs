@@ -13,9 +13,11 @@ namespace LethalDiseases.UniqueSymptoms.Unfinished
 {
     internal static class LocalPlayerAffectedSymptom
     {
+        public const string symptomName = "Coulrophobia";
+
         internal static bool localPlayerAffected;
 
-        [Symptom("Coulrophobia", "Dont go inside", Symptom.SymptomType.Bad, 5)] // TODO: Make the jester spawn and target the player when they go inside
+        [Symptom(symptomName, "Dont go inside", Symptom.SymptomType.Bad, 5)] // TODO: Make the jester spawn and target the player when they go inside
         public static StatusEffect Coulrophobia(Disease disease)
         {
             if (disease.player != null)
@@ -24,7 +26,7 @@ namespace LethalDiseases.UniqueSymptoms.Unfinished
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected = false;
-            }, disease.id, "Coulrophobia", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

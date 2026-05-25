@@ -8,10 +8,12 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class WeaknessSymptom
     {
+        public const string symptomName = "Weakness";
+
         static float previousBaseWeight;
         static float previousWeight;
 
-        [Symptom("Weakness", "Your carry weight is doubled", Symptom.SymptomType.Bad, 50)]
+        [Symptom(symptomName, "Your carry weight is doubled", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Weakness(Disease disease) // TODO: test
         {
             if (disease.player != null)
@@ -26,7 +28,7 @@ namespace LethalDiseases.UniqueSymptoms
                 if (disease.player == null) { return; }
                 StartOfRound.Instance.ChangedCarryWeight -= OnWeightChangedLocalClient;
                 disease.player.carryWeight = previousBaseWeight;
-            }, disease.id, "Weakness", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
 
         static void OnWeightChangedLocalClient()

@@ -14,7 +14,7 @@ namespace LethalDiseases.UniqueSymptoms
     internal static class RageSymptom
     {
         public const string symptomName = "Rage";
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedPlayers.symptomAffectedPlayers[symptomName];
+        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedObjects[symptomName];
 
         [Symptom(symptomName, "Double damage but you cant see health", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect Rage(Disease disease)

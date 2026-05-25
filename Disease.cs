@@ -50,7 +50,7 @@ namespace LethalDiseases
 
         public float nextPeriodicTriggerTime;
 
-        public NetworkObject networkObject = null!;
+        public NetworkObject networkObject { get; set; } = null!;
         public PlayerControllerB? player { get; private set; }
         public EnemyAI? enemy { get; private set; }
         public SteamValveHazard? steamValve { get; private set; }

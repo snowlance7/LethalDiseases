@@ -7,9 +7,11 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class ButterFingersSymptom
     {
+        public const string symptomName = "Butter Fingers";
+
         public static bool localPlayerAffected;
 
-        [Symptom("Butter Fingers", "50/50 chance to drop anything you pick up", Symptom.SymptomType.Bad, 100)]
+        [Symptom(symptomName, "50/50 chance to drop anything you pick up", Symptom.SymptomType.Bad, 100)]
         public static StatusEffect ButterFingers(Disease disease)
         {
             if (disease.player != null)
@@ -18,7 +20,7 @@ namespace LethalDiseases.UniqueSymptoms
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected = false;
-            }, disease.id, "Butter Fingers", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

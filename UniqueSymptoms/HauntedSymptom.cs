@@ -10,16 +10,18 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class HauntedSymptom
     {
-        [Symptom("Haunted", "If a ghost girl spawns, it targets you. If multiple people have this, chooses a random player", Symptom.SymptomType.Bad, 5)]
+        public const string symptomName = "Haunted";
+
+        [Symptom(symptomName, "If a ghost girl spawns, it targets you. If multiple people have this, chooses a random player", Symptom.SymptomType.Bad, 5)]
         public static StatusEffect Haunted(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc("Haunted", disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedPlayerServerRpc("Haunted", disease.player.actualClientId);
-            }, disease.id, "Haunted", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 
@@ -31,7 +33,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (SymptomAffectedPlayers.symptomAffectedPlayers["Haunted"].Count <= 0) { return true; }
+                if (SymptomAffectedObjects.symptomAffectedObjects[symptomName].Count <= 0) { return true; }
 
                 __instance.timesChoosingAPlayer++;
                 if (__instance.timesChoosingAPlayer > 1)
@@ -46,7 +48,7 @@ namespace LethalDiseases.UniqueSymptoms
                     __instance.ghostGirlRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 158);
                 }
 
-                __instance.hauntingPlayer = SymptomAffectedPlayers.symptomAffectedPlayers["Haunted"].GetRandom(__instance.ghostGirlRandom);
+                __instance.hauntingPlayer = SymptomAffectedObjects.symptomAffectedObjects[HauntedSymptom.symptomName].GetRandom(__instance.ghostGirlRandom);
                 Debug.Log($"Little girl: Haunting player with playerClientId: {__instance.hauntingPlayer!.playerClientId}; actualClientId: {__instance.hauntingPlayer.actualClientId}");
                 __instance.ChangeOwnershipOfEnemy(__instance.hauntingPlayer.actualClientId);
                 __instance.hauntingLocalPlayer = GameNetworkManager.Instance.localPlayerController == __instance.hauntingPlayer;

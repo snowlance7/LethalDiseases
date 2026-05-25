@@ -13,18 +13,20 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class ScalySymptom
     {
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedPlayers.symptomAffectedPlayers["Scaly"];
+        public const string symptomName = "Scaly";
 
-        [Symptom("Scaly", "Lizards follow you", Symptom.SymptomType.Neutral, 50)]
+        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedObjects[symptomName];
+
+        [Symptom(symptomName, "Lizards follow you", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect Scaly(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc("Scaly", disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedPlayerServerRpc("Scaly", disease.player.actualClientId);
-            }, disease.id, "Scaly", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 

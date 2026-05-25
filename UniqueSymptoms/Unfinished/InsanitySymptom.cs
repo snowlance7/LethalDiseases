@@ -10,18 +10,20 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class InsanitySymptom
     {
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedPlayers.symptomAffectedPlayers["Insanity"];
+        public const string symptomName = "Insanity";
 
-        [Symptom("Insanity", "Sets insanity to max", Symptom.SymptomType.Bad, 50)]
+        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedObjects[symptomName];
+
+        [Symptom(symptomName, "Sets insanity to max", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Insanity(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc("Insanity", disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedPlayerServerRpc("Insanity", disease.player.actualClientId);
-            }, disease.id, "Insanity", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId);
+            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
 
         public static void Update(float deltaTime)
