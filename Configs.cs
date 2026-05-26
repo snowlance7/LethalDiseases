@@ -31,7 +31,6 @@ namespace LethalDiseases
             steamDiseaseChance = p.Config.Bind("Chances", "Steam Disease Chance", 0.1f, "0-1 chance that a steam valve (and steam) will have a random disease when a dungeon gets generated");
             monsterDiseaseChance = p.Config.Bind("Chances", "Monster Disease Chance", 0.25f, "0-1 chance that a monster will have a random disease when spawning from a vent");
             scrapDiseaseChance = p.Config.Bind("Chances", "Scrap Disease Chance", 0.1f, "0-1 chance for a scrap item to have a random disease when spawned during dungeon generation");
-            interactableDiseaseChance = p.Config.Bind("Chances", "Interactable Disease Chance", 0.01f, "0-1 chance for a interactable (doors, buttons, etc) to have a random disease after dungeon generation");
             
             accessibilityMode = p.Config.Bind("Client Settings", "Accessibility Mode", false, "Enables accessibility features");
         }
@@ -54,7 +53,6 @@ namespace LethalDiseases
         public static ConfigEntry<float> steamDiseaseChance { get; private set; }
         public static ConfigEntry<float> monsterDiseaseChance { get; private set; }
         public static ConfigEntry<float> scrapDiseaseChance { get; private set; }
-        public static ConfigEntry<float> interactableDiseaseChance { get; private set; }
 
         public static ConfigEntry<bool> accessibilityMode { get; private set; }
 #pragma warning restore CS8618

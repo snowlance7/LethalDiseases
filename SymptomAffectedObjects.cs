@@ -1,7 +1,9 @@
-﻿using GameNetcodeStuff;
+﻿using BepInEx.Logging;
+using GameNetcodeStuff;
 using SnowyLib;
 using System.Collections.Generic;
 using System.Linq;
+using static LethalDiseases.Plugin;
 using Unity.Netcode;
 
 namespace LethalDiseases
@@ -19,6 +21,7 @@ namespace LethalDiseases
             if (!symptomAffectedObjects.ContainsKey(symptomName))
                 symptomAffectedObjects.Add(symptomName, new HashSet<NetworkObject>());
 
+            logger.LogDebug($"Adding symptomAffectedObject {symptomName}:{networkObject.name}");
             symptomAffectedObjects[symptomName].Add(networkObject);
 
             if (networkObject.gameObject.TryGetComponent(out PlayerControllerB player))

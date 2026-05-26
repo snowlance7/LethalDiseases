@@ -49,6 +49,10 @@
       <EmbeddedResource Remove="LethalDiseasesUnityProject\**" />
       <None Remove="LethalDiseasesUnityProject\**" />
     </ItemGroup>
+    <ItemGroup>
+      <None Remove=".gitattributes" />
+      <None Remove=".gitignore" />
+    </ItemGroup>
 
     <!-- Primary Package References -->
     <ItemGroup>

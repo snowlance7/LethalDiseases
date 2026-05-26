@@ -73,10 +73,11 @@ namespace LethalDiseases
         [ClientRpc]
         private void InfectClientRpc(NetworkObjectReference netRef, string diseaseId)
         {
-            Disease? disease = Disease.GetDiseaseFromID(diseaseId);
-            if (disease == null || !netRef.TryGet(out NetworkObject netObj)) { return; }
-            netObj.AddDisease(disease);
             logger.LogDebug("InfectClientRpc");
+            Disease? disease = Disease.GetDiseaseFromID(diseaseId);
+            if (disease == null || !netRef.TryGet(out NetworkObject netObj) || netObj == null) { return; }
+            logger.LogDebug($"Infecting {netObj.gameObject.name} with disease ID: {diseaseId}");
+            netObj.AddDisease(disease);
         }
 
         [ServerRpc(RequireOwnership = false)]

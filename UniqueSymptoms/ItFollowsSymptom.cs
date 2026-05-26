@@ -16,11 +16,15 @@ namespace LethalDiseases.UniqueSymptoms
         [Symptom(symptomName, "???", Symptom.SymptomType.Bad, 10)]
         public static StatusEffect ItFollows(Disease disease)
         {
-            if (disease.player != null || disease.enemy != null)
+            logger.LogDebug("Init symptom ItFollows");
+            if (disease.hasActor)
+            {
+
                 LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.networkObject);
+            }
             return new OnRemoveActionEffect(() =>
             {
-                if (disease.player == null && disease.enemy == null) { return; }
+                if (!disease.hasActor) { return; }
                 LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.networkObject);
             }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }

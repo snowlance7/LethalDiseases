@@ -40,18 +40,6 @@ namespace LethalDiseases.Patches
                         disease.Infect(scrap.NetworkObject);
                     }
                 }
-
-                List<InteractTrigger> triggers = GameObject.FindObjectsOfType<InteractTrigger>().ToList();
-
-                foreach (var trigger in triggers)
-                {
-                    if (trigger.hasTriggered) { continue; }
-                    if (UnityEngine.Random.Range(0f, 1f) < interactableDiseaseChance.Value)
-                    {
-                        Disease disease = Disease.CreateRandomDisease();
-                        disease.Infect(trigger.NetworkObject);
-                    }
-                }
             }
             catch (System.Exception e)
             {

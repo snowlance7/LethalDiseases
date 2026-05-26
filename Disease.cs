@@ -203,7 +203,7 @@ namespace LethalDiseases
 
         public void Infect(NetworkObject _networkObject)
         {
-            //LethalDiseasesNetworkHandler.Instance.InfectServerRpc(_networkObject, GetID());
+            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(_networkObject, GetID());
         }
 
         /*public void Update(float deltaTime) // TODO: Simplify this
@@ -340,7 +340,7 @@ namespace LethalDiseases
                         {
                             for (int i = 0; i < symptoms.Length; i++)
                             {
-                                var effect = Symptom.symptomList[symptoms[i]].effect(this);
+                                var effect = Symptom.symptomList[symptoms[i]].effect(this); // TODO: Giving arguementOutOfRange Exception
                                 networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
                             }
                         }
@@ -383,10 +383,10 @@ namespace LethalDiseases
                         foreach (var col in nearby)
                         {
                             if (UnityEngine.Random.Range(0f, 1f) > transmissibility / 2) { continue; }
-                            /*if (col.gameObject.TryGetComponent(out PlayerControllerB p))
+                            if (col.gameObject.TryGetComponent(out PlayerControllerB p))
                                 LethalDiseasesNetworkHandler.Instance.InfectServerRpc(p.NetworkObject, id);
                             else if (col.gameObject.TryGetComponent(out EnemyAI e))
-                                LethalDiseasesNetworkHandler.Instance.InfectServerRpc(e.NetworkObject, id);*/
+                                LethalDiseasesNetworkHandler.Instance.InfectServerRpc(e.NetworkObject, id);
                         }
                         break;
                     }
@@ -411,10 +411,10 @@ namespace LethalDiseases
             foreach (var col in nearby)
             {
                 if (UnityEngine.Random.Range(0f, 1f) > transmissibility) { continue; }
-                /*if (col.gameObject.TryGetComponent(out PlayerControllerB p))
+                if (col.gameObject.TryGetComponent(out PlayerControllerB p))
                     LethalDiseasesNetworkHandler.Instance.InfectServerRpc(p.NetworkObject, id);
                 else if (col.gameObject.TryGetComponent(out EnemyAI e))
-                    LethalDiseasesNetworkHandler.Instance.InfectServerRpc(e.NetworkObject, id);*/
+                    LethalDiseasesNetworkHandler.Instance.InfectServerRpc(e.NetworkObject, id);
             }
         }
 

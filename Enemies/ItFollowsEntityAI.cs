@@ -94,7 +94,7 @@ namespace LethalDiseases.Enemies
         {
             nav.agent.speed = 2;
             target = targets.LastOrDefault();
-            if (target == null) { logger.LogError("Target is null"); return; } // TODO: Target is null for some reason <<
+            if (target == null) { logger.LogError("Target is null"); return; }
             targetPlayer = target.gameObject.GetComponent<PlayerControllerB>();
             targetEnemy = target.gameObject.GetComponent<EnemyAI>();
 
@@ -164,12 +164,12 @@ namespace LethalDiseases.Enemies
             collider.enabled = enable;
         }
 
-        public override void HitEnemy(int force = 0, PlayerControllerB playerWhoHit = null!, bool playHitSFX = true, int hitID = -1) // Synced
+        public override void HitEnemy(int force = 0, PlayerControllerB playerWhoHit = null!, bool playHitSFX = true, int hitID = -1)
         {
             return;
         }
 
-        public override void OnCollideWithPlayer(Collider other) // Synced
+        public override void OnCollideWithPlayer(Collider other)
         {
             base.OnCollideWithPlayer(other);
             PlayerControllerB player = other.gameObject.GetComponent<PlayerControllerB>();

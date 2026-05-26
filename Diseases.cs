@@ -9,7 +9,7 @@ using Unity.Services.Authentication.Generated;
 using UnityEngine.Serialization;
 using static LethalDiseases.Plugin;
 
-namespace LethalDiseases // TODO: Something is lagging the game like crazy
+namespace LethalDiseases
 {
     public static class Diseases
     {
