@@ -16,11 +16,11 @@ namespace LethalDiseases.UniqueSymptoms
         public static StatusEffect Haunted(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
             }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
@@ -33,7 +33,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (SymptomAffectedObjects.symptomAffectedObjects[symptomName].Count <= 0) { return true; }
+                if (SymptomAffectedObjects.symptomAffectedObjects[HauntedSymptom.symptomName].Count <= 0) { return true; }
 
                 __instance.timesChoosingAPlayer++;
                 if (__instance.timesChoosingAPlayer > 1)
@@ -48,7 +48,7 @@ namespace LethalDiseases.UniqueSymptoms
                     __instance.ghostGirlRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 158);
                 }
 
-                __instance.hauntingPlayer = SymptomAffectedObjects.symptomAffectedObjects[HauntedSymptom.symptomName].GetRandom(__instance.ghostGirlRandom);
+                __instance.hauntingPlayer = SymptomAffectedObjects.symptomAffectedPlayers[HauntedSymptom.symptomName].GetRandom(__instance.ghostGirlRandom);
                 Debug.Log($"Little girl: Haunting player with playerClientId: {__instance.hauntingPlayer!.playerClientId}; actualClientId: {__instance.hauntingPlayer.actualClientId}");
                 __instance.ChangeOwnershipOfEnemy(__instance.hauntingPlayer.actualClientId);
                 __instance.hauntingLocalPlayer = GameNetworkManager.Instance.localPlayerController == __instance.hauntingPlayer;

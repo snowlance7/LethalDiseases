@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalDiseases.Enemies;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,9 @@ namespace LethalDiseases.UniqueSymptoms
 {
     internal static class ItFollowsSymptom
     {
-        static EnemyAI? entity;
         public const string symptomName = "It Follows";
 
-        [Symptom(symptomName, "???", Symptom.SymptomType.Bad, 50)]
+        [Symptom(symptomName, "???", Symptom.SymptomType.Bad, 10)]
         public static StatusEffect ItFollows(Disease disease)
         {
             if (disease.player != null || disease.enemy != null)
@@ -27,30 +27,11 @@ namespace LethalDiseases.UniqueSymptoms
 
         public static void Update(float deltaTime)
         {
-
-
-            foreach (var affected in affected)
-            {
-
-            }
-        }
-    }
-
-    [HarmonyPatch]
-    public class _SymptomPatches
-    {
-        [HarmonyPostfix, HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.CheckLineOfSightForPlayer))]
-        static void CheckLineOfSightForPlayerPostFix(EnemyAI __instance, ref PlayerControllerB __result, float width, int range, int proximityAwareness)
-        {
-            try
-            {
-
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e);
-                return;
-            }
+            if (!IsServerOrHost || ItFollowsEntity.Instance != null || StartOfRound.Instance.inShipPhase || StartOfRound.Instance.shipIsLeaving) { return; }
+            Vector3 mainEntrancePosition = RoundManager.FindMainEntrancePosition(getTeleportPosition: true, getOutsideEntrance: false);
+            GameObject? spawnNode = Utils.insideAINodes.GetFarthestFromPosition(mainEntrancePosition, (x) => x.transform.position);
+            if (spawnNode == null) { return; }
+            Utils.SpawnEnemy(LethalDiseasesKeys.ItFollows, spawnNode.transform.position);
         }
     }
 }

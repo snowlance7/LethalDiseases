@@ -1,3 +1,4 @@
+using Dawn.Utils;
 using HarmonyLib;
 using SnowyLib;
 using System.Linq;
@@ -52,12 +53,13 @@ namespace LethalDiseases
                         if (args.Length == 1)
                         {
                             Disease disease = Disease.CreateRandomDisease();
-                            //LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
                         }
                         else
                         {
-                            Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.GetSymptomIndexByName(args[1]));
-                            //LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                            string symptomName = args[1].Replace("_", " ");
+                            Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.GetSymptomIndexByName(symptomName));
+                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
                         }
                         break;
                     case "/symptoms":
@@ -65,6 +67,9 @@ namespace LethalDiseases
                         {
                             logger.LogDebug($"{symptom.name}: {symptom.description}");
                         }
+                        break;
+                    case "/spawnedDiseases":
+                        Diseases.LogSpawnedDiseases();
                         break;
                     default:
                         Utils.ChatCommand(args);

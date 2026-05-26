@@ -1,12 +1,8 @@
-﻿using Dawn.Utils;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.UniqueSymptoms
@@ -14,17 +10,17 @@ namespace LethalDiseases.UniqueSymptoms
     internal static class RageSymptom
     {
         public const string symptomName = "Rage";
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedObjects[symptomName];
+        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedPlayers[symptomName];
 
         [Symptom(symptomName, "Double damage but you cant see health", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect Rage(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
             }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }

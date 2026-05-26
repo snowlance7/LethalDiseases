@@ -1,8 +1,8 @@
 ﻿using GameNetcodeStuff;
-//using LethalDiseases.UniqueSymptoms;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using LethalDiseases.UniqueSymptoms;
 using UnityEngine;
 
 namespace LethalDiseases
@@ -13,7 +13,8 @@ namespace LethalDiseases
 
         internal static void Register()
         {
-            //updates.Add(InsanitySymptom.Update);
+            updates.Add(InsanitySymptom.Update);
+            updates.Add(ItFollowsSymptom.Update);
         }
 
         internal static void Update(float deltaTime)

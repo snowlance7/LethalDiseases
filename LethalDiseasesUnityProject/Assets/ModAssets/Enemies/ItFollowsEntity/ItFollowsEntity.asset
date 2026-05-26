@@ -12,74 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65d3fcb39dd67306e9bb17a603308070, type: 3}
   m_Name: ItFollowsEntity
   m_EditorClassIdentifier: 
-  enemyName: Masked
+  enemyName: It Follows Entity
   probabilityCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.95796204
-      inSlope: 0.15629272
-      outSlope: 0.15629272
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.050847456
-    - serializedVersion: 3
-      time: 1
-      value: 0.9892046
-      inSlope: -0.013914353
-      outSlope: -0.013914353
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.081664085
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  spawningDisabled: 0
+  spawningDisabled: 1
   spawnFromWeeds: 0
   numberSpawnedFalloff:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.74112743
-      value: 2.909092
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useNumberSpawnedFalloff: 1
+  useNumberSpawnedFalloff: 0
   spawnInGroupsOf: 0
   requireNestObjectsToSpawn: 0
-  enemyPrefab: {fileID: 1269927530863601, guid: 9c2613295cf6ed1418371785770376d4,
-    type: 2}
-  PowerLevel: 1
+  enemyPrefab: {fileID: 1269927530863601, guid: dfa43b58bf8b1304189c7a7c5d586698,
+    type: 3}
+  PowerLevel: 0
   DiversityPowerLevel: 0
-  MaxCount: 10
+  MaxCount: 1
   numberSpawned: 0
   nestsSpawned: 0
   hasSpawnedAtLeastOne: 0
@@ -87,34 +42,31 @@ MonoBehaviour:
   isDaytimeEnemy: 0
   increasedChanceInterior: -1
   normalizedTimeInDayToLeave: 1
-  stunTimeMultiplier: 0.75
-  doorSpeedMultiplier: 2
-  stunGameDifficultyMultiplier: 1.3
-  canBeStunned: 1
-  canDie: 1
+  stunTimeMultiplier: 1
+  doorSpeedMultiplier: 1
+  stunGameDifficultyMultiplier: 1
+  canBeStunned: 0
+  canDie: 0
   canBeDestroyed: 1
-  destroyOnDeath: 0
+  destroyOnDeath: 1
   canSeeThroughFog: 0
   disableAnimatorWhenFar: 0
-  pushPlayerForce: 0.16
-  pushPlayerDistance: 1.26
+  pushPlayerForce: 0
+  pushPlayerDistance: 0
   SizeLimit: 0
   EnemySize: 2
-  WaterType: 1
-  timeToPlayAudio: 10
-  loudnessMultiplier: 0.6
+  WaterType: 0
+  timeToPlayAudio: 15
+  loudnessMultiplier: 1
   overrideVentSFX: {fileID: 0}
   nestSpawnPrefab: {fileID: 0}
   nestSpawnPrefabWidth: 2
   nestDistanceFromShip: -1
   useMinEnemyThresholdForNest: 0
   minEnemiesToSpawnNest: 0
-  hitBodySFX: {fileID: 8300000, guid: 7b787525678822c489d1185bd96a60c0, type: 3}
+  hitBodySFX: {fileID: 0}
   hitEnemyVoiceSFX: {fileID: 0}
-  deathSFX: {fileID: 8300000, guid: 46adadf71a22a6d4fa66710481f36bea, type: 3}
+  deathSFX: {fileID: 0}
   stunSFX: {fileID: 0}
   miscAnimations: []
-  audioClips:
-  - {fileID: 8300000, guid: 9b7067cdf5a52634f826b96fceed4095, type: 3}
-  - {fileID: 8300000, guid: dcc5761a9574aff428acdb5ed7c81228, type: 3}
-  - {fileID: 8300000, guid: 50ba91f7656a15e46b84dd13345ac18f, type: 3}
+  audioClips: []

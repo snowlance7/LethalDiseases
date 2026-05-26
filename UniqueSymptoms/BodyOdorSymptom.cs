@@ -15,17 +15,17 @@ namespace LethalDiseases.UniqueSymptoms
     {
         public const string symptomName = "Body Odor";
 
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedObjects[symptomName];
+        public static HashSet<PlayerControllerB> affectedPlayers => SymptomAffectedObjects.symptomAffectedPlayers[symptomName];
 
         [Symptom(symptomName, "Enemies prioritize targetting you first", Symptom.SymptomType.Bad, 100)]
         public static StatusEffect BodyOdor(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId); // TODO CONTINUE
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject); // TODO CONTINUE
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.actualClientId);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
             }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }

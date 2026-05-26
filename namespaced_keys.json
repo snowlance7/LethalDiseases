@@ -1,0 +1,6 @@
+{
+  "LethalDiseasesEnemyKeys": {
+    "__type": "DawnEnemyInfo",
+    "ItFollowsEntity": "lethal_diseases:it_follows_entity"
+  }
+}

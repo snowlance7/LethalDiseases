@@ -4,6 +4,6 @@ namespace LethalDiseases
 {
     public static class LethalDiseasesKeys
     {
-        //public static readonly NamespacedKey<DawnItemInfo> SCP018 = NamespacedKey<DawnItemInfo>.From("itemscps", "scp018");
+        public static readonly NamespacedKey<DawnEnemyInfo> ItFollows = NamespacedKey<DawnEnemyInfo>.From("lethal_diseases", "it_follows_entity");
     }
 }

@@ -6,9 +6,10 @@ using System.Linq;
 using System.Text;
 using Unity.Netcode;
 using Unity.Services.Authentication.Generated;
+using UnityEngine.Serialization;
 using static LethalDiseases.Plugin;
 
-namespace LethalDiseases
+namespace LethalDiseases // TODO: Something is lagging the game like crazy
 {
     public static class Diseases
     {
@@ -135,6 +136,7 @@ namespace LethalDiseases
 
         public static void UpdateDiseases(float deltaTime)
         {
+            return;
             foreach (var diseaseObject in diseaseLookup.ToList())
             {
                 var networkObject = diseaseObject.Key;
@@ -148,6 +150,22 @@ namespace LethalDiseases
                 foreach (var disease in diseases.ToList())
                 {
                     disease.Update(deltaTime);
+                }
+            }
+        }
+
+        public static void LogSpawnedDiseases()
+        {
+            foreach (var diseaseObject in diseaseLookup)
+            {
+                logger.LogDebug(diseaseObject.Key.gameObject.name + ":");
+                foreach (var disease in diseaseObject.Value)
+                {
+                    logger.LogDebug($"- {disease.name}:{disease.id}");
+                    foreach (var symptom in disease.symptoms)
+                    {
+                        logger.LogDebug($"-- {Symptom.symptomList[symptom].name}");
+                    }
                 }
             }
         }

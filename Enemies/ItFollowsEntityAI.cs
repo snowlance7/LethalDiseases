@@ -6,12 +6,13 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
-using static LethalDiseases.UniqueSymptoms.ItFollowsSymptom;
 
 namespace LethalDiseases.Enemies
 {
     internal class ItFollowsEntity : EnemyAI
     {
+        public static ItFollowsEntity? Instance { get; private set; }
+
         public Transform turnCompass = null!;
 
         public Collider collider = null!;
@@ -23,6 +24,8 @@ namespace LethalDiseases.Enemies
         NetworkObject? target;
         HashSet<NetworkObject> targets => SymptomAffectedObjects.symptomAffectedObjects[ItFollowsSymptom.symptomName];
 
+        EnemyAI? targetEnemy;
+
         public new bool isOutside => nav.IsAgentOutside();
 
         bool enemyMeshEnabled;
@@ -32,6 +35,8 @@ namespace LethalDiseases.Enemies
         float idleTime;
         int currentFootstepSurfaceIndex;
         private int previousFootstepClip;
+
+        int hashSpeed;
 
         public bool isInsideFactory => !isOutside;
 
@@ -44,14 +49,29 @@ namespace LethalDiseases.Enemies
         {
             base.Start();
 
+            if (Instance != null)
+            {
+                Instance = this;
+            }
+
             currentBehaviourStateIndex = (int)State.Following;
 
-            nav.SetAllValues(isOutside: true);
+            nav.SetAllValues(isOutside: false);
+
+            hashSpeed = Animator.StringToHash("speed");
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (Instance != null && Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         public override void Update()
         {
-            if (StartOfRound.Instance.allPlayersDead) { return; }
             SetVisibility();
         }
 
@@ -60,11 +80,14 @@ namespace LethalDiseases.Enemies
             currentSpeed = ((transform.position - lastPosition).magnitude / Time.deltaTime) / 2;
             lastPosition = transform.position;
             idleTime = currentSpeed <= 0f ? idleTime + Time.deltaTime : 0f;
+            creatureAnimator.SetFloat(hashSpeed, currentSpeed);
         }
 
         public override void DoAIInterval()
         {
             target = targets.LastOrDefault();
+            targetPlayer = target.gameObject.GetComponent<PlayerControllerB>();
+            targetEnemy = target.gameObject.GetComponent<EnemyAI>();
 
             if (target == null)
             {
@@ -92,7 +115,7 @@ namespace LethalDiseases.Enemies
             }
         }
 
-        public void PlayFootstepSFX() // Animation
+        public override void AnimationEventA()
         {
             int index;
 
@@ -129,16 +152,27 @@ namespace LethalDiseases.Enemies
             base.EnableEnemyMesh(enable, overrideDoNotSet, tamperWithMeshes);
             scanNode.enabled = enable;
             enemyMeshEnabled = enable;
+            collider.enabled = enable;
         }
 
         public override void HitEnemy(int force = 0, PlayerControllerB playerWhoHit = null!, bool playHitSFX = true, int hitID = -1) // Synced
         {
-
+            return;
         }
 
         public override void OnCollideWithPlayer(Collider other) // Synced
         {
             base.OnCollideWithPlayer(other);
+            PlayerControllerB player = other.gameObject.GetComponent<PlayerControllerB>();
+            if (player == null || player != localPlayer || player != targetPlayer) { return; }
+            player.KillPlayer(Vector3.zero);
+        }
+
+        public override void OnCollideWithEnemy(Collider other, EnemyAI collidedEnemy = null)
+        {
+            base.OnCollideWithEnemy(other, collidedEnemy);
+            if (collidedEnemy == null || collidedEnemy != targetEnemy) { return; }
+            collidedEnemy.KillEnemyOnOwnerClient();
         }
     }
 }

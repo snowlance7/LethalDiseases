@@ -248,12 +248,6 @@ namespace LethalDiseases
         {
             Landmine.SpawnExplosion(explosionPosition, spawnExplosionEffect, killRange, damageRange, nonLethalDamage, physicsForce, null, goThroughCar);
         }
-
-        [ClientRpc]
-        public void SpawnItFollowsEntityClientRpc(NetworkObjectReference netRef)
-        {
-            
-        }
     }
 
     [System.Serializable]
