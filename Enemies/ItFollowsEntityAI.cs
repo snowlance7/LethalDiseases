@@ -1,6 +1,7 @@
 ﻿using Dawn.Utils;
 using GameNetcodeStuff;
 using LethalDiseases.UniqueSymptoms;
+using SnowyLib;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -25,6 +26,7 @@ namespace LethalDiseases.Enemies
         HashSet<NetworkObject> targets => SymptomAffectedObjects.symptomAffectedObjects[ItFollowsSymptom.symptomName];
 
         EnemyAI? targetEnemy;
+        new PlayerControllerB? targetPlayer;
 
         public new bool isOutside => nav.IsAgentOutside();
 
@@ -45,14 +47,17 @@ namespace LethalDiseases.Enemies
             Following
         }
 
+        public static void Init()
+        {
+            Vector3 mainEntrancePosition = RoundManager.FindMainEntrancePosition(getTeleportPosition: true, getOutsideEntrance: false);
+            GameObject? spawnNode = Utils.insideAINodes.GetFarthestFromPosition(mainEntrancePosition, (x) => x.transform.position);
+            if (spawnNode == null) { return; }
+            Instance = (ItFollowsEntity)Utils.SpawnEnemy(LethalDiseasesKeys.ItFollows, spawnNode.transform.position);
+        }
+
         public override void Start()
         {
             base.Start();
-
-            if (Instance != null)
-            {
-                Instance = this;
-            }
 
             currentBehaviourStateIndex = (int)State.Following;
 
@@ -73,6 +78,7 @@ namespace LethalDiseases.Enemies
 
         public override void Update()
         {
+            base.Update();
             SetVisibility();
         }
 
@@ -86,7 +92,9 @@ namespace LethalDiseases.Enemies
 
         public override void DoAIInterval()
         {
+            nav.agent.speed = 2;
             target = targets.LastOrDefault();
+            if (target == null) { logger.LogError("Target is null"); return; } // TODO: Target is null for some reason <<
             targetPlayer = target.gameObject.GetComponent<PlayerControllerB>();
             targetEnemy = target.gameObject.GetComponent<EnemyAI>();
 

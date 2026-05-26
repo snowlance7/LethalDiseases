@@ -28,11 +28,8 @@ namespace LethalDiseases.UniqueSymptoms
         public static void Update(float deltaTime)
         {
             if (!IsServerOrHost || ItFollowsEntity.Instance != null || StartOfRound.Instance.inShipPhase || StartOfRound.Instance.shipIsLeaving || SymptomAffectedObjects.symptomAffectedObjects[symptomName].Count <= 0) { return; }
-            Vector3 mainEntrancePosition = RoundManager.FindMainEntrancePosition(getTeleportPosition: true, getOutsideEntrance: false);
-            GameObject? spawnNode = Utils.insideAINodes.GetFarthestFromPosition(mainEntrancePosition, (x) => x.transform.position);
-            if (spawnNode == null) { return; }
             logger.LogDebug("Spawning ItFollowsEntity");
-            Utils.SpawnEnemy(LethalDiseasesKeys.ItFollows, spawnNode.transform.position);
+            ItFollowsEntity.Init();
         }
     }
 }
