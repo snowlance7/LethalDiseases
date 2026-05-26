@@ -136,7 +136,6 @@ namespace LethalDiseases // TODO: Something is lagging the game like crazy
 
         public static void UpdateDiseases(float deltaTime)
         {
-            return;
             foreach (var diseaseObject in diseaseLookup.ToList())
             {
                 var networkObject = diseaseObject.Key;

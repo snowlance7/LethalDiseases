@@ -62,13 +62,28 @@ namespace LethalDiseases
                             LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
                         }
                         break;
+                    case "/infectnow":
+                        if (args.Length == 1)
+                        {
+                            Disease disease = Disease.CreateRandomDisease();
+                            disease.latency = 0;
+                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                        }
+                        else
+                        {
+                            string symptomName = args[1].Replace("_", " ");
+                            Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.GetSymptomIndexByName(symptomName));
+                            disease.latency = 0;
+                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                        }
+                        break;
                     case "/symptoms":
                         foreach (var symptom in Symptom.symptomList)
                         {
                             logger.LogDebug($"{symptom.name}: {symptom.description}");
                         }
                         break;
-                    case "/spawnedDiseases":
+                    case "/diseases":
                         Diseases.LogSpawnedDiseases();
                         break;
                     default:
