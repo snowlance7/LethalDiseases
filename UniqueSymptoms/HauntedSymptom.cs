@@ -26,7 +26,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class HauntedSymptomPatches
+    internal static class HauntedSymptomPatches
     {
         [HarmonyPrefix, HarmonyPatch(typeof(DressGirlAI), nameof(DressGirlAI.ChoosePlayerToHaunt))]
         static bool DressGirlAI_ChoosePlayerToHauntPrefix(DressGirlAI __instance)

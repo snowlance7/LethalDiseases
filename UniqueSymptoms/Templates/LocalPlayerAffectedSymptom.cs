@@ -35,7 +35,7 @@ namespace LethalDiseases.UniqueSymptoms.Unfinished
     }
 
     [HarmonyPatch]
-    public class _SymptomPatches
+    internal static class _SymptomPatches
     {
         [HarmonyPostfix, HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.CheckLineOfSightForPlayer))]
         static void CheckLineOfSightForPlayerPostFix(EnemyAI __instance, ref PlayerControllerB __result, float width, int range, int proximityAwareness)

@@ -31,7 +31,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class BodyOdorSymptomPatches
+    internal static class BodyOdorSymptomPatches
     {
         [HarmonyPostfix, HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.CheckLineOfSightForPlayer))]
         static void CheckLineOfSightForPlayerPostFix(EnemyAI __instance, ref PlayerControllerB __result, float width, int range, int proximityAwareness)

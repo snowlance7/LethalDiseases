@@ -14,7 +14,7 @@ namespace LethalDiseases
 {
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     [BepInDependency(DawnLib.PLUGIN_GUID)]
-    public class Plugin : BaseUnityPlugin
+    internal class Plugin : BaseUnityPlugin
     {
         public static Plugin Instance { get; private set; } = null!;
         public static ManualLogSource logger { get; private set; } = null!;

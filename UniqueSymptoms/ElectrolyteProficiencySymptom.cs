@@ -26,7 +26,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class ElectrolyteProficiencySymptomPatches
+    internal static class ElectrolyteProficiencySymptomPatches
     {
         [HarmonyPostfix, HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.Update))]
         static void GrabbableObject_UpdatePostfix(GrabbableObject __instance)

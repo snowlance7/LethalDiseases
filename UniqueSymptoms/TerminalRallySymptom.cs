@@ -33,7 +33,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class TerminalRallySymptomPatches
+    internal static class TerminalRallySymptomPatches
     {
         [HarmonyPrefix, HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.KillEnemyOnOwnerClient))]
         static bool EnemyAI_KillEnemyOnOwnerClient_Prefix(EnemyAI __instance)

@@ -25,7 +25,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class ButterFingersSymptomPatches
+    internal static class ButterFingersSymptomPatches
     {
         [HarmonyPostfix, HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.GrabItemOnClient))]
         static void GrabbableObject_GrabItemOnClientPostFix(GrabbableObject __instance)

@@ -31,7 +31,7 @@ namespace LethalDiseases.UniqueSymptoms.Unfinished
     }
 
     [HarmonyPatch]
-    public class ScopophobiaSymptomPatches
+    internal static class ScopophobiaSymptomPatches
     {
         [HarmonyPostfix, HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.CheckLineOfSightForPlayer))] // TODO: make all enemies stare at the player if they are looking at them
         static void CheckLineOfSightForPlayerPostFix(EnemyAI __instance, ref PlayerControllerB __result, float width, int range, int proximityAwareness)

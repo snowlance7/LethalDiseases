@@ -26,7 +26,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class MalfunctionSymptomPatches
+    internal static class MalfunctionSymptomPatches
     {
         [HarmonyPrefix, HarmonyPatch(typeof(HUDManager), nameof(HUDManager.PingScan_performed))]
         static bool HUDManager_PingScan_performedPreFix()

@@ -26,7 +26,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class RageSymptomPatches
+    internal static class RageSymptomPatches
     {
 
         [HarmonyPrefix]

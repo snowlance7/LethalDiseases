@@ -26,7 +26,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class ShopaholicSymptomPatches
+    internal static class ShopaholicSymptomPatches
     {
         [HarmonyPostfix, HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
         static void Terminal_BeginUsingTerminalPostFix(Terminal __instance)

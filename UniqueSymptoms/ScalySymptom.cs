@@ -31,7 +31,7 @@ namespace LethalDiseases.UniqueSymptoms
     }
 
     [HarmonyPatch]
-    public class ScalySymptomPatches
+    internal static class ScalySymptomPatches
     {
         [HarmonyPostfix, HarmonyPatch(typeof(FlowerSnakeEnemy), nameof(FlowerSnakeEnemy.DoAIInterval))]
         static void FlowerSnakeEnemy_DoAIIntervalPostFix(FlowerSnakeEnemy __instance)
