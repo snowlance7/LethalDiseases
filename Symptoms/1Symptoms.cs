@@ -191,16 +191,6 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "Buttery Fingers", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        [Symptom("Cataracts", "Reduced vision", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Cataracts(Disease disease)
-        {
-            return new IntervalActionEffect(0.5f, () =>
-            {
-                if (disease.player == null) { return; }
-                VignetteOverlay.Instance.SetIntensity(0.5f, 0.1f);
-            }, disease.id, "Cataracts", disease.strengthTime, SetHighestDurationAndDeny, pauseInOrbit: false);
-        }
-
         [Symptom("Infested", "Periodically spawn hoarderbugs around you", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Infested(Disease disease)
         {
@@ -402,17 +392,6 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "Burnt Lungs", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        /*[Symptom("PTSD", "Hallucinate things", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect PTSD(Disease disease)
-        {
-            throw new NotImplementedException();
-        }*/
-
-        /*[Symptom("Colorblind", "You're colorblind", Symptom.SymptomType.Neutral, 50)]
-        public static StatusEffect Colorblind(Disease disease)
-        {
-            throw new NotImplementedException();
-        }*/
 
         [Symptom("Anitidaephobia", "You hallucinate duck sounds", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect Anitidaephobia(Disease disease)
@@ -429,26 +408,11 @@ namespace LethalDiseases.Symptoms
         [Symptom("Anarchist", "Randomly summon landmines in front of you", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Anarchist(Disease disease)
         {
-            throw new NotImplementedException();
-            //Utils.SpawnMapObject(MapObjectKeys.Landmine)
-        }
-
-        [Symptom("Tactician", "You can see enemy pathfinding", Symptom.SymptomType.Good, 50)]
-        public static StatusEffect Tactician(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Symptom("Brainstorm", "You are only targeted by lightning strikes", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Brainstorm(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Symptom("Green Needle", "You are never targeted by lightning strikes", Symptom.SymptomType.Good, 50)]
-        public static StatusEffect GreenNeedle(Disease disease)
-        {
-            throw new NotImplementedException();
+            return new RandomIntervalActionEffect(new BoundedRange(120f, 450f), () =>
+            {
+                if (disease.hasActor)
+                    networkHandler.SpawnMapObjectServerRpc(MapObjectKeys.Landmine, disease.networkObject.gameObject.transform.position + disease.networkObject.gameObject.transform.forward * 2);
+            }, disease.id, "Anarchist", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("IBS", "You explode on death", Symptom.SymptomType.Bad, 50)]

@@ -1,32 +1,24 @@
-﻿using Dawn.Utils;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.Symptoms.Unfinished
+namespace LethalDiseases.Symptoms
 {
-    internal static class ScopophobiaSymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Scopophobia";
-
-        internal static bool localPlayerAffected;
-
-        [Symptom(symptomName, "They are watching", Symptom.SymptomType.Bad, 50)]
+        [Symptom("Scopophobia", "They are watching", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Scopophobia(Disease disease)
         {
             if (disease.player != null)
-                localPlayerAffected = true;
+                localPlayerAffected["Scopophobia"] = true;
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                localPlayerAffected = false;
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                localPlayerAffected["Scopophobia"] = false;
+            }, disease.id, "Scopophobia", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

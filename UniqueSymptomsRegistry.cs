@@ -1,6 +1,6 @@
-﻿using LethalDiseases.UniqueSymptoms;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using static LethalDiseases.Symptoms.Symptoms;
 
 namespace LethalDiseases
 {
@@ -10,8 +10,8 @@ namespace LethalDiseases
 
         internal static void Register()
         {
-            updates.Add(InsanitySymptom.Update);
-            updates.Add(ItFollows.Update);
+            updates.Add(InsanityUpdate);
+            updates.Add(ItFollowsUpdate);
         }
 
         internal static void Update(float deltaTime)

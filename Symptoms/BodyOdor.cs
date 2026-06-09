@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
 namespace LethalDiseases.Symptoms
 {
@@ -14,11 +15,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect BodyOdor(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
+                networkHandler.AddSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject);
+                networkHandler.RemoveSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject);
             }, disease.id, "BodyOdor", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
@@ -31,10 +32,10 @@ namespace LethalDiseases.Symptoms
         {
             try
             {
-                if (__result == null || !IsServerOrHost || SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"].Count <= 0) { return; }
+                if (__result == null || !IsServerOrHost || symptomAffectedPlayers["BodyOdor"].Count <= 0) { return; }
                 PlayerControllerB[] players = __instance.GetAllPlayersInLineOfSight(width, range, __instance.eye, proximityAwareness);
 
-                foreach (var affectedPlayer in SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"])
+                foreach (var affectedPlayer in symptomAffectedPlayers["BodyOdor"])
                 {
                     if (affectedPlayer == null) { continue; }
                     if (players.Contains(affectedPlayer))
@@ -56,10 +57,10 @@ namespace LethalDiseases.Symptoms
         {
             try
             {
-                if (__result == null || !IsServerOrHost || SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"].Count <= 0) { return; }
+                if (__result == null || !IsServerOrHost || symptomAffectedPlayers["BodyOdor"].Count <= 0) { return; }
                 PlayerControllerB[] players = __instance.GetAllPlayersInLineOfSight(width, range, __instance.eye, proximityAwareness);
 
-                foreach (var affectedPlayer in SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"])
+                foreach (var affectedPlayer in symptomAffectedPlayers["BodyOdor"])
                 {
                     if (affectedPlayer == null) { continue; }
                     if (players.Contains(affectedPlayer))

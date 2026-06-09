@@ -37,7 +37,7 @@ namespace LethalDiseases
 
         public void Start()
         {
-            Symptoms.Load();
+            Symptoms.Symptoms.Load();
             UniqueSymptomsRegistry.Register();
             Configs.Init(Plugin.Instance);
         }
@@ -272,6 +272,11 @@ namespace LethalDiseases
         }
 
         [ServerRpc(RequireOwnership = false)]
+        public void SpawnMapObjectServerRpc(NamespacedKey<DawnMapObjectInfo> key, Vector3 position, Quaternion rotation = default)
+        {
+            if (!IsServer) { return; }
+            Utils.SpawnMapObject(key, position, rotation);
+        }
     }
 
     [System.Serializable]

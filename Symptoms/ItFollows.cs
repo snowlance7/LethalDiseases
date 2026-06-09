@@ -28,7 +28,7 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "ItFollows", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        public static void Update(float deltaTime)
+        public static void ItFollowsUpdate(float deltaTime)
         {
             if (!IsServerOrHost || ItFollowsEntity.Instance != null || StartOfRound.Instance.inShipPhase || StartOfRound.Instance.shipIsLeaving || symptomAffectedObjects["ItFollows"].Count <= 0) { return; }
             logger.LogDebug("Spawning ItFollowsEntity");

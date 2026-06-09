@@ -1,32 +1,24 @@
-﻿using Dawn.Utils;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.Symptoms.Unfinished
+namespace LethalDiseases.Symptoms
 {
-    internal static class LocalPlayerAffectedSymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Coulrophobia";
-
-        internal static bool localPlayerAffected;
-
-        [Symptom(symptomName, "Dont go inside", Symptom.SymptomType.Bad, 5)] // TODO: Make the jester spawn and target the player when they go inside
+        [Symptom("Coulrophobia", "Dont go inside", Symptom.SymptomType.Bad, 5)] // TODO: Make the jester spawn and target the player when they go inside
         public static StatusEffect Coulrophobia(Disease disease)
         {
             if (disease.player != null)
-                localPlayerAffected = true;
+                localPlayerAffected["Coulrophobia"] = true;
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                localPlayerAffected = false;
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                localPlayerAffected["Coulrophobia"] = false;
+            }, disease.id, "Coulrophobia", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
