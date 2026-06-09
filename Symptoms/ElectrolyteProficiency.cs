@@ -3,25 +3,22 @@ using SnowyLib;
 using System;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
-    internal static class ElectrolyteProficiencySymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Electrolyte Proficiency";
-
-        public static bool localPlayerAffected;
-
-        [Symptom(symptomName, "You charge items you hold instead of depleting them", Symptom.SymptomType.Good, 50)]
+        [Symptom("ElectrolyteProficiency", "You charge items you hold instead of depleting them", Symptom.SymptomType.Good, 50)]
         public static StatusEffect ElectrolyteProficiency(Disease disease)
         {
             if (disease.player != null)
-                localPlayerAffected = true;
+                localPlayerAffected["ElectrolyteProficiency"] = true;
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                localPlayerAffected = false;
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                localPlayerAffected["ElectrolyteProficiency"] = false;
+            }, disease.id, "ElectrolyteProficiency", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
@@ -33,7 +30,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (!ElectrolyteProficiencySymptom.localPlayerAffected) { return; }
+                if (!localPlayerAffected["ElectrolyteProficiency"]) { return; }
                 if (__instance.IsOwner)
                 {
                     if (__instance.isBeingUsed && __instance.itemProperties.requiresBattery)
@@ -58,7 +55,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (!ElectrolyteProficiencySymptom.localPlayerAffected) { return; }
+                if (!localPlayerAffected["ElectrolyteProficiency"]) { return; }
 
                 if (__instance.itemProperties.requiresBattery && __instance.insertedBattery == null)
                 {

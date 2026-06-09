@@ -22,7 +22,8 @@ namespace LethalDiseases
             Sneeze,
             Cough,
             CoughHeavy,
-            Paranoia
+            Paranoia,
+            DuckSounds // TODO: Set up
         }
 
         public override void OnNetworkSpawn()
@@ -43,7 +44,6 @@ namespace LethalDiseases
 
         public void Update()
         {
-            Diseases.UpdateDiseases(Time.deltaTime);
             UniqueSymptomsRegistry.Update(Time.deltaTime);
         }
 
@@ -249,6 +249,29 @@ namespace LethalDiseases
         {
             Landmine.SpawnExplosion(explosionPosition, spawnExplosionEffect, killRange, damageRange, nonLethalDamage, physicsForce, null, goThroughCar);
         }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void CadaverBurstFromPlayerServerRpc(ulong clientId)
+        {
+            if (!IsServer) { return; }
+            PlayerControllerB? player = PlayerFromId(clientId);
+            if (player == null) { return; }
+
+            CadaverBloomAI cadaverBloom = (CadaverBloomAI)Utils.SpawnEnemy(EnemyKeys.CadaverBloom, new Vector3(1200f, -300f, 0f))!;
+            CadaverBurstFromPlayerClientRpc(clientId, cadaverBloom.NetworkObject);
+        }
+
+        [ClientRpc]
+        private void CadaverBurstFromPlayerClientRpc(ulong clientId, NetworkObjectReference netRef)
+        {
+            PlayerControllerB? player = PlayerFromId(clientId);
+            if (player == null) { return; }
+            if (!netRef.TryGet(out NetworkObject netObj)) { return; }
+            if (!netObj.TryGetComponent(out CadaverBloomAI cadaverBloom)) { return; }
+            cadaverBloom.BurstForth(player, true, player.transform.position, player.transform.eulerAngles);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
     }
 
     [System.Serializable]

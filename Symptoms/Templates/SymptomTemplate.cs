@@ -1,37 +1,36 @@
-﻿/*using GameNetcodeStuff;
+﻿/*using Dawn.Utils;
+using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms.Unfinished
 {
     internal static class _Symptom
     {
         const string symptomName = "";
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedPlayers.symptomAffectedPlayers[symptomName];
+        internal static bool localPlayerAffected;
 
         [Symptom(symptomName, "", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect _(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
+                localPlayerAffected = true;
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedPlayerServerRpc(symptomName, disease.player.actualClientId);
+                localPlayerAffected = false;
             }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
 
         public static void Update(float deltaTime)
         {
-            foreach (var player in affectedPlayers)
-            {
-                if (player == null) { continue; }
 
-            }
         }
     }
 

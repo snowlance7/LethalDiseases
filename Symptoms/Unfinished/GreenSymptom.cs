@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LethalDiseases.UniqueSymptoms.Unfinished
+namespace LethalDiseases.Symptoms.Unfinished
 {
     internal class GreenSymptom
     {

@@ -3,25 +3,22 @@ using SnowyLib;
 using System;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
-    internal static class ShopaholicSymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Shopaholic";
-
-        public static bool localPlayerAffected;
-
-        [Symptom(symptomName, "25% chance to buy a random item when using the terminal", Symptom.SymptomType.Bad, 50)]
+        [Symptom("Shopaholic", "25% chance to buy a random item when using the terminal", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Shopaholic(Disease disease)
         {
             if (disease.player != null)
-                localPlayerAffected = true;
+                localPlayerAffected["Shopaholic"] = true;
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                localPlayerAffected = false;
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                localPlayerAffected["Shopaholic"] = false;
+            }, disease.id, "Shopaholic", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
@@ -33,7 +30,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (ShopaholicSymptom.localPlayerAffected && UnityEngine.Random.Range(0, 4) == 0) // TODO: Test
+                if (localPlayerAffected["Shopaholic"] && UnityEngine.Random.Range(0, 4) == 0) // TODO: Test
                 {
                     int index = UnityEngine.Random.Range(0, __instance.buyableItemsList.Length);
                     __instance.groupCredits -= __instance.buyableItemsList[index].creditsWorth;

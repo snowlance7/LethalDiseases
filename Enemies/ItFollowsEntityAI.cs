@@ -1,6 +1,5 @@
 ﻿using Dawn.Utils;
 using GameNetcodeStuff;
-using LethalDiseases.UniqueSymptoms;
 using SnowyLib;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,7 @@ namespace LethalDiseases.Enemies
         public ScanNodeProperties scanNode = null!;
 
         NetworkObject? target;
-        HashSet<NetworkObject> targets => SymptomAffectedObjects.symptomAffectedObjects[ItFollowsSymptom.symptomName];
+        HashSet<NetworkObject> targets => SymptomAffectedObjects.symptomAffectedObjects["ItFollows"];
 
         EnemyAI? targetEnemy;
         new PlayerControllerB? targetPlayer;

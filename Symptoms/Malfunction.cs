@@ -3,25 +3,22 @@ using SnowyLib;
 using System;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
-    internal static class MalfunctionSymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Malfunction";
-
-        public static bool localPlayerAffected;
-
-        [Symptom(symptomName, "Your scanner doesnt work", Symptom.SymptomType.Bad, 50)]
+        [Symptom("Malfunction", "Your scanner doesnt work", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Malfunction(Disease disease)
         {
             if (disease.player != null)
-                localPlayerAffected = true;
+                localPlayerAffected["Malfunction"] = true;
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                localPlayerAffected = false;
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                localPlayerAffected["Malfunction"] = false;
+            }, disease.id, "Malfunction", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
@@ -33,7 +30,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                return !MalfunctionSymptom.localPlayerAffected;
+                return !localPlayerAffected["Malfunction"];
             }
             catch (Exception e)
             {

@@ -7,7 +7,7 @@ using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
     internal static class InsanitySymptom
     {

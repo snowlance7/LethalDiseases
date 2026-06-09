@@ -1,32 +1,25 @@
-﻿using Dawn.Utils;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
-    internal static class BodyOdorSymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Body Odor";
-
-        public static HashSet<PlayerControllerB> affectedPlayers => SymptomAffectedObjects.symptomAffectedPlayers[symptomName];
-
-        [Symptom(symptomName, "Enemies prioritize targetting you first", Symptom.SymptomType.Bad, 100)]
+        [Symptom("BodyOdor", "Enemies prioritize targetting you first", Symptom.SymptomType.Bad, 100)]
         public static StatusEffect BodyOdor(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject); // TODO CONTINUE
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject);
+            }, disease.id, "BodyOdor", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
@@ -38,10 +31,10 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (__result == null || !IsServerOrHost || BodyOdorSymptom.affectedPlayers.Count <= 0) { return; }
+                if (__result == null || !IsServerOrHost || SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"].Count <= 0) { return; }
                 PlayerControllerB[] players = __instance.GetAllPlayersInLineOfSight(width, range, __instance.eye, proximityAwareness);
 
-                foreach (var affectedPlayer in BodyOdorSymptom.affectedPlayers)
+                foreach (var affectedPlayer in SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"])
                 {
                     if (affectedPlayer == null) { continue; }
                     if (players.Contains(affectedPlayer))
@@ -63,10 +56,10 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (__result == null || !IsServerOrHost || BodyOdorSymptom.affectedPlayers.Count <= 0) { return; }
+                if (__result == null || !IsServerOrHost || SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"].Count <= 0) { return; }
                 PlayerControllerB[] players = __instance.GetAllPlayersInLineOfSight(width, range, __instance.eye, proximityAwareness);
 
-                foreach (var affectedPlayer in BodyOdorSymptom.affectedPlayers)
+                foreach (var affectedPlayer in SymptomAffectedObjects.symptomAffectedPlayers["BodyOdor"])
                 {
                     if (affectedPlayer == null) { continue; }
                     if (players.Contains(affectedPlayer))

@@ -1,12 +1,6 @@
-﻿using GameNetcodeStuff;
-using SnowyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SnowyLib;
 using Unity.Netcode;
-using Unity.Services.Authentication.Generated;
-using UnityEngine.Serialization;
+using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases
@@ -51,10 +45,10 @@ namespace LethalDiseases
 
         public static void LogSpawnedDiseases()
         {
-            foreach (var diseaseObject in diseaseLookup)
+            foreach (var diseaseHost in GameObject.FindObjectsOfType<DiseaseHost>())
             {
-                logger.LogDebug(diseaseObject.Key.gameObject.name + ":");
-                foreach (var disease in diseaseObject.Value)
+                logger.LogDebug(diseaseHost.gameObject.name + ":");
+                foreach (var disease in diseaseHost.Diseases)
                 {
                     logger.LogDebug($"- {disease.name}:{disease.id}");
                     foreach (var symptom in disease.symptoms)

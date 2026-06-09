@@ -4,24 +4,22 @@ using SnowyLib;
 using System.Collections.Generic;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
-    internal static class RageSymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Rage";
-        public static HashSet<PlayerControllerB> affectedPlayers = SymptomAffectedObjects.symptomAffectedPlayers[symptomName];
-
-        [Symptom(symptomName, "Double damage but you cant see health", Symptom.SymptomType.Neutral, 50)]
+        [Symptom("Rage", "Double damage but you cant see health", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect Rage(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("Rage", disease.player.NetworkObject);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc(symptomName, disease.player.NetworkObject);
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("Rage", disease.player.NetworkObject);
+            }, disease.id, "Rage", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
@@ -35,7 +33,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (playerWhoHit == null || !RageSymptom.affectedPlayers.Contains(playerWhoHit)) { return; }
+                if (playerWhoHit == null || !symptomAffectedPlayers["Rage"].Contains(playerWhoHit)) { return; }
                 force = Mathf.Min(force * 2, 100);
             }
             catch (System.Exception e)

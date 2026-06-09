@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 
-namespace LethalDiseases.UniqueSymptoms.Unfinished
+namespace LethalDiseases.Symptoms.Unfinished
 {
     internal static class _Symptom
     {

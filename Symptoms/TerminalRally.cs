@@ -5,30 +5,27 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
-    internal static class TerminalRallySymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Terminal Rally";
-        public static HashSet<EnemyAI> affectedEnemies = new HashSet<EnemyAI>();
-        internal static bool localPlayerAffected;
-
-        [Symptom(symptomName, "On death, get 10 seconds of rage and die", Symptom.SymptomType.Good, 50)]
+        [Symptom("TerminalRally", "On death, get 10 seconds of rage and die", Symptom.SymptomType.Good, 50)]
         public static StatusEffect TerminalRally(Disease disease)
         {
             if (disease.player != null)
-                localPlayerAffected = true;
+                localPlayerAffected["TerminalRally"] = true;
             else if (disease.enemy != null)
-                affectedEnemies.Add(disease.enemy);
+                symptomAffectedEnemies["TerminalRally"].Add(disease.enemy);
 
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player != null)
-                    localPlayerAffected = false;
+                    localPlayerAffected["TerminalRally"] = false;
                 if (disease.enemy != null)
-                    affectedEnemies.Remove(disease.enemy);
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                    symptomAffectedEnemies["TerminalRally"].Remove(disease.enemy);
+            }, disease.id, "TerminalRally", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
@@ -40,15 +37,15 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (!TerminalRallySymptom.affectedEnemies.Contains(__instance)) { return true; }
+                if (!symptomAffectedEnemies["TerminalRally"].Contains(__instance)) { return true; }
 
                 __instance.enemyHP = 10;
-                TerminalRallySymptom.affectedEnemies.Remove(__instance);
+                symptomAffectedEnemies["TerminalRally"].Remove(__instance);
 
                 __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect(() =>
                 {
                     __instance.KillEnemyOnOwnerClient();
-                }, TerminalRallySymptom.symptomName, "Terminal Rally Death", 10f));
+                }, "TerminalRally", "Terminal Rally Death", 10f));
 
                 return false;
             }
@@ -64,16 +61,16 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (!TerminalRallySymptom.localPlayerAffected) { return true; }
+                if (!localPlayerAffected["TerminalRally"]) { return true; }
 
                 __instance.health = 100;
                 HUDManager.Instance.UpdateHealthUI(100, false);
-                TerminalRallySymptom.localPlayerAffected = false;
+                localPlayerAffected["TerminalRally"] = false;
 
                 __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect(() =>
                 {
                     __instance.KillPlayer(Vector3.zero);
-                }, TerminalRallySymptom.symptomName, "Terminal Rally Death", 10f));
+                }, "TerminalRally", "Terminal Rally Death", 10f));
 
                 return false;
             }

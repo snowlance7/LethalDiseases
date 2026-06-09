@@ -4,6 +4,7 @@ using SnowyLib;
 using System.Linq;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using Dawn;
 
 /* bodyparts
  * 0 head

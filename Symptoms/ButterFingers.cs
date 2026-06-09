@@ -2,25 +2,22 @@
 using SnowyLib;
 using System;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.SymptomAffectedObjects;
 
-namespace LethalDiseases.UniqueSymptoms
+namespace LethalDiseases.Symptoms
 {
-    internal static class ButterFingersSymptom
+    internal static partial class Symptoms
     {
-        public const string symptomName = "Butter Fingers";
-
-        public static bool localPlayerAffected;
-
-        [Symptom(symptomName, "50/50 chance to drop anything you pick up", Symptom.SymptomType.Bad, 100)]
+        [Symptom("ButterFingers", "50/50 chance to drop anything you pick up", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect ButterFingers(Disease disease)
         {
             if (disease.player != null)
-                localPlayerAffected = true;
+                localPlayerAffected["ButterFingers"] = true;
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                localPlayerAffected = false;
-            }, disease.id, symptomName, disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
+                localPlayerAffected["ButterFingers"] = false;
+            }, disease.id, "ButterFingers", disease.strengthTime, Symptoms.SetHighestDurationAndDeny);
         }
     }
 
@@ -32,7 +29,7 @@ namespace LethalDiseases.UniqueSymptoms
         {
             try
             {
-                if (ButterFingersSymptom.localPlayerAffected && UnityEngine.Random.Range(0, 2) == 1)
+                if (localPlayerAffected["ButterFingers"] && UnityEngine.Random.Range(0, 2) == 1)
                     localPlayer.DiscardHeldObject();
             }
             catch (Exception e)
