@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
+using static LethalDiseases.Disease;
 
 namespace LethalDiseases
 {
@@ -18,11 +19,23 @@ namespace LethalDiseases
             disease.Infect(target);
         }
 
-        public static void TrySpread(NetworkObject source, NetworkObject target)
+        public static void TrySpread(this NetworkObject source, NetworkObject target, TransmissionType transmissionType)
         {
             foreach (Disease disease in source.GetDiseases())
             {
                 disease.TrySpread(target);
+            }
+        }
+
+        public static void TrySpreadBetween(NetworkObject source1, NetworkObject source2, TransmissionType transmissionType)
+        {
+            foreach (Disease disease in source1.GetDiseases())
+            {
+                disease.TrySpread(source2);
+            }
+            foreach (Disease disease in source2.GetDiseases())
+            {
+                disease.TrySpread(source1);
             }
         }
 

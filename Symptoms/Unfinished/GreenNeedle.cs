@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using DigitalRuby.ThunderAndLightning;
+using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
 using System;
@@ -28,28 +29,29 @@ namespace LethalDiseases.Symptoms
     internal static class GreenNeedleSymptomPatches
     {
         [HarmonyPrefix, HarmonyPatch(typeof(StormyWeather), nameof(StormyWeather.LightningStrike))]
-        static bool StormyWeather_LightningStrike_ServerRpc_PreFix(StormyWeather __instance, Vector3 strikePosition, bool useTargetedObject) // TODO: Test this
+        static bool StormyWeather_LightningStrike_PreFix(StormyWeather __instance, Vector3 strikePosition, bool useTargetedObject) // TODO: Test this
         {
             try
             {
-                if (!IsServerOrHost) { return true; }
-                if (!useTargetedObject) { return true; }
                 if (symptomAffectedObjects["Green Needle"].Count <= 0) { return true; }
                 foreach (var symptomAffectedObject in symptomAffectedObjects["Green Needle"])
                 {
-                    if (symptomAffectedObject.TryGetComponent(out PlayerControllerB player))
+                    if (symptomAffectedObject == null || !symptomAffectedObject.IsSpawned) { continue; }
+                    if ((symptomAffectedObject.gameObject.transform.position - strikePosition).sqrMagnitude > 4) { continue; }
+                    if (useTargetedObject)
                     {
-                        if (__instance.setStaticGrabbableObject.playerHeldBy == player)
-                        {
-                            // TODO
-                        }
+                        __instance.staticElectricityParticle.Stop();
+                        __instance.staticElectricityParticle.GetComponent<AudioSource>().Stop();
+                        __instance.setStaticToObject = null;
                     }
+                    return false;
                 }
+                return true;
             }
             catch (Exception e)
             {
                 logger.LogError(e);
-                return;
+                return true;
             }
         }
     }

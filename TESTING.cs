@@ -22,8 +22,10 @@ using Dawn;
 namespace LethalDiseases
 {
     [HarmonyPatch]
-    public class TESTING : MonoBehaviour
+    public static class TESTING
     {
+        public static bool disableDiseaseSpawning = false;
+
         [HarmonyPostfix, HarmonyPatch(typeof(HUDManager), nameof(HUDManager.PingScan_performed))]
         public static void PingScan_performedPostFix()
         {
@@ -85,7 +87,21 @@ namespace LethalDiseases
                         }
                         break;
                     case "/diseases":
-                        Diseases.LogSpawnedDiseases();
+                        if (args.Length == 1)
+                            Diseases.LogSpawnedDiseases();
+
+                        switch (args[1])
+                        {
+                            case "spawning":
+                                disableDiseaseSpawning = !disableDiseaseSpawning;
+                                HUDManager.Instance.DisplayTip("Server", "disableDiseaseSpawning = " + disableDiseaseSpawning);
+                                break;
+                            case "clear":
+                                localPlayer.NetworkObject.ClearDiseases();
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     default:
                         Utils.ChatCommand(args);

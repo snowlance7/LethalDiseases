@@ -34,19 +34,21 @@ namespace LethalDiseases
 
         public TransmissionType transmissionType;
 
+        [System.Flags]
         public enum TransmissionType
         {
-            Airborne,
-            Contact,
-            Blood, // TODO
-            Foodborne // TODO
+            Airborne = 1 << 0, // 1
+            Contact = 1 << 1, // 2
+            Blood = 1 << 2, // 4 // TODO
+            Foodborne = 1 << 3 // 8 // TODO
         }
 
         public int[] symptoms = [];
 
         bool isActive;
         public float elapsedTime;
-        int nextSpreadUpdateInterval;
+
+        float timeSinceSpreadUpdate;
 
         public float nextPeriodicTriggerTime;
 
@@ -55,7 +57,7 @@ namespace LethalDiseases
         public EnemyAI? enemy { get; private set; }
         internal SteamValveHazard? steamValve { get; private set; }
 
-        Collider[] nearby = []; // TODO: Test this
+        Collider[] airborneColliders = []; // TODO: Test this
 
         public bool hasActor => enemy != null || player != null;
 
@@ -168,12 +170,14 @@ namespace LethalDiseases
             return disease;
         }
 
-        internal void TrySpread(NetworkObject _networkObject)
+        internal void TrySpread(NetworkObject _networkObject, TransmissionType spreadTransmissionType)
         {
-            switch (transmissionType)
+            if (!transmissionType.HasFlag(spreadTransmissionType)) { return; }
+
+            switch (spreadTransmissionType)
             {
-                case TransmissionType.Airborne: // TODO: Rework
-                    if (player != null || enemy != null)
+                case TransmissionType.Airborne:
+                    if (hasActor)
                     {
                         if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
                         {
@@ -181,17 +185,11 @@ namespace LethalDiseases
                         }
                     }
                     break;
-                case TransmissionType.Contact:
+                default:
                     if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
                     {
                         Infect(_networkObject);
                     }
-                    break;
-                case TransmissionType.Blood: // TODO
-                    break;
-                case TransmissionType.Foodborne: // TODO
-                    break;
-                default:
                     break;
             }
         }
@@ -204,11 +202,10 @@ namespace LethalDiseases
         internal void Update(float deltaTime)
         {
             elapsedTime += deltaTime;
+            timeSinceSpreadUpdate += deltaTime;
 
             if (networkObject == null)
                 return;
-
-            bool hasActor = (player != null || enemy != null);
 
             float lifeTime = hasActor ? strengthTime : stabilityTime;
 
@@ -219,18 +216,17 @@ namespace LethalDiseases
                 return;
             }
 
-            // Activation
+            // Activation handling
             if (hasActor && !isActive)
             {
                 if (elapsedTime > latencyTime)
                 {
                     elapsedTime = 0;
-                    nextSpreadUpdateInterval = 0;
                     isActive = true;
 
                     if (player != null)
                     {
-                        if (player != null && localPlayer == player)
+                        if (localPlayer == player)
                         {
                             for (int i = 0; i < symptoms.Length; i++)
                             {
@@ -248,63 +244,37 @@ namespace LethalDiseases
                         }
                     }
                 }
-                //return;
             }
 
             // Spread handling
-            if (elapsedTime <= nextSpreadUpdateInterval)
-                return;
-
-            nextSpreadUpdateInterval++;
-
-            if (!IsServerOrHost)
-                return;
-
-            switch (transmissionType)
+            if (timeSinceSpreadUpdate > 2f)
             {
-                case TransmissionType.Airborne:
-                    {
-                        Vector3 origin = hasActor
-                            ? networkObject.transform.position
-                            : (steamValve != null ? steamValve.valveAudio.transform.position : Vector3.zero); // TODO: Test this
+                timeSinceSpreadUpdate = 0f;
 
-                        if (origin == Vector3.zero) { return; }
+                if (transmissionType.HasFlag(TransmissionType.Airborne))
+                {
+                    Vector3 origin = hasActor ? networkObject.transform.position : (steamValve != null ? steamValve.valveAudio.transform.position : Vector3.zero); // TODO: Test this
 
-                        float radius = hasActor ? airborneSpreadRange.Value : 10f;
+                    if (origin == Vector3.zero) { return; }
 
-                        Physics.OverlapSphereNonAlloc(origin, radius, nearby);
+                    float radius = hasActor ? airborneSpreadRange.Value : 10f;
 
-                        foreach (var col in nearby)
-                        {
-                            if (UnityEngine.Random.Range(0f, 1f) > transmissibility / 2) { continue; }
-                            if (col.gameObject.TryGetComponent(out PlayerControllerB p))
-                                LethalDiseasesNetworkHandler.Instance.InfectServerRpc(p.NetworkObject, id);
-                            else if (col.gameObject.TryGetComponent(out EnemyAI e))
-                                LethalDiseasesNetworkHandler.Instance.InfectServerRpc(e.NetworkObject, id);
-                        }
-                        break;
-                    }
-
-                case TransmissionType.Contact:
-                    break;
-
-                case TransmissionType.Blood:
-                    break;
-
-                case TransmissionType.Foodborne:
-                    break;
+                    TrySpreadAirborne(origin, radius, 0.5f);
+                }
             }
         }
 
-        internal void TrySpreadAirborne(Vector3 origin, float range)
+        internal void TrySpreadAirborne(Vector3 origin, float radius = default, float multiplier = 1)
         {
-            if (player == null && enemy == null) { return; }
+            if (!hasActor) { return; }
 
-            Physics.OverlapSphereNonAlloc(origin, range, nearby);
+            radius = radius == default ? airborneSpreadRange.Value : radius;
 
-            foreach (var col in nearby)
+            Physics.OverlapSphereNonAlloc(origin, radius, airborneColliders);
+
+            foreach (var col in airborneColliders)
             {
-                if (UnityEngine.Random.Range(0f, 1f) > transmissibility) { continue; }
+                if (UnityEngine.Random.Range(0f, 1f) > transmissibility * multiplier) { continue; }
                 if (col.gameObject.TryGetComponent(out PlayerControllerB p))
                     LethalDiseasesNetworkHandler.Instance.InfectServerRpc(p.NetworkObject, id);
                 else if (col.gameObject.TryGetComponent(out EnemyAI e))

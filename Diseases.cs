@@ -43,6 +43,12 @@ namespace LethalDiseases
             networkObject.RemoveDisease(disease);
         }
 
+        public static void ClearDiseases(this NetworkObject networkObject, bool clearImmune = true)
+        {
+            networkObject.GetDiseases().Clear();
+            networkObject.GetImmuneDiseases().Clear();
+        }
+
         public static void LogSpawnedDiseases()
         {
             foreach (var diseaseHost in GameObject.FindObjectsOfType<DiseaseHost>())
