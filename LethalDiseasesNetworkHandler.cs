@@ -63,17 +63,15 @@ namespace LethalDiseases
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void InfectServerRpc(NetworkObjectReference netRef, string diseaseId)
+        public void InfectServerRpc(NetworkObjectReference netRef, string diseaseId) // TODO: Should only have 1 reference
         {
             if (!IsServer) { return; }
-            logger.LogDebug("InfectServerRpc");
             InfectClientRpc(netRef, diseaseId);
         }
 
         [ClientRpc]
         private void InfectClientRpc(NetworkObjectReference netRef, string diseaseId)
         {
-            logger.LogDebug("InfectClientRpc");
             Disease? disease = Disease.GetDiseaseFromID(diseaseId);
             if (disease == null || !netRef.TryGet(out NetworkObject netObj) || netObj == null) { return; }
             logger.LogDebug($"Infecting {netObj.gameObject.name} with disease ID: {diseaseId}");

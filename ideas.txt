@@ -81,3 +81,8 @@ one person capturing a group of people by walking by
 
 
 CADAVAR BLOOM SPREADS DISEASES
+
+6/10/2026
+randomly strike player with lightning
+more random diseases, like "randomly strike 1 x with lightning" with x being players, enemies or objects
+randomized symptoms like "randomly do x on y" with x being an action from a list of actions, and y being the target (players, enemies or objects, positions? ship?)

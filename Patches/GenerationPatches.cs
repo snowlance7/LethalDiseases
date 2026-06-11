@@ -18,6 +18,7 @@ namespace LethalDiseases.Patches
             try
             {
                 if (!__instance.IsServer) { return; }
+                if (TESTING.disableDiseaseSpawning) { return; }
 
                 logger.LogDebug("Started generating diseases for level");
 
@@ -58,6 +59,7 @@ namespace LethalDiseases.Patches
             try
             {
                 if (!__instance.IsServer) { return; }
+                if (TESTING.disableDiseaseSpawning) { return; }
 
                 if (UnityEngine.Random.Range(0f, 1f) < monsterDiseaseChance.Value)
                     __instance.NetworkObject.Infect();

@@ -53,34 +53,36 @@ namespace LethalDiseases
                 switch (args[0])
                 {
                     case "/infect":
+                        HUDManager.Instance.DisplayTip("Server", "Infecting local player");
                         if (args.Length == 1)
                         {
-                            Disease disease = Disease.CreateRandomDisease();
-                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                            localPlayer.NetworkObject.Infect();
                         }
                         else
                         {
                             string symptomName = args[1].Replace("_", " ");
                             Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.GetSymptomIndexByName(symptomName));
-                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                            localPlayer.NetworkObject.Infect(disease);
                         }
                         break;
                     case "/infectnow":
+                        HUDManager.Instance.DisplayTip("Server", "Infecting local player now");
                         if (args.Length == 1)
                         {
                             Disease disease = Disease.CreateRandomDisease();
                             disease.latency = 0;
-                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                            localPlayer.NetworkObject.Infect(disease);
                         }
                         else
                         {
                             string symptomName = args[1].Replace("_", " ");
                             Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.GetSymptomIndexByName(symptomName));
                             disease.latency = 0;
-                            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(localPlayer.NetworkObject, disease.id);
+                            localPlayer.NetworkObject.Infect(disease);
                         }
                         break;
                     case "/symptoms":
+                        HUDManager.Instance.DisplayTip("Server", "Logging symptoms");
                         foreach (var symptom in Symptom.symptomList)
                         {
                             logger.LogDebug($"{symptom.name}: {symptom.description}");
@@ -88,7 +90,11 @@ namespace LethalDiseases
                         break;
                     case "/diseases":
                         if (args.Length == 1)
-                            Diseases.LogSpawnedDiseases();
+                        {
+                            HUDManager.Instance.DisplayTip("Server", "Logging diseases");
+                            DiseaseAPI.LogSpawnedDiseases();
+                            return;
+                        }
 
                         switch (args[1])
                         {
@@ -97,7 +103,8 @@ namespace LethalDiseases
                                 HUDManager.Instance.DisplayTip("Server", "disableDiseaseSpawning = " + disableDiseaseSpawning);
                                 break;
                             case "clear":
-                                localPlayer.NetworkObject.ClearDiseases();
+                                HUDManager.Instance.DisplayTip("Server", "Clearing diseases on local player");
+                                localPlayer.NetworkObject.ClearDiseases(clearImmune: true);
                                 break;
                             default:
                                 break;

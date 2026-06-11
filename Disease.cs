@@ -91,8 +91,7 @@ namespace LethalDiseases
                 transmissibility = RandomPercent(),
                 stability = RandomPercent(),
                 latency = RandomPercent(),
-                transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(
-                    new int[] { airborneTypeWeight.Value, contactTypeWeight.Value, bloodTypeWeight.Value, foodborneTypeWeight.Value })
+                transmissionType = CreateRandomTransmissionType()
             };
 
             int min = Mathf.Clamp(Mathf.Min(minSymptoms.Value, maxSymptoms.Value), 0, Symptom.symptomList.Count);
@@ -107,6 +106,49 @@ namespace LethalDiseases
                 .ToArray();
 
             return disease;
+        }
+
+        internal static TransmissionType CreateRandomTransmissionType()
+        {
+            List<(TransmissionType Type, int Weight)> transmissionTypes = new()
+            {
+                (TransmissionType.Airborne, airborneTypeWeight.Value),
+                (TransmissionType.Contact, contactTypeWeight.Value),
+                (TransmissionType.Blood, bloodTypeWeight.Value),
+                (TransmissionType.Foodborne, foodborneTypeWeight.Value)
+            };
+
+            int index = RoundManager.Instance.GetRandomWeightedIndexList(transmissionTypes.Select(x => x.Weight).ToList());
+
+            TransmissionType transmissionType = transmissionTypes[index].Type;
+            transmissionTypes.RemoveAt(index);
+
+            string[] extraTypeChances = Configs.extraTransmissionTypeChances.Value
+                .Replace(" ", "")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            if (extraTypeChances.Length == 0)
+                return transmissionType;
+
+            for (int i = 0; i < extraTypeChances.Length; i++)
+            {
+                if (!float.TryParse(extraTypeChances[i], out float extraTypeChance))
+                    continue;
+
+                if (transmissionTypes.Count == 0)
+                    return transmissionType;
+
+                if (UnityEngine.Random.Range(0f, 1f) <= extraTypeChance)
+                {
+                    index = RoundManager.Instance.GetRandomWeightedIndexList(
+                        transmissionTypes.Select(x => x.Weight).ToList());
+
+                    transmissionType |= transmissionTypes[index].Type;
+                    transmissionTypes.RemoveAt(index);
+                }
+            }
+
+            return transmissionType;
         }
 
         internal static Disease CreateRandomDiseaseWithSymptom(int symptomIndex)
@@ -172,31 +214,29 @@ namespace LethalDiseases
 
         internal void TrySpread(NetworkObject _networkObject, TransmissionType spreadTransmissionType)
         {
-            if (!transmissionType.HasFlag(spreadTransmissionType)) { return; }
-
-            switch (spreadTransmissionType)
+            if (transmissionType.HasFlag(TransmissionType.Airborne) && spreadTransmissionType.HasFlag(TransmissionType.Airborne))
             {
-                case TransmissionType.Airborne:
-                    if (hasActor)
-                    {
-                        if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
-                        {
-                            Infect(_networkObject);
-                        }
-                    }
-                    break;
-                default:
+                if (hasActor)
+                {
                     if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
-                    {
-                        Infect(_networkObject);
-                    }
-                    break;
+                        _networkObject.Infect(this);
+                }
             }
-        }
-
-        internal void Infect(NetworkObject _networkObject)
-        {
-            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(_networkObject, id);
+            if (transmissionType.HasFlag(TransmissionType.Contact) && spreadTransmissionType.HasFlag(TransmissionType.Contact))
+            {
+                if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
+                    _networkObject.Infect(this);
+            }
+            if (transmissionType.HasFlag(TransmissionType.Blood) && spreadTransmissionType.HasFlag(TransmissionType.Blood))
+            {
+                if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
+                    _networkObject.Infect(this);
+            }
+            if (transmissionType.HasFlag(TransmissionType.Foodborne) && spreadTransmissionType.HasFlag(TransmissionType.Foodborne))
+            {
+                if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
+                    _networkObject.Infect(this);
+            }
         }
 
         internal void Update(float deltaTime)
@@ -276,9 +316,9 @@ namespace LethalDiseases
             {
                 if (UnityEngine.Random.Range(0f, 1f) > transmissibility * multiplier) { continue; }
                 if (col.gameObject.TryGetComponent(out PlayerControllerB p))
-                    LethalDiseasesNetworkHandler.Instance.InfectServerRpc(p.NetworkObject, id);
+                    p.NetworkObject.Infect(this);
                 else if (col.gameObject.TryGetComponent(out EnemyAI e))
-                    LethalDiseasesNetworkHandler.Instance.InfectServerRpc(e.NetworkObject, id);
+                    e.NetworkObject.Infect(this);
             }
         }
 

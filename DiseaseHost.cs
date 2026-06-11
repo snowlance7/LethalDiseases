@@ -8,6 +8,8 @@ namespace LethalDiseases
     {
         public List<Disease> Diseases = [];
         public List<Disease> ImmuneDiseases = [];
+        public List<string> DiseaseIds = [];
+        public List<string> ImmuneDiseaseIds = [];
 
         void Update()
         {

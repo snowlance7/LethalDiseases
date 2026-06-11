@@ -1,20 +1,15 @@
 ﻿using Dawn;
 using Dawn.Utils;
 using GameNetcodeStuff;
-using LethalDiseases;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Unity.Netcode;
-using Unity.Services.Authentication.Generated;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
-using UnityEngine.UIElements;
+using static LethalDiseases.LethalDiseasesNetworkHandler;
 using static LethalDiseases.Plugin;
 using static SnowyLib.PlayerControllerBExtensions;
-using static LethalDiseases.LethalDiseasesNetworkHandler;
 
 // TODO: Add accessibility features
 namespace LethalDiseases.Symptoms
@@ -427,11 +422,11 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "IBS", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        [Symptom("Last Stand", "You kill the last thing that kills you", Symptom.SymptomType.Good, 50)]
-        public static StatusEffect LastStand(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Last Stand", "You kill the last thing that kills you", Symptom.SymptomType.Good, 50)]
+        //public static StatusEffect LastStand(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         [Symptom("MAD", "You kill the nearest living thing on death", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect MAD(Disease disease)
@@ -454,23 +449,23 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "IBS", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        [Symptom("Arachnophobia", "Spiders instakill you", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Arachnophobia(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Arachnophobia", "Spiders instakill you", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Arachnophobia(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Crazy", "I was crazy once, they put me in a room", Symptom.SymptomType.Bad, 50)] // Everyone is wearing masks
-        public static StatusEffect Crazy(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Crazy", "I was crazy once, they put me in a room", Symptom.SymptomType.Bad, 50)] // Everyone is wearing masks
+        //public static StatusEffect Crazy(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Fresh Scent", "If circuit bees are triggered, they will hunt you down", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect FreshScent(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Fresh Scent", "If circuit bees are triggered, they will hunt you down", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect FreshScent(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         [Symptom("Narcissism", "Everyone is invisible to you", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Narcissism(Disease disease)
@@ -497,23 +492,23 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "Narcissism", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        [Symptom("Egg Face", "Sapsuckers attack on sight", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect EggFace(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Egg Face", "Sapsuckers attack on sight", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect EggFace(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Knee Water", "Randomly get the quicksand effect", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect KneeWater(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Knee Water", "Randomly get the quicksand effect", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect KneeWater(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Charlie Horse", "You randomly make horse noises", Symptom.SymptomType.Neutral, 50)]
-        public static StatusEffect CharlieHorse(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Charlie Horse", "You randomly make horse noises", Symptom.SymptomType.Neutral, 50)]
+        //public static StatusEffect CharlieHorse(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         [Symptom("Split Personality", "Randomly swap positions with a random player periodically", Symptom.SymptomType.Bad, 10)]
         public static StatusEffect SplitPersonality(Disease disease)
@@ -531,94 +526,94 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "Split Personality", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        [Symptom("Bald", "Looking at the infected player for too long will trigger a flashbang", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Bald(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Bald", "Looking at the infected player for too long will trigger a flashbang", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Bald(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Alarm", "You randomly make alarm sounds and attract enemies", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Alarm(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Alarm", "You randomly make alarm sounds and attract enemies", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Alarm(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Vampirism", "Leech health from other living things", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Vampirism(Disease disease)
-        {
-            throw new NotImplementedException();
-            return new IntervalActionEffect(2.5f, () =>
-            {
-                if (disease.player != null)
-                {
-                    if (disease.player.health >= 100) { return; }
-                    GameObject? leechObj = GetClosestActorToPosition(disease.player.transform.position, 5f);
-                    if (leechObj == null) { return; }
-                    if (leechObj.TryGetComponent(out PlayerControllerB player))
-                    {
-                        //player.DamagePlayerServerRpc(1, player.health - 1)
-                    }
-                }
-                if (disease.enemy != null)
-                {
+        //[Symptom("Vampirism", "Leech health from other living things", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Vampirism(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //    return new IntervalActionEffect(2.5f, () =>
+        //    {
+        //        if (disease.player != null)
+        //        {
+        //            if (disease.player.health >= 100) { return; }
+        //            GameObject? leechObj = GetClosestActorToPosition(disease.player.transform.position, 5f);
+        //            if (leechObj == null) { return; }
+        //            if (leechObj.TryGetComponent(out PlayerControllerB player))
+        //            {
+        //                //player.DamagePlayerServerRpc(1, player.health - 1)
+        //            }
+        //        }
+        //        if (disease.enemy != null)
+        //        {
 
-                }
-            }, disease.id, "", disease.strengthTime, SetHighestDurationAndDeny);
-        }
+        //        }
+        //    }, disease.id, "", disease.strengthTime, SetHighestDurationAndDeny);
+        //}
 
-        [Symptom("Mute", "Cant use comms to speak", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Mute(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Mute", "Cant use comms to speak", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Mute(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Paragon", "Gain every other negative effect but cant die", Symptom.SymptomType.Bad, 1)]
-        public static StatusEffect Paragon(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Paragon", "Gain every other negative effect but cant die", Symptom.SymptomType.Bad, 1)]
+        //public static StatusEffect Paragon(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Bad Gas", "Slowly gain the TZP effect when inside and fart randomly", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect BadGas(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Bad Gas", "Slowly gain the TZP effect when inside and fart randomly", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect BadGas(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Heartworm", "Spawns a earth leviathon on your location on death", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Heartworm(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Heartworm", "Spawns a earth leviathon on your location on death", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Heartworm(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Selective Hearing", "You cant hear certain players", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect SelectiveHearing(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Selective Hearing", "You cant hear certain players", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect SelectiveHearing(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Norovirus", "You explode upon death, can chain to other players", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Norovirus(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Norovirus", "You explode upon death, can chain to other players", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Norovirus(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Mood Swings", "Randomly increases and/or decreases each of your movement factors every 2 ingame hours", Symptom.SymptomType.Neutral, 50)]
-        public static StatusEffect MoodSwings(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Mood Swings", "Randomly increases and/or decreases each of your movement factors every 2 ingame hours", Symptom.SymptomType.Neutral, 50)]
+        //public static StatusEffect MoodSwings(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Sterile", "Picking up a baby maneater instantly kills it", Symptom.SymptomType.Good, 50)]
-        public static StatusEffect Sterile(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Sterile", "Picking up a baby maneater instantly kills it", Symptom.SymptomType.Good, 50)]
+        //public static StatusEffect Sterile(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Baculovirus", "Explode upon death, spread your disease to other players nearby", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Baculovirus(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Baculovirus", "Explode upon death, spread your disease to other players nearby", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Baculovirus(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         [Symptom("Dementia", "Randomly teleport to a location periodically", Symptom.SymptomType.Bad, 50)] // TODO: Make them drop an item before teleporting
         public static StatusEffect Dementia(Disease disease)
@@ -642,107 +637,107 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "Claustrophobia", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        [Symptom("Cold Fluu", "You sneeze periodically, sneezing on other players slows them down", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect ColdFluu(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Cold Fluu", "You sneeze periodically, sneezing on other players slows them down", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect ColdFluu(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Shroombiosis", "You grow shrooms on your body which heal players when eaten", Symptom.SymptomType.Good, 50)]
-        public static StatusEffect Shroombiosis(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Shroombiosis", "You grow shrooms on your body which heal players when eaten", Symptom.SymptomType.Good, 50)]
+        //public static StatusEffect Shroombiosis(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Sponge Legs", "You make an annoying sound when you walk", Symptom.SymptomType.Neutral, 50)]
-        public static StatusEffect SpongeLegs(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Sponge Legs", "You make an annoying sound when you walk", Symptom.SymptomType.Neutral, 50)]
+        //public static StatusEffect SpongeLegs(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Parasite Link", "You and another player with this symptom are chained together", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect ParasiteLink(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Parasite Link", "You and another player with this symptom are chained together", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect ParasiteLink(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Tesla Coil", "Zap other players holding metal items", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect TeslaCoil(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Tesla Coil", "Zap other players holding metal items", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect TeslaCoil(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Deja Vu", "Teleport back 10 seconds periodically", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect DejaVu(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Deja Vu", "Teleport back 10 seconds periodically", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect DejaVu(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Sproodling", "You become small", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Sproodling(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Sproodling", "You become small", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Sproodling(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Ionizing", "You periodically do damage to nearby players", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Ionizing(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Ionizing", "You periodically do damage to nearby players", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Ionizing(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Mitosis", "Dying spawns two more of you with the same disease", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Mitosis(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Mitosis", "Dying spawns two more of you with the same disease", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Mitosis(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Lactose Intolerant", "Chance to explode on heal", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect LactoseIntolerant(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Lactose Intolerant", "Chance to explode on heal", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect LactoseIntolerant(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Empyema", "Leave a trail of blood when you move", Symptom.SymptomType.Neutral, 50)]
-        public static StatusEffect Empyema(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Empyema", "Leave a trail of blood when you move", Symptom.SymptomType.Neutral, 50)]
+        //public static StatusEffect Empyema(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Bleeding", "Randomly bleed", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Bleeding(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Bleeding", "Randomly bleed", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Bleeding(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Daltonizm", "You see in black and white", Symptom.SymptomType.Neutral, 50)]
-        public static StatusEffect Daltonizm(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Daltonizm", "You see in black and white", Symptom.SymptomType.Neutral, 50)]
+        //public static StatusEffect Daltonizm(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Repulsive", "Push everything away from you", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Repulsive(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Repulsive", "Push everything away from you", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Repulsive(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Attractive", "Attract things towards you", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Attractive(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Attractive", "Attract things towards you", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Attractive(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("Stress Eating", "You randomly eat an inventory item", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect StressEating(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("Stress Eating", "You randomly eat an inventory item", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect StressEating(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Symptom("", "", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Template(Disease disease)
-        {
-            throw new NotImplementedException();
-        }
+        //[Symptom("", "", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Template(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
 
