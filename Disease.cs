@@ -153,7 +153,7 @@ namespace LethalDiseases
 
         internal static Disease CreateRandomDiseaseWithSymptom(int symptomIndex)
         {
-            logger.LogDebug("Creating random disease with symptom index of " + symptomIndex);
+            logger?.LogDebug("Creating random disease with symptom index of " + symptomIndex);
             float RandomPercent() => MathF.Round(UnityEngine.Random.Range(0f, 1f), 2);
 
             var disease = new Disease
@@ -271,8 +271,8 @@ namespace LethalDiseases
                         {
                             foreach (var symptomIndex in symptoms)
                             {
-                                logger.LogDebug($"Activating symptom at index {symptomIndex}");
-                                var effect = Symptom.symptomList[symptomIndex].effect(this); // TODO: Giving arguementOutOfRange Exception
+                                logger?.LogDebug($"Activating symptom at index {symptomIndex}");
+                                var effect = Symptom.symptomList[symptomIndex].effect(this);
                                 networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
                             }
                         }

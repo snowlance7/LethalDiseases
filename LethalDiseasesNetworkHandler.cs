@@ -31,7 +31,7 @@ namespace LethalDiseases
             if (IsServer)
                 Instance?.gameObject.GetComponent<NetworkObject>().Despawn(destroy: true);
             Instance = this;
-            logger.LogDebug("NetworkHandler spawned");
+            logger?.LogDebug("NetworkHandler spawned");
             base.OnNetworkSpawn();
         }
 
@@ -74,7 +74,7 @@ namespace LethalDiseases
         {
             Disease? disease = Disease.GetDiseaseFromID(diseaseId);
             if (disease == null || !netRef.TryGet(out NetworkObject netObj) || netObj == null) { return; }
-            logger.LogDebug($"Infecting {netObj.gameObject.name} with disease ID: {diseaseId}");
+            logger?.LogDebug($"Infecting {netObj.gameObject.name} with disease ID: {diseaseId}");
             netObj.AddDisease(disease);
         }
 

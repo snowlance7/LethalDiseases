@@ -13,18 +13,18 @@ namespace LethalDiseases.Patches
     internal static class GenerationPatches
     {
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.FinishGeneratingLevel))]
-        static void RoundManager_FinishGeneratingLevel_Postfix(RoundManager __instance) // TODO: Not finding objects? use on ship landed?
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GeneratedFloorPostProcessing))]
+        static void RoundManager_GeneratedFloorPostProcessing_Postfix(RoundManager __instance) // TODO: Not finding objects? use on ship landed?
         {
             try
             {
                 if (!__instance.IsServer) { return; }
                 if (TESTING.disableDiseaseSpawning) { return; }
 
-                logger.LogDebug("Started generating diseases for level");
+                logger?.LogDebug("Started generating diseases for level");
 
                 // SteamValveHazard
-                logger.LogDebug("Generating diseases for SteamValveHazard");
+                logger?.LogDebug("Generating diseases for SteamValveHazard");
                 SteamValveHazard[] valves = GameObject.FindObjectsOfType<SteamValveHazard>();
                 foreach (var valve in valves)
                 {
@@ -35,7 +35,7 @@ namespace LethalDiseases.Patches
                 }
 
                 // Grabbable Objects
-                logger.LogDebug("Generating diseases for spawned scrap");
+                logger?.LogDebug("Generating diseases for spawned scrap");
                 List<GrabbableObject> spawnedScrap = GameObject.FindObjectsOfType<GrabbableObject>().ToList();
                 foreach (var scrap in spawnedScrap)
                 {

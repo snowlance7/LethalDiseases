@@ -85,12 +85,12 @@ namespace LethalDiseases
 
         public static void AddDisease(this NetworkObject networkObject, Disease disease)
         {
-            logger.LogDebug($"Trying to add disease to networkObject with id {networkObject.GetInstanceID()} with disease {disease.name}:{disease.id}");
+            logger?.LogDebug($"Trying to add disease to networkObject with id {networkObject.GetInstanceID()} with disease {disease.name}:{disease.id}");
             if (networkObject.GetImmuneDiseases().Contains(disease)) { return; }
 
             disease.Init(networkObject);
 
-            logger.LogDebug($"Infected {disease.GetInfectedName()} with disease {disease.name}:{disease.id}");
+            logger?.LogDebug($"Infected {disease.GetInfectedName()} with disease {disease.name}:{disease.id}");
 
             string id = disease.id;
 
@@ -139,13 +139,13 @@ namespace LethalDiseases
         {
             foreach (var diseaseHost in GameObject.FindObjectsOfType<DiseaseHost>())
             {
-                logger.LogDebug(diseaseHost.gameObject.name + ":");
+                logger?.LogDebug(diseaseHost.gameObject.name + ":");
                 foreach (Disease disease in diseaseHost.Diseases)
                 {
-                    logger.LogDebug($"- {disease.name}:{disease.id}");
+                    logger?.LogDebug($"- {disease.name}:{disease.id}");
                     foreach (var symptom in disease.symptoms)
                     {
-                        logger.LogDebug($"-- {Symptom.symptomList[symptom].name}");
+                        logger?.LogDebug($"-- {Symptom.symptomList[symptom].name}");
                     }
                 }
             }

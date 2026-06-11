@@ -48,7 +48,7 @@ namespace LethalDiseases
                 if (!Utils.testing) { return; }
                 string msg = __instance.chatTextField.text;
                 string[] args = msg.Split(" ");
-                Plugin.logger.LogDebug(msg);
+                Plugin.logger?.LogDebug(msg);
 
                 switch (args[0])
                 {
@@ -85,7 +85,7 @@ namespace LethalDiseases
                         HUDManager.Instance.DisplayTip("Server", "Logging symptoms");
                         foreach (var symptom in Symptom.symptomList)
                         {
-                            logger.LogDebug($"{symptom.name}: {symptom.description}");
+                            logger?.LogDebug($"{symptom.name}: {symptom.description}");
                         }
                         break;
                     case "/diseases":

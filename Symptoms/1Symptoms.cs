@@ -472,7 +472,7 @@ namespace LethalDiseases.Symptoms
         {
             if (disease.player != null && disease.player == localPlayer)
             {
-                logger.LogDebug("Narcissism: Making players invisible");
+                logger?.LogDebug("Narcissism: Making players invisible");
                 foreach (var player in StartOfRound.Instance.allPlayerScripts)
                 {
                     if (player == null || !player.isPlayerControlled || player == localPlayer) { continue; }

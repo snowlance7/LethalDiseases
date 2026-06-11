@@ -22,7 +22,7 @@ namespace LethalDiseases
 
             if (networkObject.gameObject.GetComponent<SteamValveHazard>() != null) { return; } // TODO: Test this
 
-            logger.LogDebug($"Adding symptomAffectedObject {symptomName}:{networkObject.name}");
+            logger?.LogDebug($"Adding symptomAffectedObject {symptomName}:{networkObject.name}");
             symptomAffectedObjects[symptomName].Add(networkObject);
 
             if (networkObject.gameObject.TryGetComponent(out PlayerControllerB player))

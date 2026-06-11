@@ -63,7 +63,7 @@ namespace LethalDiseases.Enemies
             nav.SetAllValues(isOutside: false);
 
             hashSpeed = Animator.StringToHash("speed");
-            logger.LogDebug("ItFollowsEntity spawned");
+            logger?.LogDebug("ItFollowsEntity spawned");
         }
 
         public override void OnDestroy()

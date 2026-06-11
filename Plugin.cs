@@ -4,6 +4,7 @@ using Dawn;
 using Dusk;
 using GameNetcodeStuff;
 using HarmonyLib;
+using SnowyLib;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +19,7 @@ namespace LethalDiseases
     internal class Plugin : BaseUnityPlugin
     {
         public static Plugin Instance { get; private set; } = null!;
-        public static ManualLogSource logger { get; private set; } = null!;
+        public static ManualLogSource? logger { get; private set; }
         public static DuskMod Mod { get; private set; } = null!;
 
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
@@ -37,12 +38,9 @@ namespace LethalDiseases
 
         private void Awake()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
+            if (Instance == null) Instance = this;
 
-            logger = Instance.Logger;
+            if (Utils.testing) logger = Instance.Logger;
 
             harmony.PatchAll();
 
@@ -71,7 +69,7 @@ namespace LethalDiseases
                     }
                 }
             }
-            logger.LogDebug("Finished initializing network behaviours");
+            logger?.LogDebug("Finished initializing network behaviours");
         }
     }
 }

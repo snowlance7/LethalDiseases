@@ -15,7 +15,7 @@ namespace LethalDiseases.Symptoms
         [Symptom("ItFollows", "???", Symptom.SymptomType.Bad, 10)]
         public static StatusEffect ItFollows(Disease disease)
         {
-            logger.LogDebug("Init symptom ItFollows");
+            logger?.LogDebug("Init symptom ItFollows");
             if (disease.hasActor)
             {
 
@@ -31,7 +31,7 @@ namespace LethalDiseases.Symptoms
         public static void ItFollowsUpdate(float deltaTime)
         {
             if (!IsServerOrHost || ItFollowsEntity.Instance != null || StartOfRound.Instance.inShipPhase || StartOfRound.Instance.shipIsLeaving || symptomAffectedObjects["ItFollows"].Count <= 0) { return; }
-            logger.LogDebug("Spawning ItFollowsEntity");
+            logger?.LogDebug("Spawning ItFollowsEntity");
             ItFollowsEntity.Init();
         }
     }
