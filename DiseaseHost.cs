@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace LethalDiseases
 
         void Update()
         {
-            foreach (var disease in Diseases)
+            foreach (var disease in Diseases.ToList())
             {
                 disease.Update(Time.deltaTime);
             }

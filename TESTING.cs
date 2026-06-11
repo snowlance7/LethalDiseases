@@ -111,7 +111,6 @@ namespace LethalDiseases
                         }
                         break;
                     default:
-                        Utils.ChatCommand(args);
                         break;
                 }
             }

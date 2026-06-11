@@ -140,7 +140,7 @@ namespace LethalDiseases
             foreach (var diseaseHost in GameObject.FindObjectsOfType<DiseaseHost>())
             {
                 logger.LogDebug(diseaseHost.gameObject.name + ":");
-                foreach (var disease in diseaseHost.Diseases)
+                foreach (Disease disease in diseaseHost.Diseases)
                 {
                     logger.LogDebug($"- {disease.name}:{disease.id}");
                     foreach (var symptom in disease.symptoms)

@@ -16,10 +16,10 @@ namespace LethalDiseases
             minSymptoms = p.Config.Bind("Other", "Min Symptoms", 1, "Minimum number of symptoms a disease can have");
             maxSymptoms = p.Config.Bind("Other", "Max Symptoms", 5, "Maximum number of symptoms a disease can have");
 
-            strengthRange = p.Config.Bind("Disease Stat Ranges", "Strength Range", new BoundedRange(0f, 1f), "Strength stat range");
-            transmissibilityRange = p.Config.Bind("Disease Stat Ranges", "Transmissibility Range", new BoundedRange(0f, 1f), "Transmissibility stat range");
-            stabilityRange = p.Config.Bind("Disease Stat Ranges", "Stability Range", new BoundedRange(0f, 1f), "Stability stat range");
-            latencyRange = p.Config.Bind("Disease Stat Ranges", "Latency Range", new BoundedRange(0f, 1f), "Latency stat range");
+            strengthRange = p.Config.Bind("Disease Stat Ranges", "Strength Range", new BoundedRange(500, 2800), "How long (in seconds) the symptoms can persist once they take effect/activate.");
+            stabilityRange = p.Config.Bind("Disease Stat Ranges", "Stability Range", new BoundedRange(500, 1400), "How long (in seconds) the disease can survive outside of a host (player or enemy).");
+            latencyRange = p.Config.Bind("Disease Stat Ranges", "Latency Range", new BoundedRange(60, 1000), "How long (in seconds) it takes for the symptoms to take effect/activate after a host (player or enemy) is infected with a disease.");
+            transmissibilityRange = p.Config.Bind("Disease Stat Ranges", "Transmissibility Range", new BoundedRange(0.1f, 1f), "Percent chance (from 0-1) that a disease can spread depending on the transmission type.");
 
             airborneTypeWeight = p.Config.Bind("Transmission Weights", "Airborne Type Weight", 100, "Weighted chance that a disease will have `Airborne` as its transmission type when created");
             contactTypeWeight = p.Config.Bind("Transmission Weights", "Contact Type Weight", 100, "Weighted chance that a disease will have `Contact` as its transmission type when created");
@@ -42,9 +42,9 @@ namespace LethalDiseases
         public static ConfigEntry<float> airborneSpreadRange { get; private set; }
 
         public static ConfigEntry<BoundedRange> strengthRange { get; private set; }
-        public static ConfigEntry<BoundedRange> transmissibilityRange { get; private set; }
         public static ConfigEntry<BoundedRange> stabilityRange { get; private set; }
         public static ConfigEntry<BoundedRange> latencyRange { get; private set; }
+        public static ConfigEntry<BoundedRange> transmissibilityRange { get; private set; }
 
         public static ConfigEntry<int> airborneTypeWeight { get; private set; }
         public static ConfigEntry<int> contactTypeWeight { get; private set; }

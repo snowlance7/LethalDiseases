@@ -39,7 +39,7 @@ namespace LethalDiseases
 
         public static Symptom? GetSymptomByName(string name)
         {
-            return symptomList.Where(x => x.name == name).FirstOrDefault();
+            return symptomList.Where(x => x.name.ToLower() == name.ToLower()).FirstOrDefault();
         }
 
         internal static List<Symptom> symptomList = new List<Symptom>();

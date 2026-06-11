@@ -21,9 +21,6 @@ namespace LethalDiseases
         public float strength;
         public float strengthTime => Mathf.Lerp(strengthRange.Value.Min, strengthRange.Value.Max, strength);
 
-        // Likelyhood it will transmit based on transmission type
-        public float transmissibility;
-
         // How long it lasts outside the player
         public float stability;
         public float stabilityTime => Mathf.Lerp(stabilityRange.Value.Min, stabilityRange.Value.Max, stability);
@@ -31,6 +28,9 @@ namespace LethalDiseases
         // How long it takes for the symptoms to show up
         public float latency;
         public float latencyTime => Mathf.Lerp(latencyRange.Value.Min, latencyRange.Value.Max, latency);
+
+        // Likelyhood it will transmit based on transmission type
+        public float transmissibility;
 
         public TransmissionType transmissionType;
 
@@ -153,6 +153,7 @@ namespace LethalDiseases
 
         internal static Disease CreateRandomDiseaseWithSymptom(int symptomIndex)
         {
+            logger.LogDebug("Creating random disease with symptom index of " + symptomIndex);
             float RandomPercent() => MathF.Round(UnityEngine.Random.Range(0f, 1f), 2);
 
             var disease = new Disease
@@ -268,9 +269,10 @@ namespace LethalDiseases
                     {
                         if (localPlayer == player)
                         {
-                            for (int i = 0; i < symptoms.Length; i++)
+                            foreach (var symptomIndex in symptoms)
                             {
-                                var effect = Symptom.symptomList[symptoms[i]].effect(this); // TODO: Giving arguementOutOfRange Exception
+                                logger.LogDebug($"Activating symptom at index {symptomIndex}");
+                                var effect = Symptom.symptomList[symptomIndex].effect(this); // TODO: Giving arguementOutOfRange Exception
                                 networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
                             }
                         }
