@@ -14,7 +14,7 @@ namespace LethalDiseases.Patches
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.FinishGeneratingLevel))]
-        static void RoundManager_FinishGeneratingLevel_Postfix(RoundManager __instance)
+        static void RoundManager_FinishGeneratingLevel_Postfix(RoundManager __instance) // TODO: Not finding objects? use on ship landed?
         {
             try
             {
