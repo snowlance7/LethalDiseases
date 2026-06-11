@@ -9,6 +9,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Patches
 {
+    [HarmonyPatch]
     internal static class GenerationPatches
     {
         [HarmonyPostfix]
