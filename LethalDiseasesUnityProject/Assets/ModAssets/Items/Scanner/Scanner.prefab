@@ -1248,7 +1248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 350359297
+  GlobalObjectIdHash: 354517303
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1292,7 +1292,7 @@ MonoBehaviour:
   itemProperties: {fileID: 11400000, guid: 54c465b66d395fa4dbea6f807a374c1f, type: 2}
   insertedBattery:
     empty: 0
-    charge: 0
+    charge: 1
   customGrabTooltip: 
   propBody: {fileID: 0}
   propColliders: []
