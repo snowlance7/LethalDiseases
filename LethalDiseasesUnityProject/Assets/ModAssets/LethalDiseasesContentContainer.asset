@@ -15,3 +15,5 @@ MonoBehaviour:
   assetBundles:
   - assetBundleName: networkhandler
     configName: General
+  - assetBundleName: scanner
+    configName: Scanner

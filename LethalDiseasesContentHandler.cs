@@ -12,13 +12,17 @@ namespace LethalDiseases
         }
         public NetworkHandlerAssets? NetworkHandler;
 
-        public class ItFollowsEntityAssets(DuskMod mod, string filePath) : AssetBundleLoader<ItFollowsEntityAssets>(mod, filePath) { }
-        public ItFollowsEntityAssets? ItFollowsEntity;
+        /*public class ItFollowsEntityAssets(DuskMod mod, string filePath) : AssetBundleLoader<ItFollowsEntityAssets>(mod, filePath) { }
+        public ItFollowsEntityAssets? ItFollowsEntity;*/
+
+        public class ScannerAssets(DuskMod mod, string filePath) : AssetBundleLoader<ScannerAssets>(mod, filePath) { }
+        public ScannerAssets? Scanner;
 
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
             RegisterContent("networkhandler", out NetworkHandler);
-            RegisterContent("it_follows_entity", out ItFollowsEntity);
+            //RegisterContent("it_follows_entity", out ItFollowsEntity);
+            RegisterContent("scanner", out Scanner);
         }
     }
 }
