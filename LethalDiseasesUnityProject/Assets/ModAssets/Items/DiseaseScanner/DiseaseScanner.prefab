@@ -1090,12 +1090,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2573428279178399263}
-  - component: {fileID: 3955120690187224454}
   - component: {fileID: 1221460241863091433}
+  - component: {fileID: 3955120690187224454}
   - component: {fileID: 7063735075154120723}
   - component: {fileID: 3279698887563086327}
   m_Layer: 6
-  m_Name: Scanner
+  m_Name: DiseaseScanner
   m_TagString: PhysicsProp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1118,6 +1118,27 @@ Transform:
   - {fileID: 242846999760836719}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!65 &1221460241863091433
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7241272523599858075}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.0667095, y: 3.7461917, z: 2.2971213}
+  m_Center: {x: 1.4299706, y: 1.4294574, z: -0.036405593}
 --- !u!82 &3955120690187224454
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1215,27 +1236,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!65 &1221460241863091433
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7241272523599858075}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 5.049578, y: 8.914567, z: 3.0928662}
-  m_Center: {x: 2.0247939, y: 4.013648, z: -0.43427834}
 --- !u!114 &7063735075154120723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248,7 +1248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 354517303
+  GlobalObjectIdHash: 350359297
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1

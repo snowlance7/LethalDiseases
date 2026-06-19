@@ -19,7 +19,7 @@ namespace LethalDiseases
     internal class Plugin : BaseUnityPlugin
     {
         public static Plugin Instance { get; private set; } = null!;
-        public static ManualLogSource? logger { get; private set; }
+        public static ManualLogSource logger { get; private set; } = null!;
         public static DuskMod Mod { get; private set; } = null!;
 
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
@@ -40,7 +40,7 @@ namespace LethalDiseases
         {
             if (Instance == null) Instance = this;
 
-            if (Utils.testing) logger = Instance.Logger;
+            logger = Instance.Logger;
 
             harmony.PatchAll();
 

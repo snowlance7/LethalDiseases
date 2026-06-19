@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 466683445, guid: 1f73291e6cf64124796e048d841e7d1f, type: 3}
-  m_Name: ScannerDef
+  m_Name: DiseaseScannerDef
   m_EditorClassIdentifier: 
   _configEntries: []
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: scanner
+    _key: disease_scanner
   <Item>k__BackingField: {fileID: 11400000, guid: 54c465b66d395fa4dbea6f807a374c1f,
     type: 2}
   <ShopItemPreset>k__BackingField:

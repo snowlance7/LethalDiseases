@@ -18,11 +18,17 @@ namespace LethalDiseases.Items
         public Light flashlightBulbGlow = null!;
 
         private Ray ray;
-        private RaycastHit[] raycastEnemies = [];
+        private RaycastHit[] raycastHits = [];
 
         private int anomalyMask = 524296;
         private RaycastHit hit;
         private bool isScanning;
+
+        public void Awake()
+        {
+            itemProperties.positionOffset = new Vector3();
+            itemProperties.rotationOffset = new Vector3();
+        }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
@@ -39,33 +45,28 @@ namespace LethalDiseases.Items
 
         private IEnumerator ScanGun()
         {
-            animator.SetTrigger("scan");
+            animator.SetTrigger("scan"); // TODO: Make this only sweep once and the analyzer sweeps multiple times
             audioSource.PlayOneShot(scanSFX);
-            //lightningScript = lightningObject.GetComponent<LightningSplineScript>();
-            //lightningDest.SetParent(null);
-            //lightningBend1.SetParent(null);
-            //lightningBend2.SetParent(null);
-            Debug.Log("Scan A");
+
             for (int i = 0; i < 12; i++)
             {
                 if (base.IsOwner)
                 {
-                    Debug.Log("Scan B");
+                    logger.LogDebug("Scanning");
                     if (isPocketed)
                     {
                         yield break;
                     }
                     ray = new Ray(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * 3f, playerHeldBy.gameplayCamera.transform.forward);
-                    //Debug.DrawRay(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * 3f, playerHeldBy.gameplayCamera.transform.forward * 6f, Color.red, 5f);
-                    int num = Physics.SphereCastNonAlloc(ray, 5f, raycastEnemies, 5f, anomalyMask, QueryTriggerInteraction.Collide);
-                    raycastEnemies = raycastEnemies.OrderBy((RaycastHit x) => x.distance).ToArray();
+                    int num = Physics.SphereCastNonAlloc(ray, 5f, raycastHits, 5f, anomalyMask, QueryTriggerInteraction.Collide);
+                    raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
                     for (int j = 0; j < num; j++)
                     {
-                        if (j >= raycastEnemies.Length)
+                        if (j >= raycastHits.Length)
                         {
                             continue;
                         }
-                        hit = raycastEnemies[j];
+                        hit = raycastHits[j];
                         if (!(hit.transform == null) && hit.transform.gameObject.TryGetComponent<IShockableWithGun>(out var component) && component.CanBeShocked())
                         {
                             Vector3 shockablePosition = component.GetShockablePosition();
