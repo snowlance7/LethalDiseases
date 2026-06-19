@@ -1,0 +1,16 @@
+Symptoms
+Water on the Knee - Every ingame hour, you'll slow down as if you were walking through water for a few seconds.
+paragon - gain every other negative effect, but immunity to death
+Selective Hearing - Looking at certain players will usher in the flashbang Tinnitus effect until looking away. Number selected depends on crew size.
+Clinically [Nationality] - Sets the infected player's language to a random one.
+
+myodesopsias- in your vision starts appearing dark spots ( neutral ) (thats a real name for that)
+Stinkbrain - around you are spawning shrooms that are periodically dealing toxin damage to everyone (negative) 
+
+This just gave me an idea for another one, cant think of a name but if the entity dies, it spawns two more of that entity with the same infection (could be a super rare one)
+
+Daltonizm - just changes the scenery (white/gray for example)
+
+randomly strike player with lightning
+more random diseases, like "randomly strike 1 x with lightning" with x being players, enemies or objects
+randomized symptoms like "randomly do x on y" with x being an action from a list of actions, and y being the target (players, enemies or objects, positions? ship?)

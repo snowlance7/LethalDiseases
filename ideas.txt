@@ -16,73 +16,14 @@
 - walk in unit for ship that cures all infection in a player
 - way to make vaccines against any symptom, so if a disease has that symptom, itll be taken off
 
-Symptoms
-Green Needle - You are never targeted by lightning strikes
-IBS - You explode on death
-MAD - You kill the nearest living thing on death
-arachnophobe - spiders instakill you
-crazy - everyone is wearing mimic masks
-Fresh Scent - If someone else triggers Circuit Bees to attack, they pathfind to you instead.
-Narcissism - Everyone else is invisible to you. 
-Egg on Face - If a Giant Sapsucker sees you, whether or not you have an egg, it will hunt you down and won't let up.
-Water on the Knee - Every ingame hour, you'll slow down as if you were walking through water for a few seconds.
-Charlie Horse - Talking or typing in chat lets out a horse's winny.
-Split Personality - Two players swap positions every so often.
-Bald - Looking at the infected player long enough will trigger a flashbang.
-"Alarm" - A sound like an alarm clock goes off randomally eminating from you (negative)
-Leech - if wounded, starts draining health from other players ( can kill) (negative) 
-Mute - cant use any comms to speak. (With time you loose ability to speak?)
-Gamer - after you empty your stamina bar, your character stops to touch some grass
-paragon - gain every other negative effect, but immunity to death
-Bad Gas - When indoors or on the ship, over time, a very slow TZP effect is applied to the infected player.
-Heartworm - Spawns an Earth Leviathan upon death, at the position of death.
-Selective Hearing - Looking at certain players will usher in the flashbang Tinnitus effect until looking away. Number selected depends on crew size.
-Clinically [Nationality] - Sets the infected player's language to a random one.
-Norovirus - You explode upon death. Unlike IBS, anyone damaged or killed by this explosion also explodes upon death.
-
-Mood Swings - Randomly increases and/or decreases each of your movement factors every 2 ingame hours.
-This includes:
-Sprint Stamina
-Jump Stamina
-Walk Speed
-Critical Speed
-Crouch Speed
-Sprint Speed
-Water Speed
-Jump Height
-Item Weight Influence
-
-Sterile - Picking up a baby Maneater instantly kills it.
-
-baculovirus. It makes caterpillars explode to infect other caterpillars. (By making them go high to the light but going to ship might be easier for coding reasons.) Not sure how hard/bad that would be but it'd be a fun zombie option
-
-Sponge Legs - how the name describes, your moving sound is literally like spongebobs 
-
-myodesopsias- in your vision starts appearing dark spots ( neutral ) (thats a real name for that)
-Cold fluu - after you sneeze on a friend it slows him for some time ( had also idea with fire breath but not sure about it) (negative)
-Weak legs - after taking too many heavy items in your inventory it breaks your legs making you unable to move until the round ends ( others maybe can pickup you to rescue?) (negative)
-Shroombiosis - 3 types of mushrooms are growing on your body, when they fell of you they stay on the ground and gives buffs for everyone (EVERYONE), each shroom gives other buff-  speed and jump boost, huge hp regen, strenght boost (positive)
- Parasite Link - 2 people are chained together sharing hp BUT their other stats are boosted (negative propably)
-Tesla coil - zaps other people that are holding metal items (negative)
-Deja vu - tp you back to the place you were 10 secs ago ( may be a bit hard too balance) (neutral/negative)
-Sproodling - transforms you into a small you ( small company vibes) it comes with speed and less hp (neutral/negative)
-Stinkbrain - around you are spawning shrooms that are periodically dealing toxin damage to everyone (negative) 
-ionizing - you periodically hurt your teammates when you’re near them
-
-This just gave me an idea for another one, cant think of a name but if the entity dies, it spawns two more of that entity with the same infection (could be a super rare one)
-Lactose intolerant - whenever your character is healed in any way, there is a chance that you will explode
-empyema - when you move you leave a trace of blood/pus behind you (Idea is for something marking the way you moved), depending on balancing maybe it can also take your hp whenewer you move
-Daltonizm - just changes the scenery (white/gray for example)
-[-] Repulsive - push away other players from you 
-maybe inverse as well, make them go towards you
-[-] Attractive - Attract othger players towards you 
-one person capturing a group of people by walking by
-[-] Stress eater - eat a random inventory item or nearby scrap every so often
-
-
 CADAVAR BLOOM SPREADS DISEASES
 
-6/10/2026
-randomly strike player with lightning
-more random diseases, like "randomly strike 1 x with lightning" with x being players, enemies or objects
-randomized symptoms like "randomly do x on y" with x being an action from a list of actions, and y being the target (players, enemies or objects, positions? ship?)
+6/19/2026
+shop item that clears all immune diseases on a player
+shop item that clears all diseases on a player (expensive)
+shop item that clears all diseases but also immune diseases as well (less expensive)
+shop item dart gun and darts
+ship upgrade that allows you to decontaminate the ship
+device that sprays a smoke cloud of an airborne disease
+handsanitizer that gives you x minutes of protection from contact diseases
+helmet filters that reset filters in your helmet (same ones the cadaver plants use), maybe the filter in players helmet also goes down around diseases and replacing them protects you 

@@ -6,13 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.LethalDiseasesNetworkHandler;
 using static LethalDiseases.Plugin;
 using static SnowyLib.PlayerControllerBExtensions;
 
-// TODO: Add accessibility features
-namespace LethalDiseases.Symptoms
+namespace LethalDiseases.Symptoms // TODO: Add accessibility features
 {
     internal static partial class Symptoms
     {
@@ -422,11 +425,27 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "IBS", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        //[Symptom("Last Stand", "You kill the last thing that kills you", Symptom.SymptomType.Good, 50)]
-        //public static StatusEffect LastStand(Disease disease)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [Symptom("Dementia", "Randomly teleport to a location periodically", Symptom.SymptomType.Bad, 50)] // TODO: Make them drop an item before teleporting
+        public static StatusEffect Dementia(Disease disease)
+        {
+            return new RandomIntervalActionEffect(new BoundedRange(60, 500), () =>
+            {
+                if (disease.player == null) { return; }
+                GameObject? node = Utils.allAINodes.GetRandom(Utils.randomLocal);
+                if (node == null) { return; }
+                disease.player.TeleportPlayer(node.transform.position);
+            }, disease.id, "Dementia", disease.strengthTime, SetHighestDurationAndDeny);
+        }
+
+        [Symptom("Claustrophobia", "You fear being inside", Symptom.SymptomType.Bad, 50)]
+        public static StatusEffect Claustrophobia(Disease disease)
+        {
+            return new TickActionEffect(() =>
+            {
+                if (localPlayer.isInsideFactory)
+                    localPlayer.JumpToFearLevel(1f);
+            }, disease.id, "Claustrophobia", disease.strengthTime, SetHighestDurationAndDeny);
+        }
 
         [Symptom("MAD", "You kill the nearest living thing on death", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect MAD(Disease disease)
@@ -449,23 +468,21 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "IBS", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        //[Symptom("Arachnophobia", "Spiders instakill you", Symptom.SymptomType.Bad, 50)]
-        //public static StatusEffect Arachnophobia(Disease disease)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //[Symptom("Crazy", "I was crazy once, they put me in a room", Symptom.SymptomType.Bad, 50)] // Everyone is wearing masks
-        //public static StatusEffect Crazy(Disease disease)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //[Symptom("Fresh Scent", "If circuit bees are triggered, they will hunt you down", Symptom.SymptomType.Bad, 50)]
-        //public static StatusEffect FreshScent(Disease disease)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [Symptom("Split Personality", "Randomly swap positions with a random player periodically", Symptom.SymptomType.Bad, 10)]
+        public static StatusEffect SplitPersonality(Disease disease)
+        {
+            return new RandomIntervalActionEffect(new BoundedRange(60, 500), () =>
+            {
+                if (disease.player != null)
+                {
+                    PlayerControllerB? randomPlayer = StartOfRound.Instance.allPlayerScripts.Where(x => x.isPlayerControlled).GetRandom();
+                    if (randomPlayer == null) { return; }
+                    Vector3 playerPosition = disease.player.transform.position;
+                    disease.player.TeleportPlayer(randomPlayer.transform.position);
+                    networkHandler.TeleportPlayerServerRpc(randomPlayer.actualClientId, playerPosition); // TODO: Test
+                }
+            }, disease.id, "Split Personality", disease.strengthTime, SetHighestDurationAndDeny);
+        }
 
         [Symptom("Narcissism", "Everyone is invisible to you", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Narcissism(Disease disease)
@@ -492,6 +509,24 @@ namespace LethalDiseases.Symptoms
             }, disease.id, "Narcissism", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
+        //[Symptom("Arachnophobia", "Spiders instakill you", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Arachnophobia(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //[Symptom("Crazy", "I was crazy once, they put me in a room", Symptom.SymptomType.Bad, 50)] // Everyone is wearing masks
+        //public static StatusEffect Crazy(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //[Symptom("Fresh Scent", "If circuit bees are triggered, they will hunt you down", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect FreshScent(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
         //[Symptom("Egg Face", "Sapsuckers attack on sight", Symptom.SymptomType.Bad, 50)]
         //public static StatusEffect EggFace(Disease disease)
         //{
@@ -509,22 +544,6 @@ namespace LethalDiseases.Symptoms
         //{
         //    throw new NotImplementedException();
         //}
-
-        [Symptom("Split Personality", "Randomly swap positions with a random player periodically", Symptom.SymptomType.Bad, 10)]
-        public static StatusEffect SplitPersonality(Disease disease)
-        {
-            return new RandomIntervalActionEffect(new BoundedRange(60, 500), () =>
-            {
-                if (disease.player != null)
-                {
-                    PlayerControllerB? randomPlayer = StartOfRound.Instance.allPlayerScripts.Where(x => x.isPlayerControlled).GetRandom();
-                    if (randomPlayer == null) { return; }
-                    Vector3 playerPosition = disease.player.transform.position;
-                    disease.player.TeleportPlayer(randomPlayer.transform.position);
-                    networkHandler.TeleportPlayerServerRpc(randomPlayer.actualClientId, playerPosition); // TODO: Test
-                }
-            }, disease.id, "Split Personality", disease.strengthTime, SetHighestDurationAndDeny);
-        }
 
         //[Symptom("Bald", "Looking at the infected player for too long will trigger a flashbang", Symptom.SymptomType.Bad, 50)]
         //public static StatusEffect Bald(Disease disease)
@@ -597,9 +616,20 @@ namespace LethalDiseases.Symptoms
         //    throw new NotImplementedException();
         //}
 
-        //[Symptom("Mood Swings", "Randomly increases and/or decreases each of your movement factors every 2 ingame hours", Symptom.SymptomType.Neutral, 50)]
+        //[Symptom("Mood Swings", "Randomly increases/decreases random stats every 2 ingame hours", Symptom.SymptomType.Neutral, 50)]
         //public static StatusEffect MoodSwings(Disease disease)
         //{
+        //    /*Mood Swings -Randomly increases and/ or decreases each of your movement factors every 2 ingame hours.
+        //    This includes:
+        //    Sprint Stamina
+        //    Jump Stamina
+        //    Walk Speed
+        //    Critical Speed
+        //    Crouch Speed
+        //    Sprint Speed
+        //    Water Speed
+        //    Jump Height
+        //    Item Weight Influence*/
         //    throw new NotImplementedException();
         //}
 
@@ -609,33 +639,18 @@ namespace LethalDiseases.Symptoms
         //    throw new NotImplementedException();
         //}
 
-        //[Symptom("Baculovirus", "Explode upon death, spread your disease to other players nearby", Symptom.SymptomType.Bad, 50)]
+        //[Symptom("Baculovirus", "", Symptom.SymptomType.Bad, 50)]
         //public static StatusEffect Baculovirus(Disease disease)
         //{
+        //    // baculovirus. It makes caterpillars explode to infect other caterpillars. (By making them go high to the light but going to ship might be easier for coding reasons.) Not sure how hard/bad that would be but it'd be a fun zombie option
         //    throw new NotImplementedException();
         //}
 
-        [Symptom("Dementia", "Randomly teleport to a location periodically", Symptom.SymptomType.Bad, 50)] // TODO: Make them drop an item before teleporting
-        public static StatusEffect Dementia(Disease disease)
-        {
-            return new RandomIntervalActionEffect(new BoundedRange(60, 500), () =>
-            {
-                if (disease.player == null) { return; }
-                GameObject? node = Utils.allAINodes.GetRandom(Utils.randomLocal);
-                if (node == null) { return; }
-                disease.player.TeleportPlayer(node.transform.position);
-            }, disease.id, "Dementia", disease.strengthTime, SetHighestDurationAndDeny);
-        }
-
-        [Symptom("Claustrophobia", "You fear being inside", Symptom.SymptomType.Bad, 50)]
-        public static StatusEffect Claustrophobia(Disease disease)
-        {
-            return new TickActionEffect(() =>
-            {
-                if (localPlayer.isInsideFactory)
-                    localPlayer.JumpToFearLevel(1f);
-            }, disease.id, "Claustrophobia", disease.strengthTime, SetHighestDurationAndDeny);
-        }
+        //[Symptom("Last Stand", "You kill the last thing that kills you", Symptom.SymptomType.Good, 50)]
+        //public static StatusEffect LastStand(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         //[Symptom("Cold Fluu", "You sneeze periodically, sneezing on other players slows them down", Symptom.SymptomType.Bad, 50)]
         //public static StatusEffect ColdFluu(Disease disease)
@@ -652,11 +667,18 @@ namespace LethalDiseases.Symptoms
         //[Symptom("Sponge Legs", "You make an annoying sound when you walk", Symptom.SymptomType.Neutral, 50)]
         //public static StatusEffect SpongeLegs(Disease disease)
         //{
+        //    // spongebob walking noises
         //    throw new NotImplementedException();
         //}
 
         //[Symptom("Parasite Link", "You and another player with this symptom are chained together", Symptom.SymptomType.Bad, 50)]
         //public static StatusEffect ParasiteLink(Disease disease)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //[Symptom("Parasite", "You are chained to another player", Symptom.SymptomType.Bad, 50)]
+        //public static StatusEffect Parasite(Disease disease)
         //{
         //    throw new NotImplementedException();
         //}
@@ -697,7 +719,7 @@ namespace LethalDiseases.Symptoms
         //    throw new NotImplementedException();
         //}
 
-        //[Symptom("Empyema", "Leave a trail of blood when you move", Symptom.SymptomType.Neutral, 50)]
+        //[Symptom("Empyema", "Leave a trail of slime when you move", Symptom.SymptomType.Neutral, 50)]
         //public static StatusEffect Empyema(Disease disease)
         //{
         //    throw new NotImplementedException();

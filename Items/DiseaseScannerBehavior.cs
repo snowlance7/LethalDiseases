@@ -9,7 +9,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class ScannerBehavior : PhysicsProp // TODO
+    internal class DiseaseScannerBehavior : PhysicsProp // TODO
     {
         public Animator animator = null!;
         public AudioClip scanSFX = null!;
