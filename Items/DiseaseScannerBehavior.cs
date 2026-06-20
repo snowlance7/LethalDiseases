@@ -24,7 +24,11 @@ namespace LethalDiseases.Items
         private int anomalyMask = 524296;
         private RaycastHit hit;
 
-        private bool isScanning;
+        Coroutine? scanRoutine;
+
+        const float scanDistance = 5f;
+        const float scanForwardOffset = 3f;
+        const bool bioOnly = false; // TODO
 
         public void Awake()
         {
@@ -62,52 +66,41 @@ namespace LethalDiseases.Items
             logger.LogDebug("ItemActivate");
             if (insertedBattery.empty) { return; }
 
-            SwitchFlashlight(on: true);
-            StartCoroutine(ScanGun());
+            SwitchFlashlight(true);
+            if (scanRoutine != null) { StopCoroutine(scanRoutine); }
+            scanRoutine = StartCoroutine(ScanGun());
         }
 
         private IEnumerator ScanGun()
         {
-            animator.SetTrigger("scan"); // TODO: Make this only sweep once and the analyzer sweeps multiple times
+            animator.SetTrigger("scan");
             audioSource.PlayOneShot(scanSFX);
+            bool foundDisease = false;
 
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 9; i++)
             {
                 if (base.IsOwner)
                 {
                     logger.LogDebug($"Scanning {i}");
-                    if (isPocketed)
+                    if (isPocketed || !isHeld)
                     {
                         yield break;
                     }
                     ray = new Ray(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * 3f, playerHeldBy.gameplayCamera.transform.forward);
-                    int num = Physics.SphereCastNonAlloc(ray, 5f, raycastHits, 5f, anomalyMask, QueryTriggerInteraction.Collide);
+                    int num = Physics.SphereCastNonAlloc(ray, scanDistance, raycastHits, scanDistance, anomalyMask, QueryTriggerInteraction.Collide);
                     raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
-                    for (int j = 0; j < num; j++)
+                    foreach (var hit in raycastHits)
                     {
-                        if (j >= raycastHits.Length)
-                        {
-                            continue;
-                        }
-                        hit = raycastHits[j];
-                        if (!(hit.transform == null) && hit.transform.gameObject.TryGetComponent<IShockableWithGun>(out var component) && component.CanBeShocked())
-                        {
-                            Vector3 shockablePosition = component.GetShockablePosition();
-                            //Debug.Log("Got shockable transform name : " + component.GetShockableTransform().gameObject.name);
-                            /*if (GunMeetsConditionsToShock(playerHeldBy, shockablePosition, 60f))
-                            {
-                                gunAudio.Stop();
-                                BeginShockingAnomalyOnClient(component);
-                                yield break;
-                            }*/
-                        }
+                        foundDisease |= hit.transform != null && hit.transform.gameObject.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.hasDisease && (diseaseHost.isActor || !bioOnly);
                     }
                 }
-                yield return new WaitForSeconds(0.125f);
+                yield return new WaitForSeconds(0.09375f);
             }
-            logger.LogDebug("Zap gun light off!!!");
-            SwitchFlashlight(on: false);
-            isScanning = false;
+            SwitchFlashlight(false);
+
+            animator.SetTrigger(foundDisease ? "detected" : "no_detected");
+
+            scanRoutine = null;
         }
 
         public void SwitchFlashlight(bool on)

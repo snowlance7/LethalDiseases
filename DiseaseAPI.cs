@@ -1,8 +1,10 @@
-﻿using SnowyLib;
+﻿using GameNetcodeStuff;
+using SnowyLib;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
+using Unity.Services.Authentication.Generated;
 using UnityEngine;
 using static LethalDiseases.Disease;
 using static LethalDiseases.Plugin;
@@ -11,73 +13,73 @@ namespace LethalDiseases
 {
     public static class DiseaseAPI
     {
-        public static void Infect(this NetworkObject target)
+        public static void Infect(this NetworkObject netObj)
         {
             Disease disease = Disease.CreateRandomDisease();
-            target.Infect(disease);
+            netObj.Infect(disease);
         }
 
-        public static void Infect(this NetworkObject target, Disease disease)
+        public static void Infect(this NetworkObject netObj, Disease disease)
         {
-            target.Infect(disease.id);
+            netObj.Infect(disease.id);
         }
 
-        public static void Infect(this NetworkObject target, string diseaseId)
+        public static void Infect(this NetworkObject netObj, string diseaseId)
         {
-            if (target.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
-            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(target, diseaseId);
+            if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
+            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(netObj, diseaseId);
         }
 
-        public static void TrySpread(this NetworkObject source, NetworkObject target, TransmissionType transmissionType)
+        public static void TrySpread(this NetworkObject source, NetworkObject netObj, TransmissionType transmissionType)
         {
             foreach (Disease disease in source.GetDiseases())
             {
-                disease.TrySpread(target, transmissionType);
+                disease.TrySpread(netObj, transmissionType);
             }
         }
 
-        public static void TrySpreadBetween(NetworkObject source1, NetworkObject source2, TransmissionType transmissionType)
+        public static void TrySpreadBetween(NetworkObject netObj1, NetworkObject netObj2, TransmissionType transmissionType)
         {
-            foreach (Disease disease in source1.GetDiseases())
+            foreach (Disease disease in netObj1.GetDiseases())
             {
-                disease.TrySpread(source2, transmissionType);
+                disease.TrySpread(netObj2, transmissionType);
             }
-            foreach (Disease disease in source2.GetDiseases())
+            foreach (Disease disease in netObj2.GetDiseases())
             {
-                disease.TrySpread(source1, transmissionType);
+                disease.TrySpread(netObj1, transmissionType);
             }
         }
 
-        public static bool HasDisease(this NetworkObject target)
+        public static bool HasDisease(this NetworkObject netObj)
         {
-            return target.GetDiseases().Count > 0;
+            return netObj.GetDiseases().Count > 0;
         }
 
-        public static List<Disease> GetDiseases(this NetworkObject target)
+        public static List<Disease> GetDiseases(this NetworkObject netObj)
         {
-            return target.GetHost().Diseases;
+            return netObj.GetHost().Diseases;
         }
 
-        public static List<Disease> GetImmuneDiseases(this NetworkObject target)
+        public static List<Disease> GetImmuneDiseases(this NetworkObject netObj)
         {
-            return target.GetHost().ImmuneDiseases;
+            return netObj.GetHost().ImmuneDiseases;
         }
 
-        public static List<string> GetDiseaseIds(this NetworkObject target)
+        public static List<string> GetDiseaseIds(this NetworkObject netObj)
         {
-            return target.GetHost().DiseaseIds;
+            return netObj.GetHost().DiseaseIds;
         }
 
-        public static List<string> GetImmuneDiseaseIds(this NetworkObject target)
+        public static List<string> GetImmuneDiseaseIds(this NetworkObject netObj)
         {
-            return target.GetHost().ImmuneDiseaseIds;
+            return netObj.GetHost().ImmuneDiseaseIds;
         }
 
-        internal static DiseaseHost GetHost(this NetworkObject target)
+        internal static DiseaseHost GetHost(this NetworkObject netObj)
         {
-            if (!target.TryGetComponent(out DiseaseHost host))
+            if (!netObj.TryGetComponent(out DiseaseHost host))
             {
-                host = target.gameObject.AddComponent<DiseaseHost>();
+                host = netObj.gameObject.AddComponent<DiseaseHost>();
             }
 
             return host;
@@ -126,7 +128,9 @@ namespace LethalDiseases
 
         public static void ClearDiseases(this NetworkObject networkObject, bool clearImmune = false)
         {
-            networkObject.GetDiseases().Clear();
+            foreach (var disease in networkObject.GetDiseases()) // TODO: Make sure this is correct when im not high
+                networkObject.RemoveDisease(disease);
+            //networkObject.GetDiseases().Clear();
             networkObject.GetDiseaseIds().Clear();
 
             if (!clearImmune) { return; }
