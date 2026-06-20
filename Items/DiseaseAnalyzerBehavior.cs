@@ -83,7 +83,7 @@ namespace LethalDiseases.Items
                     {
                         yield break;
                     }
-                    ray = new Ray(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * 3f, playerHeldBy.gameplayCamera.transform.forward);
+                    ray = new Ray(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * scanForwardOffset, playerHeldBy.gameplayCamera.transform.forward);
                     int num = Physics.SphereCastNonAlloc(ray, scanDistance, raycastHits, scanDistance, anomalyMask, QueryTriggerInteraction.Collide);
                     raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
                     foreach (var hit in raycastHits)
