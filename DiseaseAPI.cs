@@ -29,6 +29,13 @@ namespace LethalDiseases
             if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
             LethalDiseasesNetworkHandler.Instance.InfectServerRpc(netObj, diseaseId);
         }
+        // TODO: Make more helper methods like these
+        public static void Infect(this PlayerControllerB player) => player.NetworkObject.Infect();
+        public static void Infect(this PlayerControllerB player, Disease disease) => player.NetworkObject.Infect(disease);
+        public static void Infect(this PlayerControllerB player, string diseaseId) => player.NetworkObject.Infect(diseaseId);
+        public static void Infect(this EnemyAI enemy) => enemy.NetworkObject.Infect();
+        public static void Infect(this EnemyAI enemy, Disease disease) => enemy.NetworkObject.Infect(disease);
+        public static void Infect(this EnemyAI enemy, string diseaseId) => enemy.NetworkObject.Infect(diseaseId);
 
         public static void TrySpread(this NetworkObject source, NetworkObject netObj, TransmissionType transmissionType)
         {

@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.0071465066, y: -0.000000059604638, z: 0.000000029802319,
     w: 0.99997455}
-  m_LocalPosition: {x: 0.774, y: 3.032, z: 1.38}
+  m_LocalPosition: {x: 1.32, y: 4.35, z: 2.74}
   m_LocalScale: {x: 13.190253, y: 13.190255, z: 13.190254}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -304,8 +304,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.6984754, y: 5.143449, z: 3.1154122}
-  m_Center: {x: 0.93426716, y: 2.567566, z: -0.09151745}
+  m_Size: {x: 4.8202553, y: 6.56681, z: 3.4869807}
+  m_Center: {x: 0.37337753, y: 3.2792478, z: -0.27732214}
 --- !u!82 &8311318450867966356
 AudioSource:
   m_ObjectHideFlags: 0
@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Script: {fileID: 664994585, guid: f9398408ad59237449ac0239f51cda84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grabbable: 0
+  grabbable: 1
   isHeld: 0
   isHeldByEnemy: 0
   deactivated: 0
@@ -474,13 +474,13 @@ MonoBehaviour:
   isBeingUsed: 0
   isInElevator: 0
   isInShipRoom: 0
-  isInFactory: 1
+  isInFactory: 0
   useCooldown: 0
   currentUseCooldown: 0
-  itemProperties: {fileID: 0}
+  itemProperties: {fileID: 11400000, guid: 2ddcf030f49618c43b1d4b4f6750ae26, type: 2}
   insertedBattery:
     empty: 0
-    charge: 0
+    charge: 1
   customGrabTooltip: 
   propBody: {fileID: 0}
   propColliders: []
@@ -494,9 +494,11 @@ MonoBehaviour:
   grabbableToEnemies: 1
   hasBeenHeld: 0
   rotateObject: 0
-  animator: {fileID: 0}
-  audioSource: {fileID: 0}
-  screenObj: {fileID: 0}
+  animator: {fileID: 9042386489127764624}
+  audioSource: {fileID: 8311318450867966356}
+  screenObj: {fileID: 9102877931666473994}
+  scanNodePrefab: {fileID: 2592823695177655982, guid: 2a4e4216dee09be40b640737efd55d8f,
+    type: 3}
 --- !u!1 &367877892114865426
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,7 +516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4749354038688248628
 RectTransform:
   m_ObjectHideFlags: 0
@@ -687,7 +689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &803085846115281542
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1070,7 +1072,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000007450581, y: 0.7071068, z: 0.000000007450581, w: 0.7071068}
   m_LocalPosition: {x: 2.65, y: 0.0699998, z: -0.05}
-  m_LocalScale: {x: 0.12500001, y: 0.12500004, z: 0.12499999}
+  m_LocalScale: {x: 0.16, y: 0.16, z: 0.16}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4352305758276532202}
@@ -1190,7 +1192,7 @@ Transform:
   m_GameObject: {fileID: 4619400626506643188}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 2.5, z: 0}
+  m_LocalPosition: {x: -0.75, y: 3.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1348,7 +1350,7 @@ Transform:
   m_GameObject: {fileID: 5253585825416595380}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0034344813, y: 0.00038287166, z: -0.11079177, w: 0.99383765}
-  m_LocalPosition: {x: 0.829, y: 3.074, z: 1.82}
+  m_LocalPosition: {x: 1.34, y: 4.3, z: 3.15}
   m_LocalScale: {x: 13.190253, y: 13.190253, z: 13.190254}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1675,8 +1677,8 @@ Transform:
   m_GameObject: {fileID: 9102877931666473994}
   serializedVersion: 2
   m_LocalRotation: {x: -0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 2.568, y: 4.0403, z: -0.0609}
-  m_LocalScale: {x: 1.6154956, y: 1.83778, z: 1}
+  m_LocalPosition: {x: 2.568, y: 5.1409, z: -0.0896}
+  m_LocalScale: {x: 2.073265, y: 2.3620172, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4749354038688248628}

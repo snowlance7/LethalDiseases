@@ -17,3 +17,5 @@ MonoBehaviour:
     configName: General
   - assetBundleName: disease_scanner
     configName: Disease Scanner
+  - assetBundleName: disease_analyzer
+    configName: Disease Analyzer

@@ -16,8 +16,8 @@ MonoBehaviour:
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: disease_scanner
-  <Item>k__BackingField: {fileID: 11400000, guid: 54c465b66d395fa4dbea6f807a374c1f,
+    _key: disease_analyzer
+  <Item>k__BackingField: {fileID: 11400000, guid: 2ddcf030f49618c43b1d4b4f6750ae26,
     type: 2}
   <ShopItemPreset>k__BackingField:
     <OrderRequestNode>k__BackingField: {fileID: 0}
@@ -34,7 +34,7 @@ MonoBehaviour:
   <GenerateScrapConfig>k__BackingField: 0
   <IsShopItem>k__BackingField: 1
   <GenerateShopItemConfig>k__BackingField: 1
-  <Cost>k__BackingField: 10
+  <Cost>k__BackingField: 100
   <GenerateDisableUnlockConfig>k__BackingField: 1
   <GenerateDisablePricingStrategyConfig>k__BackingField: 1
   <MoonSpawnWeights>k__BackingField: 

@@ -4,7 +4,8 @@ using System.Text;
 
 namespace LethalDiseases.Items
 {
-    internal class BiosamplerBehavior
+    internal class BiosamplerBehavior : PhysicsProp
     {
+
     }
 }

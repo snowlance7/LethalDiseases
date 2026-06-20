@@ -2,5 +2,10 @@
   "LethalDiseasesEnemyKeys": {
     "__type": "DawnEnemyInfo",
     "ItFollowsEntity": "lethal_diseases:it_follows_entity"
+  },
+  "LethalDiseasesItemKeys": {
+    "__type": "DawnItemInfo",
+    "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
+    "DiseaseScanner": "lethal_diseases:disease_scanner"
   }
 }

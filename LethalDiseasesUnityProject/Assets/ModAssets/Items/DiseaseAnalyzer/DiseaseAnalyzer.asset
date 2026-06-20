@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DiseaseAnalyzer
   m_EditorClassIdentifier: 
   itemId: 0
-  itemName: Disease Scanner
+  itemName: Disease Analyzer
   spawnPositionTypes: []
   twoHanded: 0
   twoHandedAnimation: 0
@@ -26,12 +26,12 @@ MonoBehaviour:
   itemSpawnsOnGround: 1
   isConductiveMetal: 0
   isScrap: 0
-  creditsWorth: 10
+  creditsWorth: 100
   lockedInDemo: 0
   highestSalePercentage: 80
   maxValue: 0
   minValue: 0
-  spawnPrefab: {fileID: 7241272523599858075, guid: 646a5c6b3cf9909499bf0d783d67845b,
+  spawnPrefab: {fileID: 243153976822126711, guid: 9a4d9a054bdbfd84db8f80f872ace257,
     type: 3}
   requiresBattery: 1
   batteryUsage: 0.05
@@ -54,6 +54,8 @@ MonoBehaviour:
   isDefensiveWeapon: 0
   toolTips:
   - Scan [LMB]
+  - Scan Self [Q]
+  - Clear Nodes [E]
   verticalOffset: 0
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1

@@ -15,14 +15,18 @@ namespace LethalDiseases
         /*public class ItFollowsEntityAssets(DuskMod mod, string filePath) : AssetBundleLoader<ItFollowsEntityAssets>(mod, filePath) { }
         public ItFollowsEntityAssets? ItFollowsEntity;*/
 
-        public class ScannerAssets(DuskMod mod, string filePath) : AssetBundleLoader<ScannerAssets>(mod, filePath) { }
-        public ScannerAssets? Scanner;
+        public class DiseaseScannerAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseScannerAssets>(mod, filePath) { }
+        public DiseaseScannerAssets? DiseaseScanner;
+
+        public class DiseaseAnalyzerAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseAnalyzerAssets>(mod, filePath) { }
+        public DiseaseAnalyzerAssets? DiseaseAnalyzer;
 
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
             RegisterContent("networkhandler", out NetworkHandler);
             //RegisterContent("it_follows_entity", out ItFollowsEntity);
-            RegisterContent("disease_scanner", out Scanner);
+            RegisterContent("disease_scanner", out DiseaseScanner);
+            RegisterContent("disease_analyzer", out DiseaseAnalyzer);
         }
     }
 }

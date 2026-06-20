@@ -28,14 +28,15 @@ namespace LethalDiseases.Items
         const float scanDistance = 5f;
         const float scanForwardOffset = 3f;
 
-        public void Awake()
+        public void Awake() // 0.16
         {
-            itemProperties.positionOffset = new Vector3(0.08f, 0.19f, 0.05f);
-            itemProperties.rotationOffset = new Vector3(0, 100, -90);
+            itemProperties.positionOffset = new Vector3(-0.05f, 0.12f, 0.04f);
+            itemProperties.rotationOffset = new Vector3(0, 0, -90);
             itemProperties.floorYOffset = 0;
             itemProperties.syncGrabFunction = true;
             itemProperties.syncDiscardFunction = true;
             itemProperties.syncUseFunction = true;
+            itemProperties.grabAnim = "HoldPatcherTool";
         }
 
         public override void OnDestroy()
