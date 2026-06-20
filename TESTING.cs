@@ -48,7 +48,6 @@ namespace LethalDiseases
                 if (!Utils.testing) { return; }
                 string msg = __instance.chatTextField.text;
                 string[] args = msg.Split(" ");
-                Plugin.logger?.LogDebug(msg);
 
                 switch (args[0])
                 {

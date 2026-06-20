@@ -5,15 +5,15 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class DiseaseScannerBehavior : PhysicsProp // TODO
+    internal class DiseaseScannerBehavior : PhysicsProp // TODO: add scan self behavior
     {
         public Animator animator = null!;
         public AudioSource audioSource = null!;
         public GameObject screenObj = null!;
 
-        private Ray ray;
-        private RaycastHit[] raycastHits = [];
-        private int anomalyMask = 524296;
+        Ray ray;
+        RaycastHit[] raycastHits = [];
+        int anomalyMask = 524296;
 
         Coroutine? scanRoutine;
 
@@ -58,7 +58,7 @@ namespace LethalDiseases.Items
             scanRoutine = StartCoroutine(ScanGun());
         }
 
-        private IEnumerator ScanGun()
+        IEnumerator ScanGun()
         {
             animator.SetTrigger("scan");
             audioSource.Play();
