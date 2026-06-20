@@ -22,7 +22,7 @@ namespace LethalDiseases
         {
             RegisterContent("networkhandler", out NetworkHandler);
             //RegisterContent("it_follows_entity", out ItFollowsEntity);
-            RegisterContent("scanner", out Scanner);
+            RegisterContent("disease_scanner", out Scanner);
         }
     }
 }

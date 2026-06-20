@@ -16,18 +16,42 @@ namespace LethalDiseases.Items
         public AudioSource audioSource = null!;
         public Light flashlightBulb = null!;
         public Light flashlightBulbGlow = null!;
+        public GameObject screenObj = null!;
 
         private Ray ray;
         private RaycastHit[] raycastHits = [];
 
         private int anomalyMask = 524296;
         private RaycastHit hit;
+
         private bool isScanning;
 
         public void Awake()
         {
-            itemProperties.positionOffset = new Vector3();
-            itemProperties.rotationOffset = new Vector3();
+            itemProperties.positionOffset = new Vector3(0.08f, 0.19f, 0.05f);
+            itemProperties.rotationOffset = new Vector3(0, 100, -90);
+            itemProperties.floorYOffset = 0;
+            itemProperties.syncGrabFunction = true;
+            itemProperties.syncDiscardFunction = true;
+            itemProperties.syncUseFunction = true;
+        }
+
+        public override void PocketItem()
+        {
+            base.PocketItem();
+            screenObj.SetActive(false);
+        }
+
+        public override void DiscardItem()
+        {
+            base.DiscardItem();
+            screenObj.SetActive(false);
+        }
+
+        public override void EquipItem()
+        {
+            base.EquipItem();
+            screenObj.SetActive(true);
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -37,7 +61,6 @@ namespace LethalDiseases.Items
 
             logger.LogDebug("ItemActivate");
             if (insertedBattery.empty) { return; }
-
 
             SwitchFlashlight(on: true);
             StartCoroutine(ScanGun());
@@ -52,7 +75,7 @@ namespace LethalDiseases.Items
             {
                 if (base.IsOwner)
                 {
-                    logger.LogDebug("Scanning");
+                    logger.LogDebug($"Scanning {i}");
                     if (isPocketed)
                     {
                         yield break;
@@ -82,7 +105,7 @@ namespace LethalDiseases.Items
                 }
                 yield return new WaitForSeconds(0.125f);
             }
-            Debug.Log("Zap gun light off!!!");
+            logger.LogDebug("Zap gun light off!!!");
             SwitchFlashlight(on: false);
             isScanning = false;
         }

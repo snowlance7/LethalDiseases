@@ -27,3 +27,5 @@ ship upgrade that allows you to decontaminate the ship
 device that sprays a smoke cloud of an airborne disease
 handsanitizer that gives you x minutes of protection from contact diseases
 helmet filters that reset filters in your helmet (same ones the cadaver plants use), maybe the filter in players helmet also goes down around diseases and replacing them protects you 
+
+make ads and achievements!!!
