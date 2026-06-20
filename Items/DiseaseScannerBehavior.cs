@@ -1,9 +1,5 @@
-﻿using DigitalRuby.ThunderAndLightning;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
@@ -12,22 +8,18 @@ namespace LethalDiseases.Items
     internal class DiseaseScannerBehavior : PhysicsProp // TODO
     {
         public Animator animator = null!;
-        public AudioClip scanSFX = null!;
         public AudioSource audioSource = null!;
-        public Light flashlightBulb = null!;
-        public Light flashlightBulbGlow = null!;
         public GameObject screenObj = null!;
 
         private Ray ray;
         private RaycastHit[] raycastHits = [];
-
         private int anomalyMask = 524296;
 
         Coroutine? scanRoutine;
 
         const float scanDistance = 5f;
         const float scanForwardOffset = 3f;
-        const bool bioOnly = false; // TODO
+        const bool bioOnly = false; // TODO: Set up configs
 
         public void Awake()
         {
@@ -60,12 +52,8 @@ namespace LethalDiseases.Items
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             base.ItemActivate(used, buttonDown);
-            if (!buttonDown) { return; }
+            if (!buttonDown || insertedBattery.empty) { return; }
 
-            logger.LogDebug("ItemActivate");
-            if (insertedBattery.empty) { return; }
-
-            SwitchFlashlight(true);
             if (scanRoutine != null) { StopCoroutine(scanRoutine); }
             scanRoutine = StartCoroutine(ScanGun());
         }
@@ -73,7 +61,7 @@ namespace LethalDiseases.Items
         private IEnumerator ScanGun()
         {
             animator.SetTrigger("scan");
-            audioSource.PlayOneShot(scanSFX);
+            audioSource.Play();
             bool foundDisease = false;
 
             for (int i = 0; i < 9; i++)
@@ -95,17 +83,10 @@ namespace LethalDiseases.Items
                 }
                 yield return new WaitForSeconds(0.09375f);
             }
-            SwitchFlashlight(false);
 
-            animator.SetTrigger(foundDisease ? "detected" : "no_detected");
+            animator.SetTrigger(foundDisease ? "detected" : "not_detected"); // TODO: Fix colors
 
             scanRoutine = null;
-        }
-
-        public void SwitchFlashlight(bool on)
-        {
-            flashlightBulb.enabled = on;
-            flashlightBulbGlow.enabled = on;
         }
     }
 }

@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 145084428542316456}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.07581356, y: 0.07581355, z: 0.07581356}
   m_ConstrainProportionsScale: 1
@@ -39,7 +39,7 @@ Transform:
   - {fileID: 7974263488572005363}
   - {fileID: 1511204990415239957}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1396860238135468279
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72,7 +72,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300008, guid: 64b08a5192e203847bb952b79319ef18,
     type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 240029d10bf60cb4492dc48ae1364ec9, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -397,7 +397,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bcedb96c286340f4a8a9b6bf85e333dd, type: 2}
+  - {fileID: 2100000, guid: dbb66fddead6b8d4d9824484ea15d53b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -445,8 +445,8 @@ MonoBehaviour:
 
     detected'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2ccd45ab41b91de44ad05f79062bdde6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: bcedb96c286340f4a8a9b6bf85e333dd, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: cd10a6fd99b5abd45b4edddf384a97aa, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: dbb66fddead6b8d4d9824484ea15d53b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1066,7 +1066,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bcedb96c286340f4a8a9b6bf85e333dd, type: 2}
+  - {fileID: 2100000, guid: 8a577bb48d2603a498b7a8924b6cdcb1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1112,8 +1112,8 @@ MonoBehaviour:
 
     detected'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2ccd45ab41b91de44ad05f79062bdde6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: bcedb96c286340f4a8a9b6bf85e333dd, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: cd10a6fd99b5abd45b4edddf384a97aa, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 8a577bb48d2603a498b7a8924b6cdcb1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

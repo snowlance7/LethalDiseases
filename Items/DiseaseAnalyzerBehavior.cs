@@ -1,9 +1,5 @@
-﻿using DigitalRuby.ThunderAndLightning;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
@@ -12,19 +8,14 @@ namespace LethalDiseases.Items
     internal class DiseaseAnalyzerBehavior : PhysicsProp // TODO
     {
         public Animator animator = null!;
-        public AudioClip scanSFX = null!;
         public AudioSource audioSource = null!;
-        public Light flashlightBulb = null!;
-        public Light flashlightBulbGlow = null!;
         public GameObject screenObj = null!;
 
-        private Ray ray;
-        private RaycastHit[] raycastHits = [];
+        Ray ray;
+        RaycastHit[] raycastHits = [];
+        int anomalyMask = 524296;
 
-        private int anomalyMask = 524296;
-        private RaycastHit hit;
-
-        private bool isScanning;
+        Coroutine? scanRoutine;
 
         const float scanDistance = 5f;
         const float scanForwardOffset = 3f;
@@ -60,26 +51,23 @@ namespace LethalDiseases.Items
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             base.ItemActivate(used, buttonDown);
-            if (!buttonDown) { return; }
+            if (!buttonDown || insertedBattery.empty) { return; }
 
-            logger.LogDebug("ItemActivate");
-            if (insertedBattery.empty) { return; }
-
-            SwitchFlashlight(on: true);
-            StartCoroutine(ScanGun());
+            if (scanRoutine != null) { StopCoroutine(scanRoutine); }
+            scanRoutine = StartCoroutine(ScanGun());
         }
 
         private IEnumerator ScanGun()
         {
-            animator.SetTrigger("scan"); // TODO: Make this only sweep once and the analyzer sweeps multiple times
-            audioSource.PlayOneShot(scanSFX);
+            animator.SetTrigger("scan");
+            audioSource.Play();
 
             for (int i = 0; i < 12; i++)
             {
                 if (base.IsOwner)
                 {
                     logger.LogDebug($"Scanning {i}");
-                    if (isPocketed)
+                    if (isPocketed || !isHeld)
                     {
                         yield break;
                     }
@@ -88,24 +76,16 @@ namespace LethalDiseases.Items
                     raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
                     foreach (var hit in raycastHits)
                     {
-                        if (hit.transform != null && hit.transform.gameObject.TryGetComponent<DiseaseHost>(out var component))
+                        if (hit.transform != null && hit.transform.gameObject.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.hasDisease)
                         {
-                            //Vector3 shockablePosition = component.GetShockablePosition();
 
                         }
                     }
                 }
                 yield return new WaitForSeconds(0.125f);
             }
-            logger.LogDebug("Zap gun light off!!!");
-            SwitchFlashlight(on: false);
-            isScanning = false;
-        }
 
-        public void SwitchFlashlight(bool on)
-        {
-            flashlightBulb.enabled = on;
-            flashlightBulbGlow.enabled = on;
+            scanRoutine = null;
         }
     }
 }
