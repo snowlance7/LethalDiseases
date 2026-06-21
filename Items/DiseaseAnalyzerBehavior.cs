@@ -21,7 +21,8 @@ namespace LethalDiseases.Items
 
         Ray ray;
         RaycastHit[] raycastHits = [];
-        int anomalyMask = 524296;
+
+        int mask;
 
         Coroutine? scanRoutine;
 
@@ -37,6 +38,12 @@ namespace LethalDiseases.Items
             itemProperties.syncDiscardFunction = true;
             itemProperties.syncUseFunction = true;
             itemProperties.grabAnim = "HoldPatcherTool";
+        }
+
+        public override void Start()
+        {
+            base.Start();
+            mask = Utils.CreateMask("Props", "InteractableObject", "Enemies", "Player"); // TODO: Test this
         }
 
         public override void OnDestroy()
@@ -83,7 +90,7 @@ namespace LethalDiseases.Items
             if (right) // E: Clear disease scan nodes TODO
             {
                 logger.LogDebug("Clearing disease scan nodes");
-
+                ClearScanNodes();
             }
             else // Q: Scan self TODO
             {
@@ -116,7 +123,7 @@ namespace LethalDiseases.Items
                         yield break;
                     }
                     ray = new Ray(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * scanForwardOffset, playerHeldBy.gameplayCamera.transform.forward);
-                    int num = Physics.SphereCastNonAlloc(ray, scanDistance, raycastHits, scanDistance, anomalyMask, QueryTriggerInteraction.Collide);
+                    int num = Physics.SphereCastNonAlloc(ray, scanDistance, raycastHits, scanDistance, mask, QueryTriggerInteraction.Collide);
                     raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
                     foreach (var hit in raycastHits)
                     {
@@ -163,6 +170,7 @@ namespace LethalDiseases.Items
 
         void ClearScanNodes() // TODO: Test this and make sure it clears up scan nodes correctly and doesnt give any errors
         {
+            if (previousPlayerHeldBy != localPlayer) { return; }
             if (diseaseScanNodes.Count <= 0) { return; }
 
             foreach (var node in diseaseScanNodes)

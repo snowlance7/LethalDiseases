@@ -139,7 +139,7 @@ namespace LethalDiseases
                         disease = Disease.CreateRandomDisease();
                         if (now) { disease.latency = 0; }
                         localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
-                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.id}");
+                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.id}");
                         return;
                     }
 
