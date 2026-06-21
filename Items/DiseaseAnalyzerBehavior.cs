@@ -12,7 +12,7 @@ namespace LethalDiseases.Items
     {
         public Animator animator = null!;
         public AudioSource audioSource = null!;
-        public GameObject screenObj = null!;
+        public MeshRenderer screenRenderer = null!;
         public GameObject scanNodePrefab = null!;
 
         List<DiseaseScanNode> diseaseScanNodes = new List<DiseaseScanNode>();
@@ -46,6 +46,12 @@ namespace LethalDiseases.Items
             mask = Utils.CreateMask("Props", "InteractableObject", "Enemies", "Player"); // TODO: Test this
         }
 
+        public override void Update()
+        {
+            base.Update();
+            //localPlayer.LineOfSightToPositionAngle
+        }
+
         public override void OnDestroy()
         {
             ClearScanNodes();
@@ -55,7 +61,7 @@ namespace LethalDiseases.Items
         public override void PocketItem()
         {
             base.PocketItem();
-            screenObj.SetActive(false);
+            screenRenderer.enabled = false;
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
             {
                 previousPlayerHeldBy.equippedUsableItemQE = false;
@@ -66,7 +72,7 @@ namespace LethalDiseases.Items
         public override void DiscardItem()
         {
             base.DiscardItem();
-            screenObj.SetActive(false);
+            screenRenderer.enabled = false;
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
             {
                 previousPlayerHeldBy.equippedUsableItemQE = false;
@@ -77,7 +83,7 @@ namespace LethalDiseases.Items
         public override void EquipItem()
         {
             base.EquipItem();
-            screenObj.SetActive(true);
+            screenRenderer.enabled = true;
             previousPlayerHeldBy = playerHeldBy;
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
                 previousPlayerHeldBy.equippedUsableItemQE = true;
@@ -93,7 +99,7 @@ namespace LethalDiseases.Items
             else // Q: Scan self TODO
             {
                 logger.LogDebug("Scanning self");
-
+                // TODO: Add seperate ui for this
             }
         }
 
@@ -127,6 +133,7 @@ namespace LethalDiseases.Items
                     {
                         if (hit.transform != null && hit.transform.gameObject.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.hasDisease)
                         {
+                            logger.LogDebug("Creating scan node");
                             CreateScanNode(diseaseHost);
                         }
                     }
@@ -161,6 +168,7 @@ namespace LethalDiseases.Items
             scanNode.headerText = "Infected";
             scanNode.subText = diseaseHost.Diseases.Count > 1 ? $"{diseaseHost.Diseases.Count} diseases detected" : "1 disease detected";
 
+            HUDManager.Instance.AttemptScanNode(scanNode, -1, localPlayer);
             HUDManager.Instance.nodesOnScreen.Add(scanNode);
             HUDManager.Instance.AssignNodeToUIElement(scanNode);
             diseaseScanNodes.Add(new DiseaseScanNode(diseaseHost, scanNode));
