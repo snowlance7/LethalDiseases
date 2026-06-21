@@ -168,7 +168,7 @@ namespace LethalDiseases.Items
             scanNode.headerText = "Infected";
             scanNode.subText = diseaseHost.Diseases.Count > 1 ? $"{diseaseHost.Diseases.Count} diseases detected" : "1 disease detected";
 
-            HUDManager.Instance.AttemptScanNode(scanNode, -1, localPlayer);
+            //HUDManager.Instance.AttemptScanNode(scanNode, -1, localPlayer);
             HUDManager.Instance.nodesOnScreen.Add(scanNode);
             HUDManager.Instance.AssignNodeToUIElement(scanNode);
             diseaseScanNodes.Add(new DiseaseScanNode(diseaseHost, scanNode));
