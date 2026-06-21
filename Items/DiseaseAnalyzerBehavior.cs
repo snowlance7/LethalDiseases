@@ -85,8 +85,6 @@ namespace LethalDiseases.Items
 
         public override void ItemInteractLeftRight(bool right)
         {
-            base.ItemInteractLeftRight(right);
-
             if (right) // E: Clear disease scan nodes TODO
             {
                 logger.LogDebug("Clearing disease scan nodes");
