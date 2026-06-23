@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2087809043680376837}
   - component: {fileID: 618665810559128620}
   - component: {fileID: 7519893774554688052}
+  - component: {fileID: 2908925401256803321}
   m_Layer: 22
   m_Name: DiseaseScanNode
   m_TagString: DoNotSet
@@ -74,3 +75,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2908925401256803321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592823695177655982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -2079590016, guid: f9398408ad59237449ac0239f51cda84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scanNode: {fileID: 618665810559128620}
+  collider: {fileID: 7519893774554688052}
+  diseaseHost: {fileID: 0}
+  parentCollider: {fileID: 0}
+  elementIndex: 0

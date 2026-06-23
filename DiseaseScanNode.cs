@@ -14,8 +14,8 @@ namespace LethalDiseases
         public ScanNodeProperties scanNode = null!; // TODO: Hook up in unity
         public Collider collider = null!;
 
-        public DiseaseHost diseaseHost = null!;
-        public Collider parentCollider = null!;
+        [HideInInspector] public DiseaseHost diseaseHost = null!;
+        [HideInInspector] public Collider parentCollider = null!;
 
         public int elementIndex;
 
