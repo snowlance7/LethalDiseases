@@ -290,7 +290,7 @@ namespace LethalDiseases
         static void StartOfRound_Awake_PostFix()
         {
             if (!IsServerOrHost) { return; }
-            var networkHandlerHost = UnityEngine.Object.Instantiate(LethalDiseasesContentHandler.Instance.NetworkHandler?.NetworkHandlerPrefab, Vector3.zero, Quaternion.identity);
+            var networkHandlerHost = UnityEngine.Object.Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets?.NetworkHandlerPrefab, Vector3.zero, Quaternion.identity);
             networkHandlerHost?.GetComponent<NetworkObject>().Spawn();
         }
     }

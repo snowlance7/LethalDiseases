@@ -15,19 +15,17 @@ namespace LethalDiseases.Items
         public MeshRenderer screenRenderer = null!;
         public GameObject scanNodePrefab = null!;
 
-        List<DiseaseScanNode> diseaseScanNodes = new List<DiseaseScanNode>();
-
         PlayerControllerB previousPlayerHeldBy = null!;
 
-        Ray ray;
-        RaycastHit[] raycastHits = [];
-
-        int mask;
+        int mask = 524872; // Props, InteractableObject, Enemies, Player
 
         Coroutine? scanRoutine;
 
-        const float scanDistance = 5f;
-        const float scanForwardOffset = 3f;
+        const float scanRadius = 5f;
+        const float scanDistance = 10f;
+        const float scanForwardOffset = 1f;//3f;
+        const int maxScanNodes = 10;
+        const int anomalyMask = 524296;
 
         public void Awake()
         {
@@ -38,12 +36,7 @@ namespace LethalDiseases.Items
             itemProperties.syncDiscardFunction = true;
             itemProperties.syncUseFunction = true;
             itemProperties.grabAnim = "HoldPatcherTool";
-        }
-
-        public override void Start()
-        {
-            base.Start();
-            mask = Utils.CreateMask("Props", "InteractableObject", "Enemies", "Player"); // TODO: Test this
+            grabbableToEnemies = false;
         }
 
         public override void Update()
@@ -54,7 +47,7 @@ namespace LethalDiseases.Items
 
         public override void OnDestroy()
         {
-            ClearScanNodes();
+            DiseaseScanNode.ClearScanNodesOnScreen();
             base.OnDestroy();
         }
 
@@ -65,7 +58,7 @@ namespace LethalDiseases.Items
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
             {
                 previousPlayerHeldBy.equippedUsableItemQE = false;
-                ClearScanNodes();
+                DiseaseScanNode.ClearScanNodesOnScreen();
             }
         }
 
@@ -76,7 +69,7 @@ namespace LethalDiseases.Items
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
             {
                 previousPlayerHeldBy.equippedUsableItemQE = false;
-                ClearScanNodes();
+                DiseaseScanNode.ClearScanNodesOnScreen();
             }
         }
 
@@ -94,7 +87,7 @@ namespace LethalDiseases.Items
             if (right) // E: Clear disease scan nodes TODO
             {
                 logger.LogDebug("Clearing disease scan nodes");
-                ClearScanNodes();
+                DiseaseScanNode.ClearScanNodesOnScreen();
             }
             else // Q: Scan self TODO
             {
@@ -108,6 +101,7 @@ namespace LethalDiseases.Items
             base.ItemActivate(used, buttonDown);
             if (!buttonDown || insertedBattery.empty) { return; }
 
+            DiseaseScanNode.ClearScanNodesOnScreen();
             if (scanRoutine != null) { StopCoroutine(scanRoutine); }
             scanRoutine = StartCoroutine(ScanGun());
         }
@@ -117,85 +111,31 @@ namespace LethalDiseases.Items
             animator.SetTrigger("scan");
             audioSource.Play();
 
+            RaycastHit[] raycastHits = new RaycastHit[maxScanNodes];
+
             for (int i = 0; i < 12; i++)
             {
                 if (base.IsOwner)
                 {
-                    logger.LogDebug($"Scanning {i}");
-                    if (isPocketed || !isHeld)
-                    {
-                        yield break;
-                    }
-                    ray = new Ray(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * scanForwardOffset, playerHeldBy.gameplayCamera.transform.forward);
-                    int num = Physics.SphereCastNonAlloc(ray, scanDistance, raycastHits, scanDistance, mask, QueryTriggerInteraction.Collide);
-                    raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
-                    foreach (var hit in raycastHits)
-                    {
-                        if (hit.transform != null && hit.transform.gameObject.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.hasDisease)
-                        {
-                            logger.LogDebug("Creating scan node");
-                            CreateScanNode(diseaseHost);
-                        }
-                    }
+                    if (isPocketed || !isHeld) { yield break; }
+                    DiseaseScanNode.EnableColliders(true);
+                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, mask);
+                    DiseaseScanNode.EnableColliders(false);
+                    logger.LogDebug($"Scanning {i}: {hitCount} hits");
                 }
                 yield return new WaitForSeconds(0.125f);
             }
 
+            foreach (var hit in raycastHits)
+            {
+                //if (hit.transform != null) { logger.LogDebug(hit.transform.name); }
+                if (hit.transform != null && hit.collider.transform.root.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.player != playerHeldBy && diseaseHost.hasDisease)
+                {
+                    diseaseHost.diseaseScanNode?.SetScanNode((int)scanDistance * 2);
+                }
+            }
+
             scanRoutine = null;
         }
-
-        void CreateScanNode(DiseaseHost diseaseHost) // TODO: Make it so each scan node just shows "Infected", "x diseases detected" and when you look at it when holding the scanner it shows more info about that node on the analyzer screen
-        {
-            Transform parentTo;
-            if (diseaseHost.player != null)
-            {
-                parentTo = diseaseHost.player.bodyParts[5];
-            }
-            else
-            {
-                parentTo = diseaseHost.gameObject.TryGetComponentInChildren(out ScanNodeProperties? hostNode) && hostNode != null ? hostNode.transform : diseaseHost.transform;
-            }
-
-            GameObject scanNodeObj = Instantiate(scanNodePrefab, parentTo);
-
-            ScanNodeProperties scanNode = scanNodeObj.GetComponent<ScanNodeProperties>();
-            scanNode.maxRange = (int)scanDistance * 2;
-            scanNode.minRange = 1;
-            scanNode.requiresLineOfSight = true;
-            scanNode.scrapValue = 0;
-            scanNode.creatureScanID = -1;
-            scanNode.nodeType = 1;
-            scanNode.headerText = "Infected";
-            scanNode.subText = diseaseHost.Diseases.Count > 1 ? $"{diseaseHost.Diseases.Count} diseases detected" : "1 disease detected";
-
-            //HUDManager.Instance.AttemptScanNode(scanNode, -1, localPlayer);
-            HUDManager.Instance.nodesOnScreen.Add(scanNode);
-            HUDManager.Instance.AssignNodeToUIElement(scanNode);
-            diseaseScanNodes.Add(new DiseaseScanNode(diseaseHost, scanNode));
-        }
-
-        void ClearScanNodes() // TODO: Test this and make sure it clears up scan nodes correctly and doesnt give any errors
-        {
-            if (previousPlayerHeldBy != localPlayer) { return; }
-            if (diseaseScanNodes.Count <= 0) { return; }
-
-            foreach (var node in diseaseScanNodes)
-            {
-                if (node.scanNode == null || node.scanNode.gameObject == null) { continue; }
-
-                //HUDManager.Instance.nodesOnScreen.Remove(node.scanNode);
-                //HUDManager.Instance.scanNodes.valu
-
-                Destroy(node.scanNode.gameObject);
-            }
-
-            diseaseScanNodes.Clear();
-        }
-    }
-
-    public class DiseaseScanNode(DiseaseHost diseaseHost, ScanNodeProperties scanNode)
-    {
-        public DiseaseHost diseaseHost = diseaseHost;
-        public ScanNodeProperties scanNode = scanNode;
     }
 }

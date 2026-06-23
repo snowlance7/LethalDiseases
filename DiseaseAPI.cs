@@ -95,18 +95,9 @@ namespace LethalDiseases
         public static void AddDisease(this NetworkObject networkObject, Disease disease)
         {
             logger?.LogDebug($"Trying to add disease to networkObject with id {networkObject.GetInstanceID()} with disease {disease.name}:{disease.id}");
-            if (networkObject.GetImmuneDiseases().Contains(disease)) { return; }
 
-            disease.Init(networkObject);
-
-            logger?.LogDebug($"Infected {disease.GetInfectedName()} with disease {disease.name}:{disease.id}");
-
-            string id = disease.id;
-
-            networkObject.GetDiseaseIds().Add(id);
-            networkObject.GetImmuneDiseaseIds().Add(id);
-            networkObject.GetDiseases().Add(disease);
-            networkObject.GetImmuneDiseases().Add(disease);
+            DiseaseHost host = networkObject.GetHost();
+            host.AddDisease(disease);
         }
 
         public static void AddDisease(this NetworkObject networkObject, string diseaseId)

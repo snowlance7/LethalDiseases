@@ -78,7 +78,7 @@ namespace LethalDiseases.Items
                     raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
                     foreach (var hit in raycastHits)
                     {
-                        foundDisease |= hit.transform != null && hit.transform.gameObject.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.hasDisease && (diseaseHost.isActor || !bioOnly);
+                        foundDisease |= hit.transform != null && hit.transform.gameObject.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.hasDisease && (diseaseHost.hasActor || !bioOnly);
                     }
                 }
                 yield return new WaitForSeconds(0.09375f);

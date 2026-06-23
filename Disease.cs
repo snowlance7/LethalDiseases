@@ -14,25 +14,26 @@ namespace LethalDiseases
     public class Disease : IEquatable<Disease>
     {
         public static Dictionary<string, string> namedDiseases = new Dictionary<string, string>();
+        string _id = string.Empty;
         public string id { get { return GetID(); } }
         public string name { get { return namedDiseases.TryGetValue(id, out string _name) ? _name : "???"; } }
 
         // How long it lasts
-        public float strength;
+        public float strength { get; internal set; }
         public float strengthTime => Mathf.Lerp(strengthRange.Value.Min, strengthRange.Value.Max, strength);
 
         // How long it lasts outside the player
-        public float stability;
+        public float stability { get; internal set; }
         public float stabilityTime => Mathf.Lerp(stabilityRange.Value.Min, stabilityRange.Value.Max, stability);
 
         // How long it takes for the symptoms to show up
-        public float latency;
+        public float latency { get; internal set; }
         public float latencyTime => Mathf.Lerp(latencyRange.Value.Min, latencyRange.Value.Max, latency);
 
         // Likelyhood it will transmit based on transmission type
-        public float transmissibility;
+        public float transmissibility { get; internal set; }
 
-        public TransmissionType transmissionType;
+        public TransmissionType transmissionType { get; private set; }
 
         [System.Flags]
         public enum TransmissionType
@@ -43,6 +44,12 @@ namespace LethalDiseases
             Foodborne = 1 << 3 // 8 // TODO
         }
 
+        public NetworkObject? networkObject => host?.networkObject;
+        public PlayerControllerB? player => host?.player;
+        public EnemyAI? enemy => host?.enemy;
+
+        public bool hasActor => host != null && host.hasActor;
+
         public int[] symptoms = [];
 
         bool isActive;
@@ -52,34 +59,9 @@ namespace LethalDiseases
 
         public float nextPeriodicTriggerTime;
 
-        public NetworkObject networkObject { get; private set; } = null!;
-        public PlayerControllerB? player { get; private set; }
-        public EnemyAI? enemy { get; private set; }
-        internal SteamValveHazard? steamValve { get; private set; }
+        public DiseaseHost? host;
 
         Collider[] airborneColliders = []; // TODO: Test this
-
-        public bool hasActor => enemy != null || player != null;
-
-        internal void Init(NetworkObject netObj)
-        {
-            networkObject = netObj;
-            player = netObj.gameObject.GetComponent<PlayerControllerB>();
-            enemy = netObj.gameObject.GetComponent<EnemyAI>();
-            steamValve = netObj.gameObject.GetComponent<SteamValveHazard>();
-        }
-
-        public string GetInfectedName()
-        {
-            if (player != null)
-                return player.playerUsername;
-            else if (enemy != null)
-                return enemy.enemyType.enemyName;
-            else if (networkObject != null)
-                return networkObject.gameObject.name;
-
-            return "";
-        }
 
         internal static Disease CreateRandomDisease()
         {
@@ -217,7 +199,7 @@ namespace LethalDiseases
         {
             if (transmissionType.HasFlag(TransmissionType.Airborne) && spreadTransmissionType.HasFlag(TransmissionType.Airborne))
             {
-                if (hasActor)
+                if (host != null && host.hasActor)
                 {
                     if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
                         _networkObject.Infect(this);
@@ -245,35 +227,35 @@ namespace LethalDiseases
             elapsedTime += deltaTime;
             timeSinceSpreadUpdate += deltaTime;
 
-            if (networkObject == null)
+            if (host == null)
                 return;
 
-            float lifeTime = hasActor ? strengthTime : stabilityTime;
+            float lifeTime = host.hasActor ? strengthTime : stabilityTime;
 
             // Remove disease if expired
             if (elapsedTime > lifeTime)
             {
-                networkObject.RemoveDisease(this);
+                host.networkObject.RemoveDisease(this);
                 return;
             }
 
             // Activation handling
-            if (hasActor && !isActive)
+            if (host.hasActor && !isActive)
             {
                 if (elapsedTime > latencyTime)
                 {
                     elapsedTime = 0;
                     isActive = true;
 
-                    if (player != null)
+                    if (host.player != null)
                     {
-                        if (localPlayer == player)
+                        if (localPlayer == host.player)
                         {
                             foreach (var symptomIndex in symptoms)
                             {
                                 logger?.LogDebug($"Activating symptom at index {symptomIndex}");
                                 var effect = Symptom.symptomList[symptomIndex].effect(this);
-                                networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
+                                host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
                             }
                         }
                     }
@@ -282,7 +264,7 @@ namespace LethalDiseases
                         for (int i = 0; i < symptoms.Length; i++)
                         {
                             var effect = Symptom.symptomList[symptoms[i]].effect(this);
-                            networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
+                            host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
                         }
                     }
                 }
@@ -295,11 +277,11 @@ namespace LethalDiseases
 
                 if (transmissionType.HasFlag(TransmissionType.Airborne))
                 {
-                    Vector3 origin = hasActor ? networkObject.transform.position : (steamValve != null ? steamValve.valveAudio.transform.position : Vector3.zero); // TODO: Test this
+                    Vector3 origin = host.hasActor ? host.networkObject.transform.position : (host.steamValve != null ? host.steamValve.valveAudio.transform.position : Vector3.zero); // TODO: Test this
 
                     if (origin == Vector3.zero) { return; }
 
-                    float radius = hasActor ? airborneSpreadRange.Value : 10f;
+                    float radius = host.hasActor ? airborneSpreadRange.Value : 10f;
 
                     TrySpreadAirborne(origin, radius, 0.5f);
                 }
@@ -308,7 +290,7 @@ namespace LethalDiseases
 
         internal void TrySpreadAirborne(Vector3 origin, float radius = default, float multiplier = 1)
         {
-            if (!hasActor) { return; }
+            if (!host.hasActor) { return; }
 
             radius = radius == default ? airborneSpreadRange.Value : radius;
 

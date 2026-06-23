@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LethalDiseasesContentContainer
   m_EditorClassIdentifier: 
   assetBundles:
-  - assetBundleName: networkhandler
+  - assetBundleName: disease_assets
     configName: General
   - assetBundleName: disease_scanner
     configName: Disease Scanner

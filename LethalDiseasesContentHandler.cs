@@ -5,15 +5,15 @@ namespace LethalDiseases
 {
     public class LethalDiseasesContentHandler : ContentHandler<LethalDiseasesContentHandler>
     {
-        public class NetworkHandlerAssets(DuskMod mod, string filePath) : AssetBundleLoader<NetworkHandlerAssets>(mod, filePath)
+        public class DiseaseAssetsAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseAssetsAssets>(mod, filePath)
         {
             [LoadFromBundle("LethalDiseasesNetworkHandler.prefab")]
             public GameObject NetworkHandlerPrefab { get; private set; } = null!;
-        }
-        public NetworkHandlerAssets? NetworkHandler;
 
-        /*public class ItFollowsEntityAssets(DuskMod mod, string filePath) : AssetBundleLoader<ItFollowsEntityAssets>(mod, filePath) { }
-        public ItFollowsEntityAssets? ItFollowsEntity;*/
+            [LoadFromBundle("DiseaseScanNode.prefab")]
+            public GameObject DiseaseScanNodePrefab { get; private set; } = null!;
+        }
+        public DiseaseAssetsAssets? DiseaseAssets;
 
         public class DiseaseScannerAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseScannerAssets>(mod, filePath) { }
         public DiseaseScannerAssets? DiseaseScanner;
@@ -23,8 +23,7 @@ namespace LethalDiseases
 
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
-            RegisterContent("networkhandler", out NetworkHandler);
-            //RegisterContent("it_follows_entity", out ItFollowsEntity);
+            RegisterContent("disease_assets", out DiseaseAssets);
             RegisterContent("disease_scanner", out DiseaseScanner);
             RegisterContent("disease_analyzer", out DiseaseAnalyzer);
         }

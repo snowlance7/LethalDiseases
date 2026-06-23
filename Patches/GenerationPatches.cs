@@ -13,38 +13,15 @@ namespace LethalDiseases.Patches
     internal static class GenerationPatches
     {
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GeneratedFloorPostProcessing))]
-        static void RoundManager_GeneratedFloorPostProcessing_Postfix(RoundManager __instance) // TODO: Not finding objects? use on ship landed?
+        [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.Start))]
+        static void EnemyAI_Start_Postfix(EnemyAI __instance)
         {
             try
             {
-                if (!__instance.IsServer) { return; }
-                if (TESTING.disableDiseaseSpawning) { return; }
+                if (!__instance.IsServer || TESTING.disableDiseaseSpawning) { return; }
 
-                logger?.LogDebug("Started generating diseases for level");
-
-                // SteamValveHazard
-                logger?.LogDebug("Generating diseases for SteamValveHazard");
-                SteamValveHazard[] valves = GameObject.FindObjectsOfType<SteamValveHazard>();
-                foreach (var valve in valves)
-                {
-                    if (UnityEngine.Random.Range(0f, 1f) < steamDiseaseChance.Value)
-                    {
-                        valve.fixInteract.NetworkObject.Infect();
-                    }
-                }
-
-                // Grabbable Objects
-                logger?.LogDebug("Generating diseases for spawned scrap");
-                List<GrabbableObject> spawnedScrap = GameObject.FindObjectsOfType<GrabbableObject>().ToList();
-                foreach (var scrap in spawnedScrap)
-                {
-                    if (!scrap.isInFactory || scrap.isInShipRoom) { continue; }
-                    if (UnityEngine.Random.Range(0f, 1f) < scrapDiseaseChance.Value)
-                    {
-                        scrap.NetworkObject.Infect();
-                    }
-                }
+                if (UnityEngine.Random.Range(0f, 1f) < monsterDiseaseChance.Value)
+                    __instance.NetworkObject.Infect();
             }
             catch (System.Exception e)
             {
@@ -54,15 +31,34 @@ namespace LethalDiseases.Patches
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.Start))]
-        static void EnemyAI_Start_Postfix(EnemyAI __instance)
+        [HarmonyPatch(typeof(SteamValveFixInteraction), nameof(SteamValveFixInteraction.OnNetworkSpawn))]
+        static void SteamValveFixInteraction_OnNetworkSpawn_Postfix(SteamValveFixInteraction __instance)
         {
             try
             {
-                if (!__instance.IsServer) { return; }
-                if (TESTING.disableDiseaseSpawning) { return; }
+                if (!__instance.IsServer || TESTING.disableDiseaseSpawning) { return; }
 
-                if (UnityEngine.Random.Range(0f, 1f) < monsterDiseaseChance.Value)
+                if (UnityEngine.Random.Range(0f, 1f) < steamDiseaseChance.Value)
+                    __instance.NetworkObject.Infect();
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e);
+                return;
+            }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.Start))]
+        static void GrabbableObject_Start_Postfix(GrabbableObject __instance)
+        {
+            try
+            {
+                if (!__instance.IsServer || TESTING.disableDiseaseSpawning) { return; }
+
+                if (__instance.isInShipRoom) { return; }
+
+                if (UnityEngine.Random.Range(0f, 1f) < scrapDiseaseChance.Value)
                     __instance.NetworkObject.Infect();
             }
             catch (System.Exception e)
