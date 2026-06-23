@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using SnowyLib;
 
 namespace LethalDiseases
 {
@@ -21,6 +22,8 @@ namespace LethalDiseases
         public PlayerControllerB? player { get; private set; }
         public EnemyAI? enemy { get; private set; }
         internal SteamValveHazard? steamValve { get; private set; }
+        internal GrabbableObject? grabbableObject { get; private set; }
+        internal InteractTrigger? interactTrigger { get; private set; }
 
         public DiseaseScanNode? diseaseScanNode;
 
@@ -68,40 +71,15 @@ namespace LethalDiseases
         void CreateDiseaseScanNode()
         {
             logger.LogDebug("Creating disease scannode");
-            Collider? collider = GetLargestCollider();
-            if (collider == null) { logger.LogDebug("Collider is null"); return; }
+            Collider[] colliders = networkObject.gameObject.GetComponentsInChildren<Collider>();
+            Collider? collider = Utils.GetLargestCollider(colliders);
+            if (collider == null) { logger.LogError("Couldn't create disease scan node, no colliders found"); return; }
 
             logger.LogDebug("Got Collider");
             GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider.transform);
             diseaseScanNode = scanNodeObj.GetComponent<DiseaseScanNode>();
             diseaseScanNode.diseaseHost = this;
             diseaseScanNode.parentCollider = collider;
-        }
-
-        Collider? GetLargestCollider()
-        {
-            Collider[] colliders = networkObject.gameObject.GetComponentsInChildren<Collider>(); // TODO:  get this working
-
-            Collider? largest = null;
-            float largestVolume = 0f;
-
-            foreach (Collider col in colliders)
-            {
-                Bounds bounds = col.bounds;
-
-                float volume =
-                    bounds.size.x *
-                    bounds.size.y *
-                    bounds.size.z;
-
-                if (volume > largestVolume)
-                {
-                    largestVolume = volume;
-                    largest = col;
-                }
-            }
-
-            return largest;
         }
 
         public string GetInfectedName()
