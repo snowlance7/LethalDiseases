@@ -31,15 +31,15 @@ namespace LethalDiseases.Patches
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(SteamValveFixInteraction), nameof(SteamValveFixInteraction.OnNetworkSpawn))]
-        static void SteamValveFixInteraction_OnNetworkSpawn_Postfix(SteamValveFixInteraction __instance)
+        [HarmonyPatch(typeof(SteamValveHazard), nameof(SteamValveHazard.Start))]
+        static void SteamValveHazard_Start_Postfix(SteamValveHazard __instance)
         {
             try
             {
-                if (!__instance.IsServer || TESTING.disableDiseaseSpawning) { return; }
+                if (!__instance.fixInteract.IsServer || TESTING.disableDiseaseSpawning) { return; }
 
                 if (UnityEngine.Random.Range(0f, 1f) < steamDiseaseChance.Value)
-                    __instance.NetworkObject.Infect();
+                    __instance.fixInteract.NetworkObject.Infect();
             }
             catch (System.Exception e)
             {

@@ -24,7 +24,7 @@ namespace LethalDiseases.Items
         const float scanRadius = 5f;
         const float scanDistance = 10f;
         const float scanForwardOffset = 1f;//3f;
-        const int maxScanNodes = 10;
+        const int maxScanNodes = 20;
         const int anomalyMask = 524296;
 
         public void Awake()
@@ -128,9 +128,10 @@ namespace LethalDiseases.Items
 
             foreach (var hit in raycastHits)
             {
-                //if (hit.transform != null) { logger.LogDebug(hit.transform.name); }
-                if (hit.transform != null && hit.collider.transform.root.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.player != playerHeldBy && diseaseHost.hasDisease)
+                if (hit.transform != null) { logger.LogDebug(hit.transform.name); }
+                if (hit.transform != null && hit.collider.transform.root.TryGetComponentInChildren(out DiseaseHost? diseaseHost) && diseaseHost != null && diseaseHost.player != playerHeldBy && diseaseHost.hasDisease)
                 {
+                    logger.LogDebug("Setting scan node");
                     diseaseHost.diseaseScanNode?.SetScanNode((int)scanDistance * 2);
                 }
             }

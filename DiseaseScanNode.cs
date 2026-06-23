@@ -78,6 +78,7 @@ namespace LethalDiseases
         {
             foreach (var node in Instances)
             {
+                if (!HUDManager.Instance.nodesOnScreen.Contains(node.scanNode)) { continue; }
                 HUDManager.Instance.NodeIsNotVisible(node.scanNode, node.elementIndex);
             }
         }

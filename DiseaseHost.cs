@@ -67,9 +67,11 @@ namespace LethalDiseases
 
         void CreateDiseaseScanNode()
         {
+            logger.LogDebug("Creating disease scannode");
             Collider? collider = GetLargestCollider();
-            if (collider == null) { return; }
+            if (collider == null) { logger.LogDebug("Collider is null"); return; }
 
+            logger.LogDebug("Got Collider");
             GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider.transform);
             diseaseScanNode = scanNodeObj.GetComponent<DiseaseScanNode>();
             diseaseScanNode.diseaseHost = this;
@@ -78,7 +80,7 @@ namespace LethalDiseases
 
         Collider? GetLargestCollider()
         {
-            Collider[] colliders = networkObject.transform.root.GetComponentsInChildren<Collider>();
+            Collider[] colliders = networkObject.gameObject.GetComponentsInChildren<Collider>(); // TODO:  get this working
 
             Collider? largest = null;
             float largestVolume = 0f;
