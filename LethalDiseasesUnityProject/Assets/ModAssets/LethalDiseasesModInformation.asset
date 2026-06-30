@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <AuthorName>k__BackingField: Snowlance
   <ModName>k__BackingField: LethalDiseases
-  <Version>k__BackingField: 1.0.0
+  <Version>k__BackingField: 0.1.0
   <READMEFile>k__BackingField: {fileID: 4900000, guid: 67f478808c7c8b94f94389174a3e83b0,
     type: 3}
   <ChangelogFile>k__BackingField: {fileID: 4900000, guid: cf65d5b211b07e948a94f5a1c9e87d22,

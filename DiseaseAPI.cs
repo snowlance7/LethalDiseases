@@ -84,7 +84,7 @@ namespace LethalDiseases
 
         internal static DiseaseHost GetHost(this NetworkObject netObj)
         {
-            if (!netObj.TryGetComponent(out DiseaseHost host))
+            if (!netObj.gameObject.TryGetComponent(out DiseaseHost host))
             {
                 host = netObj.gameObject.AddComponent<DiseaseHost>();
             }
@@ -141,6 +141,7 @@ namespace LethalDiseases
         {
             foreach (var diseaseHost in GameObject.FindObjectsOfType<DiseaseHost>())
             {
+                if (!diseaseHost.hasDisease) { continue; }
                 logger?.LogDebug(diseaseHost.gameObject.name + ":");
                 foreach (Disease disease in diseaseHost.Diseases)
                 {

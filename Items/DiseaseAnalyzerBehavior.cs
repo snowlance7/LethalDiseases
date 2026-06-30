@@ -129,7 +129,7 @@ namespace LethalDiseases.Items
             foreach (var hit in raycastHits)
             {
                 if (hit.transform != null) { logger.LogDebug(hit.transform.name); }
-                if (hit.transform != null && hit.collider.transform.root.TryGetComponentInChildren(out DiseaseHost? diseaseHost) && diseaseHost != null && diseaseHost.player != playerHeldBy && diseaseHost.hasDisease)
+                if (hit.transform != null && hit.collider.gameObject.TryGetComponentInChildren(out DiseaseHost? diseaseHost) && diseaseHost != null && diseaseHost.player != playerHeldBy && diseaseHost.hasDisease)
                 {
                     logger.LogDebug("Setting scan node");
                     diseaseHost.diseaseScanNode?.SetScanNode((int)scanDistance * 2);

@@ -37,6 +37,8 @@ namespace LethalDiseases
             player = NetworkObject.gameObject.GetComponent<PlayerControllerB>();
             enemy = NetworkObject.gameObject.GetComponent<EnemyAI>();
             steamValve = NetworkObject.gameObject.GetComponent<SteamValveHazard>();
+            grabbableObject = NetworkObject.gameObject.GetComponent<GrabbableObject>();
+            interactTrigger = NetworkObject.gameObject.GetComponent<InteractTrigger>();
 
             CreateDiseaseScanNode();
         }
@@ -73,7 +75,7 @@ namespace LethalDiseases
             logger.LogDebug("Creating disease scannode");
             Collider[] colliders = networkObject.gameObject.GetComponentsInChildren<Collider>();
             Collider? collider = Utils.GetLargestCollider(colliders);
-            if (collider == null) { logger.LogError("Couldn't create disease scan node, no colliders found"); return; }
+            if (collider == null) { logger.LogError($"Couldn't create disease scan node, no colliders found on gameobject {networkObject.gameObject.name}"); return; }
 
             logger.LogDebug("Got Collider");
             GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider.transform);

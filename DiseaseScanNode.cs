@@ -39,7 +39,7 @@ namespace LethalDiseases
 
         public void SetScanNode(int maxRange) // TODO: Make it so when you look at a scan node when holding the analyzer it shows more info about that node on the analyzer screen
         {
-            if (diseaseHost.diseaseScanNode == null) { return; }
+            if (diseaseHost.diseaseScanNode == null) { logger.LogError($"Couldnt find disease scan node for disease host {diseaseHost.GetInfectedName()}"); return; }
             logger.LogDebug("Setting disease scan node");
 
             ScanNodeProperties node = diseaseHost.diseaseScanNode.scanNode;

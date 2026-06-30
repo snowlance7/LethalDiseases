@@ -16,3 +16,5 @@ more random diseases, like "randomly strike 1 x with lightning" with x being pla
 randomized symptoms like "randomly do x on y" with x being an action from a list of actions, and y being the target (players, enemies or objects, positions? ship?)
 
 you see other peoples scan nodes
+
+Surrounding Eyes: You have line of sight to coilheads and other creatures even when not looking at them or they arent in your line of sight
