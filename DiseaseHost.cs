@@ -73,11 +73,12 @@ namespace LethalDiseases
         void CreateDiseaseScanNode()
         {
             logger.LogDebug("Creating disease scannode");
-            Collider[] colliders = networkObject.gameObject.GetComponentsInChildren<Collider>();
+            Collider[] colliders = networkObject.GetComponentsInChildren<Collider>(includeInactive: true);
+            //logger.LogDebug($"Found {colliders.Length} colliders");
             Collider? collider = Utils.GetLargestCollider(colliders);
-            if (collider == null) { logger.LogError($"Couldn't create disease scan node, no colliders found on gameobject {networkObject.gameObject.name}"); return; }
+            if (collider == null) { logger.LogError($"Couldn't create disease scan node, no colliders found on {networkObject.name}"); return; }
 
-            logger.LogDebug("Got Collider");
+            logger.LogDebug($"Got Collider {collider.name}");
             GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider.transform);
             diseaseScanNode = scanNodeObj.GetComponent<DiseaseScanNode>();
             diseaseScanNode.diseaseHost = this;
@@ -91,7 +92,7 @@ namespace LethalDiseases
             else if (enemy != null)
                 return enemy.enemyType.enemyName;
             else if (networkObject != null)
-                return networkObject.gameObject.name;
+                return networkObject.name;
 
             return "";
         }
