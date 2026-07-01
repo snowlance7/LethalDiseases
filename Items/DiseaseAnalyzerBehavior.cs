@@ -13,19 +13,21 @@ namespace LethalDiseases.Items
         public Animator animator = null!;
         public AudioSource audioSource = null!;
         public MeshRenderer screenRenderer = null!;
-        public GameObject scanNodePrefab = null!;
 
         PlayerControllerB previousPlayerHeldBy = null!;
 
-        int mask = 524872; // Props, InteractableObject, Enemies, Player
+        HashSet<DiseaseScanNode> visibleNodes = new HashSet<DiseaseScanNode>();
+
+        const int mask = 524872; // Props, InteractableObject, Enemies, Player
 
         Coroutine? scanRoutine;
 
+        DiseaseScanNode? nodeInLOS;
+
+        float timeSinceScreenRefresh;
+
         const float scanRadius = 5f;
         const float scanDistance = 10f;
-        const float scanForwardOffset = 1f;//3f;
-        const int maxScanNodes = 20;
-        const int anomalyMask = 524296;
 
         public void Awake()
         {
@@ -42,12 +44,24 @@ namespace LethalDiseases.Items
         public override void Update()
         {
             base.Update();
-            //localPlayer.LineOfSightToPositionAngle
+
+            if (visibleNodes.Count > 0)
+            {
+                timeSinceScreenRefresh += Time.deltaTime;
+
+                if (timeSinceScreenRefresh > 1f)
+                {
+                    timeSinceScreenRefresh = 0f;
+
+                    nodeInLOS = GetNodeInLineOfSightToPositionAngle();
+                    RefreshScreen();
+                }
+            }
         }
 
         public override void OnDestroy()
         {
-            DiseaseScanNode.ClearScanNodesOnScreen();
+            ClearNodes();
             base.OnDestroy();
         }
 
@@ -58,7 +72,7 @@ namespace LethalDiseases.Items
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
             {
                 previousPlayerHeldBy.equippedUsableItemQE = false;
-                DiseaseScanNode.ClearScanNodesOnScreen();
+                ClearNodes();
             }
         }
 
@@ -69,7 +83,7 @@ namespace LethalDiseases.Items
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
             {
                 previousPlayerHeldBy.equippedUsableItemQE = false;
-                DiseaseScanNode.ClearScanNodesOnScreen();
+                ClearNodes();
             }
         }
 
@@ -86,14 +100,46 @@ namespace LethalDiseases.Items
         {
             if (right) // E: Clear disease scan nodes TODO
             {
-                logger.LogDebug("Clearing disease scan nodes");
-                DiseaseScanNode.ClearScanNodesOnScreen();
+                ClearNodes();
             }
             else // Q: Scan self TODO
             {
-                logger.LogDebug("Scanning self");
-                // TODO: Add seperate ui for this
+                animator.SetTrigger("self_scan");
+                audioSource.Play();
+                var host = playerHeldBy.NetworkObject.GetHost();
+                if (!host.hasDisease) { return; }
+                nodeInLOS = host.diseaseScanNode;
+                RefreshScreen();
             }
+        }
+
+        void RefreshScreen()
+        {
+            if (nodeInLOS == null)
+            {
+                screenRenderer.enabled = false;
+                return;
+            }
+
+            // TODO
+        }
+
+        DiseaseScanNode? GetNodeInLineOfSightToPositionAngle()
+        {
+            if (visibleNodes.Count == 0) { return null; }
+
+            var closestNode = visibleNodes.FirstOrDefault();
+            var closestDistance = Mathf.Infinity;
+
+            foreach (var node in visibleNodes)
+            {
+                float distance = Vector3.Angle(localPlayer.playerEye.transform.forward, node.transform.position - localPlayer.gameplayCamera.transform.position);
+                if (distance > closestDistance) { continue; }
+                closestNode = node;
+                closestDistance = distance;
+            }
+
+            return closestNode;
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -101,9 +147,17 @@ namespace LethalDiseases.Items
             base.ItemActivate(used, buttonDown);
             if (!buttonDown || insertedBattery.empty) { return; }
 
-            DiseaseScanNode.ClearScanNodesOnScreen();
+            ClearNodes();
             if (scanRoutine != null) { StopCoroutine(scanRoutine); }
             scanRoutine = StartCoroutine(ScanGun());
+        }
+
+        void ClearNodes()
+        {
+            DiseaseScanNode.ClearScanNodesOnScreen();
+            nodeInLOS = null;
+            visibleNodes.Clear();
+            RefreshScreen();
         }
 
         IEnumerator ScanGun()
@@ -111,7 +165,7 @@ namespace LethalDiseases.Items
             animator.SetTrigger("scan");
             audioSource.Play();
 
-            RaycastHit[] raycastHits = new RaycastHit[maxScanNodes];
+            RaycastHit[] raycastHits = new RaycastHit[20];
 
             for (int i = 0; i < 12; i++)
             {
@@ -132,7 +186,8 @@ namespace LethalDiseases.Items
                 if (hit.transform != null && hit.collider.TryGetComponentInChildren(out DiseaseScanNode? diseaseScanNode) && diseaseScanNode != null && diseaseScanNode.diseaseHost != null && diseaseScanNode.diseaseHost.player != playerHeldBy && diseaseScanNode.diseaseHost.hasDisease)
                 {
                     logger.LogDebug("Setting scan node"); // TODO: Make sure this works on enemies and players
-                    diseaseScanNode.SetScanNode((int)scanDistance * 2);
+                    diseaseScanNode.SetScanNode(diseaseScanNode.diseaseHost.Diseases.Count > 1 ? $"{diseaseScanNode.diseaseHost.Diseases.Count} diseases detected" : "1 disease detected", string.Join("\n", diseaseScanNode.diseaseHost.Diseases.Select((d) => " - " + d.name)), (int)scanDistance * 2, requiresLineOfSight: false);
+                    visibleNodes.Add(diseaseScanNode);
                 }
             }
 

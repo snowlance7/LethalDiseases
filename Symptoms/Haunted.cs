@@ -15,11 +15,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Haunted(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("Haunted", disease.player.NetworkObject);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc("Haunted", disease.player.NetworkObject);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
             }, disease.id, "Haunted", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

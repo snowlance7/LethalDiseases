@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using GameNetcodeStuff;
+using SnowyLib;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
@@ -9,16 +12,15 @@ namespace LethalDiseases.Items
     {
         public Animator animator = null!;
         public AudioSource audioSource = null!;
-        public GameObject screenObj = null!;
 
-        Ray ray;
-        RaycastHit[] raycastHits = [];
-        int anomalyMask = 524296;
+        PlayerControllerB previousPlayerHeldBy = null!;
+
+        const int mask = 524872; // Props, InteractableObject, Enemies, Player
 
         Coroutine? scanRoutine;
 
+        const float scanRadius = 5f;
         const float scanDistance = 5f;
-        const float scanForwardOffset = 3f;
         const bool bioOnly = false; // TODO: Set up configs
 
         public void Awake()
@@ -29,24 +31,58 @@ namespace LethalDiseases.Items
             itemProperties.syncGrabFunction = true;
             itemProperties.syncDiscardFunction = true;
             itemProperties.syncUseFunction = true;
+            //itemProperties.grabAnim = "HoldPatcherTool";
+            grabbableToEnemies = false;
+        }
+
+        public override void OnDestroy()
+        {
+            DiseaseScanNode.ClearScanNodesOnScreen();
+            base.OnDestroy();
         }
 
         public override void PocketItem()
         {
             base.PocketItem();
-            screenObj.SetActive(false);
+            if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
+            {
+                previousPlayerHeldBy.equippedUsableItemQE = false;
+                DiseaseScanNode.ClearScanNodesOnScreen();
+            }
         }
 
         public override void DiscardItem()
         {
             base.DiscardItem();
-            screenObj.SetActive(false);
+            if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
+            {
+                previousPlayerHeldBy.equippedUsableItemQE = false;
+                DiseaseScanNode.ClearScanNodesOnScreen();
+            }
         }
 
         public override void EquipItem()
         {
             base.EquipItem();
-            screenObj.SetActive(true);
+            previousPlayerHeldBy = playerHeldBy;
+            if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
+                previousPlayerHeldBy.equippedUsableItemQE = true;
+        }
+
+        public override void ItemInteractLeftRight(bool right)
+        {
+            if (right) // E: Clear disease scan nodes TODO
+            {
+                DiseaseScanNode.ClearScanNodesOnScreen();
+            }
+            else // Q: Scan self TODO
+            {
+                logger.LogDebug("Scanning self");
+
+                if (scanRoutine != null) { StopCoroutine(scanRoutine); }
+                scanRoutine = StartCoroutine(SelfScan());
+
+            }
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -55,37 +91,54 @@ namespace LethalDiseases.Items
             if (!buttonDown || insertedBattery.empty) { return; }
 
             if (scanRoutine != null) { StopCoroutine(scanRoutine); }
-            scanRoutine = StartCoroutine(ScanGun());
+            scanRoutine = StartCoroutine(Scan());
         }
 
-        IEnumerator ScanGun()
+        IEnumerator SelfScan()
         {
+            animator.SetTrigger("self_scan");
+            audioSource.Play();
+
+            yield return new WaitForSeconds(0.84375f);
+
+            bool infected = playerHeldBy.NetworkObject.HasDisease();
+            animator.SetTrigger(infected ? "red" : "green");
+            scanRoutine = null;
+        }
+
+        IEnumerator Scan()
+        {
+            bool foundDisease = false;
             animator.SetTrigger("scan");
             audioSource.Play();
-            bool foundDisease = false;
+
+            RaycastHit[] raycastHits = new RaycastHit[20];
+            DiseaseScanNode.EnableColliders(true);
 
             for (int i = 0; i < 9; i++)
             {
                 if (base.IsOwner)
                 {
-                    logger.LogDebug($"Scanning {i}");
-                    if (isPocketed || !isHeld)
-                    {
-                        yield break;
-                    }
-                    ray = new Ray(playerHeldBy.gameplayCamera.transform.position - playerHeldBy.gameplayCamera.transform.forward * scanForwardOffset, playerHeldBy.gameplayCamera.transform.forward);
-                    int num = Physics.SphereCastNonAlloc(ray, scanDistance, raycastHits, scanDistance, anomalyMask, QueryTriggerInteraction.Collide);
-                    raycastHits = raycastHits.OrderBy((RaycastHit x) => x.distance).ToArray();
-                    foreach (var hit in raycastHits)
-                    {
-                        foundDisease |= hit.transform != null && hit.transform.gameObject.TryGetComponent(out DiseaseHost diseaseHost) && diseaseHost.hasDisease && (diseaseHost.hasActor || !bioOnly);
-                    }
+                    if (isPocketed || !isHeld) { yield break; }
+                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, mask);
+                    logger.LogDebug($"Scanning {i}: {hitCount} hits");
                 }
                 yield return new WaitForSeconds(0.09375f);
             }
 
-            animator.SetTrigger(foundDisease ? "detected" : "not_detected"); // TODO: Fix colors
+            foreach (var hit in raycastHits)
+            {
+                if (hit.transform != null) { logger.LogDebug(hit.transform.name); }
+                if (hit.transform != null && hit.collider.TryGetComponentInChildren(out DiseaseScanNode? diseaseScanNode) && diseaseScanNode != null && diseaseScanNode.diseaseHost != null && diseaseScanNode.diseaseHost.player != playerHeldBy && diseaseScanNode.diseaseHost.hasDisease)
+                {
+                    // TODO: Make sure this works on enemies and players
+                    foundDisease = true;
+                    diseaseScanNode.SetScanNode("DISEASES DETECTED", "", (int)scanDistance * 2, requiresLineOfSight: true);
+                }
+            }
 
+            animator.SetTrigger(foundDisease ? "red" : "green");
+            DiseaseScanNode.EnableColliders(false);
             scanRoutine = null;
         }
     }

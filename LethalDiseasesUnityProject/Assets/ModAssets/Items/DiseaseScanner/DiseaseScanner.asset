@@ -54,6 +54,8 @@ MonoBehaviour:
   isDefensiveWeapon: 0
   toolTips:
   - Scan [LMB]
+  - Scan Self [Q]
+  - Clear Nodes [E]
   verticalOffset: 0
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1

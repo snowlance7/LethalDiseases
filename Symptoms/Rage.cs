@@ -14,11 +14,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Rage(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("Rage", disease.player.NetworkObject);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("Rage", disease.player.NetworkObject);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("Rage", disease.player.NetworkObject);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("Rage", disease.player.NetworkObject);
             }, disease.id, "Rage", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

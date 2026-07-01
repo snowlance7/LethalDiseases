@@ -64,7 +64,7 @@ namespace LethalDiseases.Symptoms
                 return;
             }
 
-            LethalDiseasesNetworkHandler.Instance.CadaverBurstFromPlayerServerRpc(player.actualClientId);
+            LethalDiseasesNetworkHandler.Instance.CadaverBurstFromPlayerRpc(player.actualClientId);
         }
     }
 }

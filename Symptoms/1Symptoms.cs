@@ -196,7 +196,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.player == null) { return; }
                 if (!disease.player.isInsideFactory || UnityEngine.Random.Range(0, 2) == 1) { return; }
-                LethalDiseasesNetworkHandler.Instance.SpawnEnemyServerRpc(EnemyKeys.Hoardingbug, disease.player.transform.position - disease.player.transform.forward);
+                SnowyLib.NetworkHandler.SpawnEnemyServerRpc(EnemyKeys.Hoardingbug, disease.player.transform.position - disease.player.transform.forward);
             }, disease.id, "Infested", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -204,12 +204,12 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
         public static StatusEffect Congested(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.MufflePlayerServerRpc(disease.player.actualClientId, true);
+                LethalDiseasesNetworkHandler.Instance.MufflePlayerRpc(disease.player.actualClientId, true);
 
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.MufflePlayerServerRpc(disease.player.actualClientId, false);
+                LethalDiseasesNetworkHandler.Instance.MufflePlayerRpc(disease.player.actualClientId, false);
             }, disease.id, "Congested", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -219,7 +219,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             return new RandomIntervalActionEffect(new BoundedRange(15, 60), () =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.PlaySoundEffectServerRpc(disease.player.actualClientId, LethalDiseasesNetworkHandler.SoundEffect.Cough, volume: 0.7f, cutoffFrequency: 1500);
+                LethalDiseasesNetworkHandler.Instance.PlaySoundEffectRpc(disease.player.actualClientId, LethalDiseasesNetworkHandler.SoundEffect.Cough, volume: 0.7f, cutoffFrequency: 1500);
                 if (disease.transmissionType == Disease.TransmissionType.Airborne)
                     disease.TrySpreadAirborne(disease.player.gameplayCamera.transform.position, 1.5f);
             }, disease.id, "Smoker Lungs", disease.strengthTime, SetHighestDurationAndDeny);
@@ -253,7 +253,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     if (player == null) continue;
                     clientIds.Add(player.actualClientId);
                 }
-                LethalDiseasesNetworkHandler.Instance.SlimePlayersServerRpc(clientIds.ToArray(), disease.id); // TODO: Test this
+                LethalDiseasesNetworkHandler.Instance.SlimePlayersRpc(clientIds.ToArray(), disease.id); // TODO: Test this
             }, disease.id, "Mucus Filled", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -301,7 +301,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 {
                     disease.player.PlayQuickSpecialAnimation(1f);
                     disease.player.playerBodyAnimator.SetTrigger("SpawnPlayer");
-                    networkHandler.PlacePukeDecalServerRpc(disease.player.transform.position + disease.player.transform.up, Vector3.down);
+                    networkHandler.PlacePukeDecalRpc(disease.player.transform.position + disease.player.transform.up, Vector3.down);
                     playerThrewUp = true;
                 }
             }, onEndAction: () => { }, disease.id, "Nausea", disease.strengthTime, SetHighestDurationAndDeny);
@@ -316,7 +316,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (player == null) { return; }
                 GrabbableObject? grabbable = player.currentlyHeldObjectServer;
                 if (grabbable == null || localPlayer.FirstEmptyItemSlot(grabbable) == -1) { return; }
-                networkHandler.PlayerDiscardHeldObjectServerRpc(player.actualClientId);
+                networkHandler.PlayerDiscardHeldObjectRpc(player.actualClientId);
                 localPlayer.GrabGrabbableObject(grabbable);
             }, disease.id, "Klepto", disease.strengthTime, SetHighestDurationAndDeny);
         }
@@ -328,7 +328,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.player == null || StartOfRound.Instance.inShipPhase) { return; }
                 if (RoundManager.Instance.SpawnedEnemies.Any(x => x is DressGirlAI girl && girl.hauntingPlayer == disease.player)) { return; }
-                networkHandler.SpawnGhostGirlServerRpc(disease.player.actualClientId);
+                networkHandler.SpawnGhostGirlRpc(disease.player.actualClientId);
             }, disease.id, "Cursed", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -409,7 +409,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             return new RandomIntervalActionEffect(new BoundedRange(120f, 450f), () =>
             {
                 if (disease.hasActor)
-                    networkHandler.SpawnMapObjectServerRpc(MapObjectKeys.Landmine, disease.networkObject.gameObject.transform.position + disease.networkObject.gameObject.transform.forward * 2);
+                    networkHandler.SpawnMapObjectRpc(MapObjectKeys.Landmine, disease.networkObject.gameObject.transform.position + disease.networkObject.gameObject.transform.forward * 2);
             }, disease.id, "Anarchist", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -419,9 +419,9 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player != null && disease.player.isPlayerDead)
-                    networkHandler.SpawnExplosionServerRpc(disease.player.transform.position, true);
+                    networkHandler.SpawnExplosionRpc(disease.player.transform.position, true);
                 if (disease.enemy != null && disease.enemy.isEnemyDead)
-                    networkHandler.SpawnExplosionServerRpc(disease.enemy.transform.position, true);
+                    networkHandler.SpawnExplosionRpc(disease.enemy.transform.position, true);
             }, disease.id, "IBS", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -479,7 +479,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     if (randomPlayer == null) { return; }
                     Vector3 playerPosition = disease.player.transform.position;
                     disease.player.TeleportPlayer(randomPlayer.transform.position);
-                    networkHandler.TeleportPlayerServerRpc(randomPlayer.actualClientId, playerPosition); // TODO: Test
+                    networkHandler.TeleportPlayerRpc(randomPlayer.actualClientId, playerPosition); // TODO: Test
                 }
             }, disease.id, "Split Personality", disease.strengthTime, SetHighestDurationAndDeny);
         }

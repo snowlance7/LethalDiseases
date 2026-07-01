@@ -19,12 +19,12 @@ namespace LethalDiseases.Symptoms
             if (disease.hasActor)
             {
 
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectServerRpc("ItFollows", disease.networkObject);
+                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
             }
             return new OnRemoveActionEffect(() =>
             {
                 if (!disease.hasActor) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectServerRpc("ItFollows", disease.networkObject);
+                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
             }, disease.id, "ItFollows", disease.strengthTime, SetHighestDurationAndDeny);
         }
 

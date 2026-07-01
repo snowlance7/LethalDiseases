@@ -16,11 +16,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Insanity(Disease disease)
         {
             if (disease.player != null)
-                networkHandler.AddSymptomAffectedObjectServerRpc("Insanity", disease.player.NetworkObject);
+                networkHandler.AddSymptomAffectedObjectRpc("Insanity", disease.player.NetworkObject);
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                networkHandler.RemoveSymptomAffectedObjectServerRpc("Insanity", disease.player.NetworkObject);
+                networkHandler.RemoveSymptomAffectedObjectRpc("Insanity", disease.player.NetworkObject);
             }, disease.id, "Insanity", disease.strengthTime, SetHighestDurationAndDeny);
         }
 

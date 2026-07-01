@@ -498,8 +498,6 @@ MonoBehaviour:
   animator: {fileID: 9042386489127764624}
   audioSource: {fileID: 8311318450867966356}
   screenRenderer: {fileID: 4337733289061557191}
-  scanNodePrefab: {fileID: 2592823695177655982, guid: 2a4e4216dee09be40b640737efd55d8f,
-    type: 3}
 --- !u!1 &367877892114865426
 GameObject:
   m_ObjectHideFlags: 0
@@ -996,7 +994,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7392947459130098244}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!33 &3265404680678074600
 MeshFilter:
   m_ObjectHideFlags: 0

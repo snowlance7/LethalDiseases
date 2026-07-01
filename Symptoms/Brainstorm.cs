@@ -16,10 +16,10 @@ namespace LethalDiseases.Symptoms
         [Symptom("Brainstorm", "You are only targeted by lightning strikes", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Brainstorm(Disease disease)
         {
-            networkHandler.AddSymptomAffectedObjectServerRpc("Brainstorm", disease.networkObject);
+            networkHandler.AddSymptomAffectedObjectRpc("Brainstorm", disease.networkObject);
             return new OnRemoveActionEffect(() =>
             {
-                networkHandler.RemoveSymptomAffectedObjectServerRpc("Brainstorm", disease.networkObject);
+                networkHandler.RemoveSymptomAffectedObjectRpc("Brainstorm", disease.networkObject);
             }, disease.id, "Brainstorm", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

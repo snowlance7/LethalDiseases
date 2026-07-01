@@ -27,7 +27,7 @@ namespace LethalDiseases
         public static void Infect(this NetworkObject netObj, string diseaseId)
         {
             if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
-            LethalDiseasesNetworkHandler.Instance.InfectServerRpc(netObj, diseaseId);
+            LethalDiseasesNetworkHandler.Instance.InfectRpc(netObj, diseaseId);
         }
         // TODO: Make more helper methods like these
         public static void Infect(this PlayerControllerB player) => player.NetworkObject.Infect();

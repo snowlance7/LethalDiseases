@@ -15,11 +15,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect BodyOdor(Disease disease)
         {
             if (disease.player != null)
-                networkHandler.AddSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
+                networkHandler.AddSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
             return new OnRemoveActionEffect(() =>
             {
                 if (disease.player == null) { return; }
-                networkHandler.RemoveSymptomAffectedObjectServerRpc("BodyOdor", disease.player.NetworkObject);
+                networkHandler.RemoveSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject);
             }, disease.id, "BodyOdor", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
