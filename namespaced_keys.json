@@ -5,6 +5,7 @@
   },
   "LethalDiseasesItemKeys": {
     "__type": "DawnItemInfo",
+    "BioSampler": "lethal_diseases:biosampler",
     "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
     "DiseaseScanner": "lethal_diseases:disease_scanner"
   }

@@ -1,10 +1,7 @@
 ﻿using GameNetcodeStuff;
 using SnowyLib;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Unity.Netcode;
-using Unity.Services.Authentication.Generated;
 using UnityEngine;
 using static LethalDiseases.Disease;
 using static LethalDiseases.Plugin;
@@ -27,7 +24,7 @@ namespace LethalDiseases
         public static void Infect(this NetworkObject netObj, string diseaseId)
         {
             if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
-            LethalDiseasesNetworkHandler.Instance.InfectRpc(netObj, diseaseId);
+            NetworkHandler.Instance.InfectRpc(netObj, diseaseId);
         }
         // TODO: Make more helper methods like these
         public static void Infect(this PlayerControllerB player) => player.NetworkObject.Infect();

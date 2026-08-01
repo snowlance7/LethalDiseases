@@ -1,11 +1,10 @@
 ﻿using GameNetcodeStuff;
+using SnowyLib;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
-using SnowyLib;
 
 namespace LethalDiseases
 {

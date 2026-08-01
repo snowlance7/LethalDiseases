@@ -1,10 +1,5 @@
-﻿using GameNetcodeStuff;
-using HarmonyLib;
-using LethalDiseases.Enemies;
+﻿using LethalDiseases.Enemies;
 using SnowyLib;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
 
@@ -19,16 +14,17 @@ namespace LethalDiseases.Symptoms
             if (disease.hasActor)
             {
 
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
+                NetworkHandler.Instance.AddSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
             }
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (!disease.hasActor) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
+                NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
             }, disease.id, "ItFollows", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        public static void ItFollowsUpdate(float deltaTime)
+        [StaticUpdate]
+        public static void ItFollowsUpdate()
         {
             if (!IsServerOrHost || ItFollowsEntity.Instance != null || StartOfRound.Instance.inShipPhase || StartOfRound.Instance.shipIsLeaving || symptomAffectedObjects["ItFollows"].Count <= 0) { return; }
             logger?.LogDebug("Spawning ItFollowsEntity");

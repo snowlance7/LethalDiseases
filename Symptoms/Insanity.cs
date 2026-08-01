@@ -1,11 +1,4 @@
-﻿using GameNetcodeStuff;
-using HarmonyLib;
-using SnowyLib;
-using System;
-using System.Collections.Generic;
-using Unity.Netcode;
-using UnityEngine;
-using static LethalDiseases.Plugin;
+﻿using SnowyLib;
 using static LethalDiseases.SymptomAffectedObjects;
 
 namespace LethalDiseases.Symptoms
@@ -17,14 +10,15 @@ namespace LethalDiseases.Symptoms
         {
             if (disease.player != null)
                 networkHandler.AddSymptomAffectedObjectRpc("Insanity", disease.player.NetworkObject);
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
                 networkHandler.RemoveSymptomAffectedObjectRpc("Insanity", disease.player.NetworkObject);
             }, disease.id, "Insanity", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
-        public static void InsanityUpdate(float deltaTime)
+        [StaticUpdate]
+        public static void InsanityUpdate()
         {
             foreach (var player in symptomAffectedPlayers["Insanity"])
             {

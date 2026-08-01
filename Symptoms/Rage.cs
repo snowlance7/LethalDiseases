@@ -1,7 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
-using System.Collections.Generic;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
@@ -10,15 +9,15 @@ namespace LethalDiseases.Symptoms
 {
     internal static partial class Symptoms
     {
-        [Symptom("Rage", "Double damage but you cant see health", Symptom.SymptomType.Neutral, 50)]
+        [Symptom("Rage", "Double damage but you cant see health", Symptom.SymptomType.Neutral, 50)] // TODO
         public static StatusEffect Rage(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("Rage", disease.player.NetworkObject);
-            return new OnRemoveActionEffect(() =>
+                NetworkHandler.Instance.AddSymptomAffectedObjectRpc("Rage", disease.player.NetworkObject);
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("Rage", disease.player.NetworkObject);
+                NetworkHandler.Instance.AddSymptomAffectedObjectRpc("Rage", disease.player.NetworkObject);
             }, disease.id, "Rage", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

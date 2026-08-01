@@ -13,11 +13,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Scaly(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("Scaly", disease.player.NetworkObject);
-            return new OnRemoveActionEffect(() =>
+                NetworkHandler.Instance.AddSymptomAffectedObjectRpc("Scaly", disease.player.NetworkObject);
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Scaly", disease.player.NetworkObject);
+                NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Scaly", disease.player.NetworkObject);
             }, disease.id, "Scaly", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

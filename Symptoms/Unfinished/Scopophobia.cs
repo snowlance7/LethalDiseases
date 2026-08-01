@@ -14,7 +14,7 @@
 //        {
 //            if (disease.player != null)
 //                localPlayerAffected["Scopophobia"] = true;
-//            return new OnRemoveActionEffect(() =>
+//            return new OnRemoveActionEffect((effect) =>
 //            {
 //                if (disease.player == null) { return; }
 //                localPlayerAffected["Scopophobia"] = false;

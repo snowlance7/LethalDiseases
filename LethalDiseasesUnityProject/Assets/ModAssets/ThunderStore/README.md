@@ -12,3 +12,7 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - Ko-fi: [snowlance](https://ko-fi.com/snowlance)
 
 ## Credit
+
+- [Temperature Scanner](https://skfb.ly/ovPSK) by SchrisArt
+- [Retro Scanner](https://skfb.ly/oZSvv) by fizakhan1
+- [Eve Hypo](https://skfb.ly/oqUFX) by DealwithTheDevil

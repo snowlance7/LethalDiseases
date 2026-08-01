@@ -2,7 +2,6 @@
 using HarmonyLib;
 using SnowyLib;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
@@ -19,7 +18,7 @@ namespace LethalDiseases.Symptoms
             else if (disease.enemy != null)
                 symptomAffectedEnemies["TerminalRally"].Add(disease.enemy);
 
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player != null)
                     localPlayerAffected["TerminalRally"] = false;
@@ -42,7 +41,7 @@ namespace LethalDiseases.Symptoms
                 __instance.enemyHP = 10;
                 symptomAffectedEnemies["TerminalRally"].Remove(__instance);
 
-                __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect(() =>
+                __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect((effect) =>
                 {
                     __instance.KillEnemyOnOwnerClient();
                 }, "TerminalRally", "Terminal Rally Death", 10f));
@@ -67,7 +66,7 @@ namespace LethalDiseases.Symptoms
                 HUDManager.Instance.UpdateHealthUI(100, false);
                 localPlayerAffected["TerminalRally"] = false;
 
-                __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect(() =>
+                __instance.StatusEffectController().ApplyEffect(new OnRemoveActionEffect((effect) =>
                 {
                     __instance.KillPlayer(Vector3.zero);
                 }, "TerminalRally", "Terminal Rally Death", 10f));

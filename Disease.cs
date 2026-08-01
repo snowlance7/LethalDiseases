@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using SnowyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,6 @@ using UnityEngine;
 using static LethalDiseases.Configs;
 using static LethalDiseases.Plugin;
 using static SnowyLib.Utils;
-using SnowyLib;
 
 namespace LethalDiseases
 {

@@ -14,7 +14,7 @@ namespace LethalDiseases.Symptoms
         {
             if (disease.player != null)
                 localPlayerAffected["Shopaholic"] = true;
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected["Shopaholic"] = false;

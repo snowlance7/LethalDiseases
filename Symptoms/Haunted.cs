@@ -1,8 +1,6 @@
-﻿using GameNetcodeStuff;
-using HarmonyLib;
+﻿using HarmonyLib;
 using SnowyLib;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
@@ -15,11 +13,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Haunted(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.AddSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
-            return new OnRemoveActionEffect(() =>
+                NetworkHandler.Instance.AddSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
+                NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
             }, disease.id, "Haunted", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

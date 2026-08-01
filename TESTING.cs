@@ -1,10 +1,6 @@
-using Dawn.Utils;
 using HarmonyLib;
 using SnowyLib;
-using System.Linq;
-using UnityEngine;
 using static LethalDiseases.Plugin;
-using Dawn;
 
 /* bodyparts
  * 0 head

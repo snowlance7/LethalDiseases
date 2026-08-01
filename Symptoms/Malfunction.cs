@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using SnowyLib;
 using System;
-using UnityEngine;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
 
@@ -14,7 +13,7 @@ namespace LethalDiseases.Symptoms
         {
             if (disease.player != null)
                 localPlayerAffected["Malfunction"] = true;
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected["Malfunction"] = false;

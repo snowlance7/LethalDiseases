@@ -6,20 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Linq;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
-using UnityEngine.Rendering.HighDefinition;
-using static LethalDiseases.LethalDiseasesNetworkHandler;
 using static LethalDiseases.Plugin;
 using static SnowyLib.PlayerControllerBExtensions;
+using static LethalDiseases.NetworkHandler;
 
 namespace LethalDiseases.Symptoms // TODO: Add accessibility features
 {
     internal static partial class Symptoms
     {
-        private static LethalDiseasesNetworkHandler networkHandler => LethalDiseasesNetworkHandler.Instance;
+        private static NetworkHandler networkHandler => NetworkHandler.Instance;
+        private static AudioLibrary audioLibrary => LethalDiseasesContentHandler.Instance.DiseaseAssets!.AudioLibrary;
 
         internal static void Load()
         {
@@ -196,7 +193,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.player == null) { return; }
                 if (!disease.player.isInsideFactory || UnityEngine.Random.Range(0, 2) == 1) { return; }
-                SnowyLib.NetworkHandler.SpawnEnemyServerRpc(EnemyKeys.Hoardingbug, disease.player.transform.position - disease.player.transform.forward);
+                SnowyLib.NetworkHandler.Instance.SpawnEnemyRpc(EnemyKeys.Hoardingbug, disease.player.transform.position - disease.player.transform.forward);
             }, disease.id, "Infested", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -204,12 +201,12 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
         public static StatusEffect Congested(Disease disease)
         {
             if (disease.player != null)
-                LethalDiseasesNetworkHandler.Instance.MufflePlayerRpc(disease.player.actualClientId, true);
+                SnowyLib.NetworkHandler.Instance.MufflePlayerRpc(disease.player.actualClientId, true);
 
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.MufflePlayerRpc(disease.player.actualClientId, false);
+                SnowyLib.NetworkHandler.Instance.MufflePlayerRpc(disease.player.actualClientId, false);
             }, disease.id, "Congested", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -219,7 +216,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             return new RandomIntervalActionEffect(new BoundedRange(15, 60), () =>
             {
                 if (disease.player == null) { return; }
-                LethalDiseasesNetworkHandler.Instance.PlaySoundEffectRpc(disease.player.actualClientId, LethalDiseasesNetworkHandler.SoundEffect.Cough, volume: 0.7f, cutoffFrequency: 1500);
+                networkHandler.PlaySoundEffectRpc(disease.player.actualClientId, SoundEffect.Cough, volume: 0.7f, cutoffFrequency: 1500);
                 if (disease.transmissionType == Disease.TransmissionType.Airborne)
                     disease.TrySpreadAirborne(disease.player.gameplayCamera.transform.position, 1.5f);
             }, disease.id, "Smoker Lungs", disease.strengthTime, SetHighestDurationAndDeny);
@@ -253,7 +250,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     if (player == null) continue;
                     clientIds.Add(player.actualClientId);
                 }
-                LethalDiseasesNetworkHandler.Instance.SlimePlayersRpc(clientIds.ToArray(), disease.id); // TODO: Test this
+                networkHandler.SlimePlayersRpc(clientIds.ToArray(), disease.id); // TODO: Test this
             }, disease.id, "Mucus Filled", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
@@ -352,7 +349,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             return new RandomIntervalActionEffect(new BoundedRange(15f, 120f), () =>
             {
                 if (disease.player == null) { return; }
-                var clips = networkHandler.soundEffects[(int)SoundEffect.Paranoia].clips;
+                var clips = audioLibrary.GetClips(SoundEffect.Paranoia.ToString());
                 var pos = RoundManager.Instance.GetRandomPositionInRadius(localPlayer.transform.position, 1f, 15f);
                 Utils.PlaySoundAtPosition(pos, clips, max3DDistance: 20);
             }, disease.id, "Paranoia", disease.strengthTime, SetHighestDurationAndDeny);
@@ -397,7 +394,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             return new RandomIntervalActionEffect(new BoundedRange(30f, 120f), () =>
             {
                 if (disease.player == null) { return; }
-                var clips = networkHandler.soundEffects[(int)SoundEffect.DuckSounds].clips;
+                var clips = audioLibrary.GetClips(SoundEffect.Duck.ToString());
                 var pos = RoundManager.Instance.GetRandomPositionInRadius(localPlayer.transform.position, 1f, 15f);
                 Utils.PlaySoundAtPosition(pos, clips, max3DDistance: 20);
             }, disease.id, "Anitidaephobia", disease.strengthTime, SetHighestDurationAndDeny);
@@ -416,7 +413,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
         [Symptom("IBS", "You explode on death", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect IBS(Disease disease)
         {
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player != null && disease.player.isPlayerDead)
                     networkHandler.SpawnExplosionRpc(disease.player.transform.position, true);
@@ -450,7 +447,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
         [Symptom("MAD", "You kill the nearest living thing on death", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect MAD(Disease disease)
         {
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if ((disease.player != null && disease.player.isPlayerDead) || (disease.enemy != null && disease.enemy.isEnemyDead)) // TODO: Simplify this
                 {
@@ -496,7 +493,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     player.MakePlayerInvisible(true);
                 }
             }
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player != null && disease.player == localPlayer)
                 {

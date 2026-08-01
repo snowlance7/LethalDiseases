@@ -1,0 +1,39 @@
+- could spread through gas pipes
+- spread through the new enemy that spits at you
+- being around a monster that can spread it
+- Gene+ ingredients that can make a disease stronger or weaker or add symptoms or remove them
+
+- radiation that can mutate genes or spread them? use radiation warning from when you pull out the apparatus
+- Goggles that highlight infected objects
+- Disinfected gloves
+- Gas mask
+- Ship upgrade that when run gasses the inside of the ship after closing the door, give a 10 second countdown first with alarms
+- Scanner similar to the zap gun that detects diseases
+- OPDeck can detect diseases
+- Chemsprayer that disinfects players
+- Hand washing station
+- Shower has chance of curing disease
+- walk in unit for ship that cures all infection in a player
+- way to make vaccines against any symptom, so if a disease has that symptom, itll be taken off
+
+CADAVAR BLOOM SPREADS DISEASES
+
+6/19/2026
+shop item that clears all immune diseases on a player
+shop item that clears all diseases on a player (expensive)
+shop item that clears all diseases but also immune diseases as well (less expensive)
+shop item dart gun and darts
+ship upgrade that allows you to decontaminate the ship
+device that sprays a smoke cloud of an airborne disease
+handsanitizer that gives you x minutes of protection from contact diseases
+helmet filters that reset filters in your helmet (same ones the cadaver plants use), maybe the filter in players helmet also goes down around diseases and replacing them protects you 
+
+make ads and achievements!!!
+
+RoundManager.Instance.FlickerLights();
+
+void IShockableWithGun.ShockWithGun(PlayerControllerB shockedByPlayer)
+	{
+		SetSwitchesOff();
+		RoundManager.Instance.FlickerLights();
+	}

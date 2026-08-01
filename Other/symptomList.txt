@@ -1,0 +1,74 @@
+Alarm: You randomly make alarm sounds and attract enemies
+Anarchist: Randomly summon landmines in front of you
+Anitidaephobia: You hallucinate duck sounds
+Aquaphobia: You fear water
+Arachnophobia: Spiders instakill you
+Attractive: Attract things towards you
+Baculovirus: Explode upon death, spread your disease to other players nearby
+Bad Gas: Slowly gain the TZP effect when inside and fart randomly
+Bald: Looking at the infected player for too long will trigger a flashbang
+Bleeding: Randomly bleed
+BodyOdor: Enemies prioritize targetting you first
+Bountiful: Turn into a cadaver bloom on death
+Brainstorm: You are only targeted by lightning strikes
+Broken Legs: You are always limping
+Burnt Lungs: 1.5x stamina usage
+Buttery Fingers: Periodically drop what you're holding
+Charlie Horse: You randomly make horse noises
+Claustrophobia: You fear being inside
+Clumsiness: Randomly trip
+Cold Fluu: You sneeze periodically, sneezing on other players slows them down
+Congested: Your voice is muffled
+Crazy: I was crazy once, they put me in a room
+Cursed: Spawns a ghost girl that targets you
+Daltonizm: You see in black and white
+Deja Vu: Teleport back 10 seconds periodically
+Dementia: Randomly teleport to a location periodically
+Egg Face: Sapsuckers attack on sight
+ElectrolyteProficiency: You charge items you hold instead of depleting them
+Empyema: Leave a trail of blood when you move
+Fresh Scent: If circuit bees are triggered, they will hunt you down
+Green Needle: You are never targeted by lightning strikes
+Haunted: If a ghost girl spawns, it targets you. If multiple people have this, chooses a random player
+Heartworm: Spawns a earth leviathon on your location on death
+IBS: You explode on death
+Infested: Periodically spawn hoarderbugs around you
+Insanity: Sets insanity to max
+Ionizing: You periodically do damage to nearby players
+ItFollows: ???
+Klepto: Randomly and periodically take items from nearby players
+Knee Water: Randomly get the quicksand effect
+Lactose Intolerant: Chance to explode on heal
+Last Stand: You kill the last thing that kills you
+Lightheaded: Get dizzy when running too much
+MAD: You kill the nearest living thing on death
+Malfunction: Your scanner doesnt work
+Mitosis: Dying spawns two more of you with the same disease
+Mood Swings: Randomly increases and/or decreases each of your movement factors every 2 ingame hours
+Mucus Filled: Periodically spit mucus on other player, which can spread the disease
+Mute: Cant use comms to speak
+Narcissism: Everyone is invisible to you
+Nausea: Get the TZP effect periodically and throw up if moving too much during it
+Necrosis: Randomly take damage until death
+Norovirus: You explode upon death, can chain to other players
+Paragon: Gain every other negative effect but cant die
+Paranoia: You hear things you shouldnt
+Parasite Link: You and another player with this symptom are chained together
+Rage: Double damage but you cant see health
+Repulsive: Push everything away from you
+Scaly: Lizards follow you
+Selective Hearing: You cant hear certain players
+Shopaholic: 25% chance to buy a random item when using the terminal
+Shroombiosis: You grow shrooms on your body which heal players when eaten
+Smoker Lungs: You cough randomly, making noise
+Split Personality: Randomly swap positions with a random player periodically
+Sponge Legs: You make an annoying sound when you walk
+Sproodling: You become small
+Sterile: Picking up a baby maneater instantly kills it
+Stress Eating: You randomly eat an inventory item
+TerminalRally: On death, get 10 seconds of rage and die
+Tesla Coil: Zap other players holding metal items
+Trigger Finger: Randomly use whatever youre holding (left mouse click)
+Vampirism: Leech health from other living things
+Weakness: Your carry weight is doubled
+

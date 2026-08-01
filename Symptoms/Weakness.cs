@@ -1,9 +1,5 @@
-﻿using HarmonyLib;
-using SnowyLib;
-using System;
-using UnityEngine;
+﻿using SnowyLib;
 using static LethalDiseases.Plugin;
-using static LethalDiseases.SymptomAffectedObjects;
 
 namespace LethalDiseases.Symptoms
 {
@@ -22,7 +18,7 @@ namespace LethalDiseases.Symptoms
                 disease.player.carryWeight = weaknessPreviousWeight;
                 StartOfRound.Instance.ChangedCarryWeight += OnWeightChangedLocalClient;
             }
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
                 StartOfRound.Instance.ChangedCarryWeight -= OnWeightChangedLocalClient;

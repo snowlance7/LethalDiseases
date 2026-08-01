@@ -1,12 +1,7 @@
-﻿using DigitalRuby.ThunderAndLightning;
-using GameNetcodeStuff;
-using HarmonyLib;
+﻿using HarmonyLib;
 using SnowyLib;
 using System;
-using System.Linq;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
 
@@ -18,7 +13,7 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect GreenNeedle(Disease disease)
         {
             networkHandler.AddSymptomAffectedObjectRpc("Green Needle", disease.networkObject);
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 networkHandler.RemoveSymptomAffectedObjectRpc("Green Needle", disease.networkObject);
             }, disease.id, "Green Needle", disease.strengthTime, SetHighestDurationAndDeny);

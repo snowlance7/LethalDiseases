@@ -1,11 +1,8 @@
-﻿using BepInEx.Logging;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using SnowyLib;
 using System.Collections.Generic;
-using System.Linq;
-using static LethalDiseases.Plugin;
 using Unity.Netcode;
-using System;
+using static LethalDiseases.Plugin;
 
 namespace LethalDiseases
 {

@@ -17,7 +17,7 @@ namespace LethalDiseases.Symptoms
                 localPlayerAffected["Bountiful"] = true;
                 StartOfRound.Instance.LocalPlayerDieEvent.AddListener(OnLocalPlayerDie);
             }
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected["Bountiful"] = false;
@@ -64,7 +64,7 @@ namespace LethalDiseases.Symptoms
                 return;
             }
 
-            LethalDiseasesNetworkHandler.Instance.CadaverBurstFromPlayerRpc(player.actualClientId);
+            NetworkHandler.Instance.CadaverBurstFromPlayerRpc(player.actualClientId);
         }
     }
 }

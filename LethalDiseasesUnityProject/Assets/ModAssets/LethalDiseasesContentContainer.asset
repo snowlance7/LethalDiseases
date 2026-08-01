@@ -19,3 +19,5 @@ MonoBehaviour:
     configName: Disease Scanner
   - assetBundleName: disease_analyzer
     configName: Disease Analyzer
+  - assetBundleName: biosampler
+    configName: BioSampler

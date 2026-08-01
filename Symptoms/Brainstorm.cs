@@ -4,8 +4,6 @@ using SnowyLib;
 using System;
 using System.Linq;
 using Unity.Netcode;
-using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
 
@@ -17,7 +15,7 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Brainstorm(Disease disease)
         {
             networkHandler.AddSymptomAffectedObjectRpc("Brainstorm", disease.networkObject);
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 networkHandler.RemoveSymptomAffectedObjectRpc("Brainstorm", disease.networkObject);
             }, disease.id, "Brainstorm", disease.strengthTime, SetHighestDurationAndDeny);

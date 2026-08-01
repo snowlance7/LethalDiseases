@@ -16,7 +16,7 @@ namespace LethalDiseases.Symptoms
         {
             if (disease.player != null)
                 networkHandler.AddSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
-            return new OnRemoveActionEffect(() =>
+            return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
                 networkHandler.RemoveSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject);

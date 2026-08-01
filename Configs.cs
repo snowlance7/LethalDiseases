@@ -1,18 +1,16 @@
 ﻿using BepInEx.Configuration;
 using Dawn.Utils;
-using Dusk;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static LethalDiseases.Plugin;
+using SnowyLib;
 
 namespace LethalDiseases
 {
     internal static class Configs
     {
-        public static void Init(Plugin p)
+        [InitConfig]
+        public static void Init()
         {
+            Plugin p = Plugin.Instance;
+            Plugin.logger.LogDebug("INIT DISEASE CONFIGS");
             minSymptoms = p.Config.Bind("Other", "Min Symptoms", 1, "Minimum number of symptoms a disease can have");
             maxSymptoms = p.Config.Bind("Other", "Max Symptoms", 5, "Maximum number of symptoms a disease can have");
 
