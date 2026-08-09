@@ -52,8 +52,9 @@ namespace LethalDiseases
 
         public int[] symptoms = [];
 
-        bool isActive;
+        public bool isActive { get; private set; }
         public float elapsedTime;
+        public float timeLeft => isActive ? strengthTime - elapsedTime : (host != null && host.hasActor ? (strengthTime + latencyTime) - elapsedTime : stabilityTime - elapsedTime);
 
         float timeSinceSpreadUpdate;
 
@@ -195,6 +196,11 @@ namespace LethalDiseases
             return disease;
         }
 
+        public List<Symptom> GetSymptoms()
+        {
+            return symptoms.Select(x => Symptom.symptomList[x]).ToList();
+        }
+
         internal void TrySpread(NetworkObject _networkObject, TransmissionType spreadTransmissionType)
         {
             if (transmissionType.HasFlag(TransmissionType.Airborne) && spreadTransmissionType.HasFlag(TransmissionType.Airborne))
@@ -233,7 +239,7 @@ namespace LethalDiseases
             float lifeTime = host.hasActor ? strengthTime : stabilityTime;
 
             // Remove disease if expired
-            if (elapsedTime > lifeTime)
+            if ((isActive || !host.hasActor) && elapsedTime > lifeTime) // TODO: Test this
             {
                 host.networkObject.RemoveDisease(this);
                 return;

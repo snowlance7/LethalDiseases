@@ -22,7 +22,6 @@ namespace LethalDiseases
         public EnemyAI? enemy { get; private set; }
         internal SteamValveHazard? steamValve { get; private set; }
         internal GrabbableObject? grabbableObject { get; private set; }
-        internal InteractTrigger? interactTrigger { get; private set; }
 
         public DiseaseScanNode? diseaseScanNode;
 
@@ -37,7 +36,6 @@ namespace LethalDiseases
             enemy = NetworkObject.gameObject.GetComponent<EnemyAI>();
             steamValve = NetworkObject.gameObject.GetComponent<SteamValveHazard>();
             grabbableObject = NetworkObject.gameObject.GetComponent<GrabbableObject>();
-            interactTrigger = NetworkObject.gameObject.GetComponent<InteractTrigger>();
 
             CreateDiseaseScanNode();
         }
@@ -72,10 +70,18 @@ namespace LethalDiseases
         void CreateDiseaseScanNode()
         {
             logger.LogDebug("Creating disease scannode");
-            Collider[] colliders = networkObject.GetComponentsInChildren<Collider>(includeInactive: true);
-            //logger.LogDebug($"Found {colliders.Length} colliders");
-            Collider? collider = Utils.GetLargestCollider(colliders);
-            if (collider == null) { logger.LogError($"Couldn't create disease scan node, no colliders found on {networkObject.name}"); return; }
+
+            Collider? collider = null;
+
+            if (enemy != null)
+            {
+                collider = enemy.gameObject.GetComponentInChildren<EnemyAICollisionDetect>()?.GetComponent<Collider>(); // TODO: Test this
+            }
+            else
+            {
+                collider = networkObject.gameObject.GetComponent<Collider>();
+            }
+            if (collider == null) { logger.LogError($"Couldn't create disease scan node, no collider found on {networkObject.name}"); return; }
 
             logger.LogDebug($"Got Collider {collider.name}");
             GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider.transform);

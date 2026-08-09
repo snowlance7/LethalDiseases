@@ -158,21 +158,5 @@ namespace LethalDiseases.Patches
                 return;
             }
         }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.Interact))]
-        static void InteractTrigger_Interact_Postfix(InteractTrigger __instance, Transform playerTransform)
-        {
-            try
-            {
-                if (!playerTransform.TryGetComponent(out PlayerControllerB player)) { return; }
-                TrySpreadBetween(player.NetworkObject, __instance.NetworkObject, Disease.TransmissionType.Contact);
-            }
-            catch (System.Exception e)
-            {
-                logger.LogError(e);
-                return;
-            }
-        }
     }
 }

@@ -3,7 +3,9 @@ using SnowyLib;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
@@ -13,21 +15,29 @@ namespace LethalDiseases.Items
         public Animator animator = null!;
         public AudioSource audioSource = null!;
         public MeshRenderer screenRenderer = null!;
+        public RectTransform contentRect = null!;
+        public ScrollRect scrollRect = null!;
+        public GameObject diseaseContentPrefab = null!;
+        public AudioClip screenOnSFX = null!;
 
         PlayerControllerB previousPlayerHeldBy = null!;
 
         HashSet<DiseaseScanNode> visibleNodes = new HashSet<DiseaseScanNode>();
 
-        const int mask = 524872; // Props, InteractableObject, Enemies, Player
+        int scanMask = 524872; // Props, InteractableObject, Enemies, Player
 
         Coroutine? scanRoutine;
 
-        DiseaseScanNode? nodeInLOS;
+        DiseaseScanNode? currentNodeInLOS;
+        List<DiseaseContent> diseaseContentOnScreen = new List<DiseaseContent>();
 
         float timeSinceScreenRefresh;
+        float timeAtBottom;
+        float timeAtTop;
 
         const float scanRadius = 5f;
         const float scanDistance = 10f;
+        const float scrollSpeed = 0.1f;
 
         public void Awake()
         {
@@ -39,6 +49,7 @@ namespace LethalDiseases.Items
             itemProperties.syncUseFunction = true;
             itemProperties.grabAnim = "HoldPatcherTool";
             grabbableToEnemies = false;
+            scanMask = Utils.CreateMask("Props", "InteractableObject", "Enemies", "Player");
         }
 
         public override void Update()
@@ -49,14 +60,43 @@ namespace LethalDiseases.Items
             {
                 timeSinceScreenRefresh += Time.deltaTime;
 
-                if (timeSinceScreenRefresh > 1f)
+                if (timeSinceScreenRefresh > 0.2f)
                 {
                     timeSinceScreenRefresh = 0f;
 
-                    nodeInLOS = GetNodeInLineOfSightToPositionAngle();
-                    RefreshScreen();
+                    var node = GetNodeInLineOfSightToPositionAngle();
+                    if (node != currentNodeInLOS)
+                    {
+                        currentNodeInLOS = node;
+                        RefreshScreen();
+                    }
                 }
+
+                DoVerticalScrolling();
             }
+        }
+
+        public void DoVerticalScrolling()
+        {
+            timeAtTop += Time.deltaTime;
+            if (timeAtTop < 3f) { return; }
+
+            if (scrollRect.verticalNormalizedPosition <= 0.01f)
+            {
+                timeAtBottom += Time.deltaTime;
+
+                if (timeAtBottom > 3f)
+                {
+                    scrollRect.verticalNormalizedPosition = 1f;
+                    timeAtTop = 0f;
+                    timeAtBottom = 0f;
+                }
+
+                return;
+            }
+
+            timeAtBottom = 0f;
+            scrollRect.verticalNormalizedPosition -= scrollSpeed * Time.deltaTime;
         }
 
         public override void OnDestroy()
@@ -91,6 +131,7 @@ namespace LethalDiseases.Items
         {
             base.EquipItem();
             screenRenderer.enabled = true;
+            audioSource.PlayOneShot(screenOnSFX);
             previousPlayerHeldBy = playerHeldBy;
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
                 previousPlayerHeldBy.equippedUsableItemQE = true;
@@ -108,20 +149,37 @@ namespace LethalDiseases.Items
                 audioSource.Play();
                 var host = playerHeldBy.NetworkObject.GetHost();
                 if (!host.hasDisease) { return; }
-                nodeInLOS = host.diseaseScanNode;
+                currentNodeInLOS = host.diseaseScanNode;
                 RefreshScreen();
             }
         }
 
         void RefreshScreen()
         {
-            if (nodeInLOS == null)
+            ClearScreen();
+
+            if (currentNodeInLOS == null) { return; }
+
+            foreach (var disease in currentNodeInLOS.diseaseHost.Diseases)
             {
-                screenRenderer.enabled = false;
-                return;
+                var diseaseContentObj = Instantiate(diseaseContentPrefab, contentRect.transform);
+                DiseaseContent content = diseaseContentObj.GetComponent<DiseaseContent>();
+                content.index = diseaseContentOnScreen.Count + 1;
+                content.disease = disease;
+                diseaseContentOnScreen.Add(content);
+            }
+        }
+
+        void ClearScreen()
+        {
+            logger.LogDebug("Clearing screen");
+            foreach (var content in diseaseContentOnScreen)
+            {
+                if (content == null) { return; }
+                Destroy(content.gameObject);
             }
 
-            // TODO
+            diseaseContentOnScreen.Clear();
         }
 
         DiseaseScanNode? GetNodeInLineOfSightToPositionAngle()
@@ -155,7 +213,7 @@ namespace LethalDiseases.Items
         void ClearNodes()
         {
             DiseaseScanNode.ClearScanNodesOnScreen();
-            nodeInLOS = null;
+            currentNodeInLOS = null;
             visibleNodes.Clear();
             RefreshScreen();
         }
@@ -173,7 +231,7 @@ namespace LethalDiseases.Items
                 {
                     if (isPocketed || !isHeld) { yield break; }
                     DiseaseScanNode.EnableColliders(true);
-                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, mask);
+                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, scanMask);
                     DiseaseScanNode.EnableColliders(false);
                     logger.LogDebug($"Scanning {i}: {hitCount} hits");
                 }
@@ -192,6 +250,39 @@ namespace LethalDiseases.Items
             }
 
             scanRoutine = null;
+        }
+    }
+
+    public class DiseaseContent : MonoBehaviour
+    {
+        public TextMeshProUGUI diseaseName = null!;
+        public TextMeshProUGUI diseaseStats = null!;
+        public TextMeshProUGUI diseaseTransmissionType = null!;
+        public TextMeshProUGUI diseaseSymptoms = null!;
+
+        [HideInInspector] public Disease disease = null!;
+        [HideInInspector] public int index;
+
+        public RectTransform rt = null!;
+
+        float timeSinceRefresh;
+
+        public void Awake()
+        {
+            rt = GetComponent<RectTransform>();
+        }
+
+        public void Update()
+        {
+            timeSinceRefresh += Time.deltaTime;
+            if (timeSinceRefresh <= 1f) { return; }
+            timeSinceRefresh = 0f;
+
+            diseaseName.text = disease.name == "???" ? $"Disease {index}" : disease.name;
+            diseaseStats.text = $"Status: {(disease.isActive ? "<color=red>Active</color>" : "<color=yellow>Dormant</color>")}\n" +
+                $"Expiration: {(int)disease.timeLeft}\n";
+            diseaseTransmissionType.text = $"{disease.transmissionType}";
+            diseaseSymptoms.text = string.Join("\n", disease.GetSymptoms().Select(x => "- " + x.DisplayName));
         }
     }
 }

@@ -15,6 +15,24 @@ namespace LethalDiseases
         public float rarity = rarity;
         public Func<Disease, StatusEffect> effect = effect;
 
+        public string DisplayName
+        {
+            get
+            {
+                switch (symptomType)
+                {
+                    case SymptomType.Good:
+                        return $"- <color=green>{name}</color>";
+                    case SymptomType.Neutral:
+                        return $"- <color=yellow>{name}</color>";
+                    case SymptomType.Bad:
+                        return $"- <color=red>{name}</color>";
+                    default:
+                        return $"- {name}";
+                }
+            }
+        }
+
         public enum SymptomType
         {
             Good,

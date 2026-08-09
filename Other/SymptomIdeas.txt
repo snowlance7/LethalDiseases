@@ -20,3 +20,7 @@ you see other peoples scan nodes
 Surrounding Eyes: You have line of sight to coilheads and other creatures even when not looking at them or they arent in your line of sight
 
 display ad when ping scanning
+
+you dont see scrap values
+you see wrong scrap values
+you see inversed scrap values (high scrap is cheaper, low scrap is higher)
