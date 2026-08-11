@@ -128,26 +128,6 @@ namespace LethalDiseases
 
             switch (args[1])
             {
-                case "item":
-                    if (localPlayer.currentlyHeldObjectServer == null) { HUDManager.Instance.DisplayTip("LethalDiseases", "Couldn't find item to infect. To infect an item with this command, you must be holding the item."); return; }
-                    if (args.Length == 2)
-                    {
-                        disease = Disease.CreateRandomDisease();
-                        if (now) { disease.latency = 0; }
-                        localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
-                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.id}");
-                        return;
-                    }
-
-                    symptomName = args[1].Replace("_", " ");
-                    symptomIndex = Symptom.GetSymptomIndexByName(symptomName);
-                    if (symptomIndex == -1) { HUDManager.Instance.DisplayTip("LethalDiseases", $"Couldn't find symptom with name '{symptomName}'"); return; }
-                    disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
-
-                    if (now) { disease.latency = 0; }
-                    localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
-                    HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.id}");
-                    break;
                 case "enemy":
                     if (args.Length == 2)
                     {
@@ -167,14 +147,37 @@ namespace LethalDiseases
                     nextEnemyDisease = disease;
                     HUDManager.Instance.DisplayTip("LethalDiseases", $"Infecting next enemy spawn with disease {disease.id}"); break;
                 default:
-                    symptomName = args[1].Replace("_", " ");
-                    symptomIndex = Symptom.GetSymptomIndexByName(symptomName);
-                    if (symptomIndex == -1) { HUDManager.Instance.DisplayTip("LethalDiseases", $"Couldn't find symptom with name '{symptomName}'"); return; }
-                    disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
+                    if (localPlayer.currentlyHeldObjectServer != null)
+                    {
+                        if (args.Length == 2)
+                        {
+                            disease = Disease.CreateRandomDisease();
+                            if (now) { disease.latency = 0; }
+                            localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
+                            HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.id}");
+                            return;
+                        }
 
-                    if (now) { disease.latency = 0; }
-                    localPlayer.NetworkObject.Infect(disease);
-                    HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.id}");
+                        symptomName = args[1].Replace("_", " ");
+                        symptomIndex = Symptom.GetSymptomIndexByName(symptomName);
+                        if (symptomIndex == -1) { HUDManager.Instance.DisplayTip("LethalDiseases", $"Couldn't find symptom with name '{symptomName}'"); return; }
+                        disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
+
+                        if (now) { disease.latency = 0; }
+                        localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
+                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.id}");
+                    }
+                    else
+                    {
+                        symptomName = args[1].Replace("_", " ");
+                        symptomIndex = Symptom.GetSymptomIndexByName(symptomName);
+                        if (symptomIndex == -1) { HUDManager.Instance.DisplayTip("LethalDiseases", $"Couldn't find symptom with name '{symptomName}'"); return; }
+                        disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
+
+                        if (now) { disease.latency = 0; }
+                        localPlayer.NetworkObject.Infect(disease);
+                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.id}");
+                    }
                     break;
             }
         }

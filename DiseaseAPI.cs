@@ -139,15 +139,19 @@ namespace LethalDiseases
             foreach (var diseaseHost in GameObject.FindObjectsOfType<DiseaseHost>())
             {
                 if (!diseaseHost.hasDisease) { continue; }
-                logger?.LogDebug(diseaseHost.gameObject.name + ":");
+                logger?.LogInfo(diseaseHost.gameObject.name + ":");
+                List<string> diseaseNames = [];
                 foreach (Disease disease in diseaseHost.Diseases)
                 {
-                    logger?.LogDebug($"- {disease.name}:{disease.id}");
+                    string diseaseName = $"{disease.name}:{disease.id}";
+                    diseaseNames.Add(diseaseName);
+                    logger?.LogInfo("- " + diseaseName);
                     foreach (var symptom in disease.symptoms)
                     {
-                        logger?.LogDebug($"-- {Symptom.symptomList[symptom].name}");
+                        logger?.LogInfo($"-- {Symptom.symptomList[symptom].name}");
                     }
                 }
+                Utils.Ping(diseaseHost.diseaseScanNode.scanNode.transform.position, diseaseHost.gameObject.name, string.Join("|", diseaseNames), destroyTime: 30f);
             }
         }
     }
