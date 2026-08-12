@@ -12,7 +12,7 @@ namespace LethalDiseases
         public Collider collider = null!;
 
         [HideInInspector] public DiseaseHost diseaseHost = null!;
-        [HideInInspector] public Collider parentCollider = null!;
+        [HideInInspector] public Collider? parentCollider;
 
         public int elementIndex;
 
