@@ -244,7 +244,7 @@ namespace LethalDiseases.Items
                 if (hit.transform != null && hit.collider.TryGetComponentInChildren(out DiseaseScanNode? diseaseScanNode) && diseaseScanNode != null && diseaseScanNode.diseaseHost != null && diseaseScanNode.diseaseHost.player != playerHeldBy && diseaseScanNode.diseaseHost.hasDisease)
                 {
                     logger.LogDebug("Setting scan node"); // TODO: Make sure this works on enemies and players
-                    diseaseScanNode.SetScanNode(diseaseScanNode.diseaseHost.Diseases.Count > 1 ? $"{diseaseScanNode.diseaseHost.Diseases.Count} diseases detected" : "1 disease detected", string.Join("\n", diseaseScanNode.diseaseHost.Diseases.Select((d) => " - " + d.name)), (int)scanDistance * 2, requiresLineOfSight: false);
+                    diseaseScanNode.SetScanNode(diseaseScanNode.diseaseHost.Diseases.Count > 1 ? $"{diseaseScanNode.diseaseHost.Diseases.Count} diseases detected" : "1 disease detected", string.Join("\n", diseaseScanNode.diseaseHost.Diseases.Select((d) => "- " + d.name)), (int)scanDistance * 2, requiresLineOfSight: false);
                     visibleNodes.Add(diseaseScanNode);
                 }
             }

@@ -114,7 +114,7 @@ namespace LethalDiseases
         static void Debug_Infect(string[] args, bool now = false)
         {
             Disease disease;
-            if (args.Length == 1)
+            if (args.Length == 1 && localPlayer.currentlyHeldObjectServer == null)
             {
                 disease = Disease.CreateRandomDisease();
                 if (now) { disease.latency = 0; }
