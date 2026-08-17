@@ -641,6 +641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   diseaseName: {fileID: 2965723529439233948}
   diseaseStats: {fileID: 726729076537756717}
+  diseaseTransmissionTypeLabel: {fileID: 5444197705024765360}
   diseaseTransmissionType: {fileID: 6356109137357183680}
   diseaseSymptoms: {fileID: 1311538204733299267}
   index: 0

@@ -53,7 +53,9 @@ namespace LethalDiseases
         public int[] symptoms = [];
 
         public bool isActive { get; private set; }
+
         public float elapsedTime;
+        public float elapsedTimeMultiplier;
         public float timeLeft => isActive ? strengthTime - elapsedTime : (host != null && host.hasActor ? (strengthTime + latencyTime) - elapsedTime : stabilityTime - elapsedTime);
 
         float timeSinceSpreadUpdate;
@@ -230,7 +232,7 @@ namespace LethalDiseases
 
         internal void Update(float deltaTime)
         {
-            elapsedTime += deltaTime;
+            elapsedTime += deltaTime * elapsedTimeMultiplier;
             timeSinceSpreadUpdate += deltaTime;
 
             if (host == null)

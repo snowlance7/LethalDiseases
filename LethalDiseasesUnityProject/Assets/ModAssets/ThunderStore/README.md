@@ -16,3 +16,4 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Temperature Scanner](https://skfb.ly/ovPSK) by SchrisArt
 - [Retro Scanner](https://skfb.ly/oZSvv) by fizakhan1
 - [Eve Hypo](https://skfb.ly/oqUFX) by DealwithTheDevil
+- [Cotton Swabs](https://skfb.ly/o8qxV) by lsmine0

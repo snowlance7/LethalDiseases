@@ -22,13 +22,13 @@ namespace LethalDiseases
                 switch (symptomType)
                 {
                     case SymptomType.Good:
-                        return $"- <color=green>{name}</color>";
+                        return $"<color=green>{name}</color>";
                     case SymptomType.Neutral:
-                        return $"- <color=yellow>{name}</color>";
+                        return $"<color=yellow>{name}</color>";
                     case SymptomType.Bad:
-                        return $"- <color=red>{name}</color>";
+                        return $"<color=red>{name}</color>";
                     default:
-                        return $"- {name}";
+                        return $"{name}";
                 }
             }
         }

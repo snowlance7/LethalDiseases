@@ -22,7 +22,7 @@ MonoBehaviour:
   disallowUtilitySlot: 0
   weight: 1
   itemIsTrigger: 0
-  holdButtonUse: 1
+  holdButtonUse: 0
   itemSpawnsOnGround: 1
   isConductiveMetal: 0
   isScrap: 0
@@ -54,6 +54,7 @@ MonoBehaviour:
   isDefensiveWeapon: 0
   toolTips:
   - Extract [LMB]
+  - Empty [Q]
   verticalOffset: 0
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1

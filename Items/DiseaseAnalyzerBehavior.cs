@@ -257,6 +257,7 @@ namespace LethalDiseases.Items
     {
         public TextMeshProUGUI diseaseName = null!;
         public TextMeshProUGUI diseaseStats = null!;
+        public TextMeshProUGUI diseaseTransmissionTypeLabel = null!;
         public TextMeshProUGUI diseaseTransmissionType = null!;
         public TextMeshProUGUI diseaseSymptoms = null!;
 
@@ -281,6 +282,7 @@ namespace LethalDiseases.Items
             diseaseName.text = disease.name == "???" ? $"Disease {index}" : disease.name;
             diseaseStats.text = $"Status: {(disease.isActive ? "<color=red>Active</color>" : "<color=yellow>Dormant</color>")}\n" +
                 $"Expiration: {(int)disease.timeLeft}\n";
+            diseaseTransmissionTypeLabel.text = "Type:";
             diseaseTransmissionType.text = $"{disease.transmissionType}";
             diseaseSymptoms.text = string.Join("\n", disease.GetSymptoms().Select(x => "- " + x.DisplayName));
         }

@@ -1,4 +1,5 @@
 using HarmonyLib;
+using LethalDiseases.Items;
 using SnowyLib;
 using static LethalDiseases.Plugin;
 
