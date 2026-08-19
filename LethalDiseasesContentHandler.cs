@@ -31,12 +31,16 @@ namespace LethalDiseases
         public class BioSamplerAssets(DuskMod mod, string filePath) : AssetBundleLoader<BioSamplerAssets>(mod, filePath) { }
         public BioSamplerAssets? BioSampler;
 
+        public class ChemistryStationAssets(DuskMod mod, string filePath) : AssetBundleLoader<ChemistryStationAssets>(mod, filePath) { }
+        public ChemistryStationAssets? ChemistryStation;
+
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
             RegisterContent("disease_assets", out DiseaseAssets);
             RegisterContent("disease_scanner", out DiseaseScanner);
             RegisterContent("disease_analyzer", out DiseaseAnalyzer);
             RegisterContent("biosampler", out BioSampler);
+            RegisterContent("chemistry_station", out ChemistryStation);
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using SnowyLib;
+﻿using LethalDiseases.Unlockables;
+using SnowyLib;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,27 +9,37 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class BiosamplerBehavior : PhysicsProp
+    internal class BiosamplerBehavior : PhysicsProp, IChemistryIngredient
     {
         public SkinnedMeshRenderer fluidRender = null!;
 
-        public string[] filledDiseases = [];
+        public List<string> filledDiseases = [];
 
-        public bool isFilled;
+        public bool isFilled => filledDiseases.Count >= maxDiseases;
 
         public bool freezingLocalPlayer;
 
         Coroutine? routine;
 
-        bool stabbingSelf;
-
         const float fillTime = 1.5f;
+
+        int maxDiseases = 4;
+
+        ChemistryIngredient IChemistryIngredient.GetInputIngredient()
+        {
+            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRender.material.color, fluidRender.material.GetColor("_EmissionColor"), fluidRender.material.GetFloat("_EmissionIntensity")), string.Join("^", filledDiseases));
+        }
+
+        void IChemistryIngredient.OnOutputIngredient(string specialInstructions)
+        {
+            return;
+        }
 
         public void Awake()
         {
             itemProperties.positionOffset = new Vector3(-0.25f, 0.14f, -0.05f);
             itemProperties.rotationOffset = new Vector3(90, 80, 0);
-            itemProperties.floorYOffset = 0;
+            itemProperties.floorYOffset = 1;
             itemProperties.grabAnim = "HoldKnife";
         }
 
@@ -68,57 +80,17 @@ namespace LethalDiseases.Items
             DoStabAnimation();
         }
 
-        public override void ItemInteractLeftRight(bool right) // TODO: Fix this and dont do switch mode functionality
+        public override void ItemInteractLeftRight(bool right)
         {
             base.ItemInteractLeftRight(right);
-            if (right || !isFilled) { return; }
+            if (right || filledDiseases.Count == 0) { return; }
 
-            if (right) // E
-            {
-                stabbingSelf = !stabbingSelf;
-            }
-            else if (isFilled) // Q
-            {
-                EmptyRpc();
-            }
+            EmptyRpc();
         }
 
-        public void DoTestStabAnimation()
+        public float GetFillAmount(int diseaseCount)
         {
-            IEnumerator doTestStabAnimation()
-            {
-                yield return null;
-
-                playerHeldBy.playerBodyAnimator.SetTrigger("UseHeldItem1"); // Stab animation
-
-                yield return new WaitForSeconds(11f / 60f);
-
-                freezingLocalPlayer = true;
-                playerHeldBy.FreezePlayer(true);
-                playerHeldBy.playerBodyAnimator.speed = 0f;
-                fluidRender.enabled = true;
-
-                float elapsedTime = 0f;
-
-                while (elapsedTime < fillTime)
-                {
-                    yield return null;
-                    elapsedTime += Time.deltaTime;
-                    fluidRender.SetBlendShapeWeight(0, Mathf.Lerp(100, 0, elapsedTime / fillTime));
-                }
-
-                fluidRender.SetBlendShapeWeight(0, 0);
-                playerHeldBy.FreezePlayer(false);
-                freezingLocalPlayer = false;
-                playerHeldBy.playerBodyAnimator.speed = 1f;
-                playerHeldBy.activatingItem = false;
-
-                isFilled = true;
-                routine = null;
-            }
-
-            playerHeldBy.activatingItem = true;
-            routine = StartCoroutine(doTestStabAnimation());
+            return 100 - ((diseaseCount / maxDiseases) * 100);
         }
 
         public void DoStabAnimation()
@@ -132,9 +104,9 @@ namespace LethalDiseases.Items
                 yield return new WaitForSeconds(11f / 60f);
 
                 float closestDistance = 0f;
-                DiseaseHost? host = stabbingSelf ? playerHeldBy.NetworkObject.GetHost() : DiseaseHost.Instances.Where(x => x.hasActor && x.hasDisease && x.player != playerHeldBy).GetClosestToPosition(transform.position, (x) => x.transform.position, out closestDistance, fastDistanceCheck: true);
+                DiseaseHost? host = DiseaseHost.Instances.Where(x => x.hasActor && x.hasDisease && x.player != playerHeldBy).GetClosestToPosition(transform.position, (x) => x.transform.position, out closestDistance, fastDistanceCheck: true);
 
-                if (host == null || (!stabbingSelf && closestDistance > 1.5f))
+                if (host == null || closestDistance > 1.5f)
                 {
                     playerHeldBy.activatingItem = false;
                     routine = null;
@@ -146,13 +118,17 @@ namespace LethalDiseases.Items
                 playerHeldBy.playerBodyAnimator.speed = 0f;
                 fluidRender.enabled = true;
 
+                float currentFillAmount = GetFillAmount(filledDiseases.Count);
+                List<string> addingDiseases = host.DiseaseIds.Take(maxDiseases - filledDiseases.Count).ToList();
+                float newFillAmount = GetFillAmount((addingDiseases.Count + filledDiseases.Count));
+
                 float elapsedTime = 0f;
 
                 while (elapsedTime < fillTime)
                 {
                     yield return null;
                     elapsedTime += Time.deltaTime;
-                    fluidRender.SetBlendShapeWeight(0, Mathf.Lerp(100, 0, elapsedTime / fillTime));
+                    fluidRender.SetBlendShapeWeight(0, Mathf.Lerp(currentFillAmount, newFillAmount, elapsedTime / fillTime));
                 }
 
                 fluidRender.SetBlendShapeWeight(0, 0);
@@ -161,7 +137,7 @@ namespace LethalDiseases.Items
                 playerHeldBy.playerBodyAnimator.speed = 1f;
                 playerHeldBy.activatingItem = false;
 
-                FillRpc(string.Join("|", host.DiseaseIds));
+                FillRpc(string.Join("^", host.DiseaseIds));
                 routine = null;
             }
 
@@ -175,13 +151,14 @@ namespace LethalDiseases.Items
             {
                 yield return null;
 
+                float currentFillAmount = GetFillAmount(filledDiseases.Count);
                 float elapsedTime = 0f;
 
                 while (elapsedTime < fillTime)
                 {
                     yield return null;
                     elapsedTime += Time.deltaTime;
-                    fluidRender.SetBlendShapeWeight(0, Mathf.Lerp(0, 100, elapsedTime / fillTime));
+                    fluidRender.SetBlendShapeWeight(0, Mathf.Lerp(currentFillAmount, 100, elapsedTime / fillTime));
                 }
 
                 fluidRender.SetBlendShapeWeight(0, 100);
@@ -197,15 +174,15 @@ namespace LethalDiseases.Items
         public void EmptyRpc()
         {
             filledDiseases = [];
-            isFilled = false;
             DoEmptyAnimation();
         }
 
         [Rpc(SendTo.Everyone)]
         public void FillRpc(string diseases)
         {
-            filledDiseases = diseases.Split("|");
-            isFilled = true;
+            filledDiseases.AddRange(diseases.Split("^"));
+            float currentFillAmount = GetFillAmount(filledDiseases.Count);
+            fluidRender.SetBlendShapeWeight(0, currentFillAmount);
         }
     }
 }
