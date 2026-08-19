@@ -14,7 +14,7 @@ namespace LethalDiseases.Patches
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ShowerTrigger), nameof(ShowerTrigger.AddPlayerToShower))]
-        static void ShowerTrigger_AddPlayerToShower_Postfix(PlayerControllerB playerScript)
+        static void ShowerTrigger_AddPlayerToShower_Postfix(PlayerControllerB playerScript) // TODO: Test this
         {
             try
             {

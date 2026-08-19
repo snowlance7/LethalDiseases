@@ -68,25 +68,19 @@ namespace LethalDiseases.Items
             DoStabAnimation();
         }
 
-        public override void ItemInteractLeftRight(bool right)
+        public override void ItemInteractLeftRight(bool right) // TODO: Fix this and dont do switch mode functionality
         {
             base.ItemInteractLeftRight(right);
+            if (right || !isFilled) { return; }
 
             if (right) // E
             {
                 stabbingSelf = !stabbingSelf;
-                SetControlTipsForItem();
             }
             else if (isFilled) // Q
             {
                 EmptyRpc();
             }
-        }
-
-        public override void SetControlTipsForItem()
-        {
-            string[] toolTips = [stabbingSelf ? "Self Extract [LMB]" : "Extract [LMB]", "Mode Switch [E]", "Empty [Q]"];
-            HUDManager.Instance.ChangeControlTipMultiple(toolTips, holdingItem: localPlayer == playerHeldBy, itemProperties);
         }
 
         public void DoTestStabAnimation()
