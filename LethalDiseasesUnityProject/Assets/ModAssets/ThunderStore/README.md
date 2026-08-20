@@ -19,4 +19,3 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Cotton Swabs](https://skfb.ly/o8qxV) by lsmine0
 - [Assorted Bottle - Chemical Lab](https://skfb.ly/oST6v) by kane_sk06
 - [#3 Chemistry Dangerous - 3December2019](https://skfb.ly/6Rvyy) by Canary Games
-- [Single Counter](https://skfb.ly/6pMIy) by grimren13

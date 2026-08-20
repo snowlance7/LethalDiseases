@@ -52,10 +52,10 @@ namespace LethalDiseases.Unlockables
 
         public void Update()
         {
-            input1TriggerCollider.enabled = input1Ingredient == null;
+            input1TriggerCollider.enabled = input1Ingredient == null && localPlayer.currentlyHeldObjectServer != null;
             input1Trigger.interactable = localPlayer.currentlyHeldObjectServer != null && !localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
 
-            input2TriggerCollider.enabled = input2Ingredient == null;
+            input2TriggerCollider.enabled = input2Ingredient == null && localPlayer.currentlyHeldObjectServer != null;
             input2Trigger.interactable = localPlayer.currentlyHeldObjectServer != null && !localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
 
             outputTriggerCollider.enabled = (input1Ingredient != null && input2Ingredient != null) || outputIngredient != null;
@@ -166,7 +166,7 @@ namespace LethalDiseases.Unlockables
                 PlayerControllerB? player = PlayerFromId(clientId);
                 if (player == null) { return; }
 
-                if (IsServer)
+                if (IsServer && !(player.currentlyHeldObjectServer != null && player.currentlyHeldObjectServer is IChemistryOutputContainer container && container.ReceiveChemistryOutput(outputIngredient)))
                 {
                     GrabbableObject? outputItem = Utils.SpawnItem(outputIngredient!.item.GetDawnInfo().TypedKey, player.transform.position);
                     if (outputItem != null)
@@ -254,6 +254,11 @@ namespace LethalDiseases.Unlockables
     {
         public ChemistryIngredient GetInputIngredient();
         public void OnOutputIngredient(string specialInstructions);
+    }
+
+    public interface IChemistryOutputContainer
+    {
+        public bool ReceiveChemistryOutput(ChemistryIngredient ingredient);
     }
 
     public class ChemistryIngredient(Item item, ChemistryLiquidAppearance chemistryLiquidAppearance, string specialInstructions = "")
