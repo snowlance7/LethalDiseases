@@ -11,17 +11,15 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Unlockables
 {
-    internal class ChemistryStation : NetworkBehaviour
+    internal class DistilleryStation : NetworkBehaviour
     {
         public static List<ChemistryIngredient> registeredIngredients = [];
         public static List<ChemistryRecipe> registeredRecipies = [];
 
-        public InteractTrigger input1Trigger = null!;
-        public InteractTrigger input2Trigger = null!;
+        public InteractTrigger inputTrigger = null!;
         public InteractTrigger outputTrigger = null!;
 
         public MeshRenderer input1Renderer = null!;
-        public MeshRenderer input2Renderer = null!;
         public MeshRenderer outputRenderer = null!;
 
         public AudioSource audioSource = null!;
@@ -31,11 +29,9 @@ namespace LethalDiseases.Unlockables
         public Sprite handIcon = null!;
 
         Collider input1TriggerCollider = null!;
-        Collider input2TriggerCollider = null!;
         Collider outputTriggerCollider = null!;
 
         ChemistryIngredient? input1Ingredient;
-        ChemistryIngredient? input2Ingredient;
         ChemistryIngredient? outputIngredient;
 
         ChemistryRecipe? currentlyMixingRecipe;
@@ -45,18 +41,14 @@ namespace LethalDiseases.Unlockables
 
         public void Awake()
         {
-            input1TriggerCollider = input1Trigger.GetComponent<Collider>();
-            input2TriggerCollider = input2Trigger.GetComponent<Collider>();
+            input1TriggerCollider = inputTrigger.GetComponent<Collider>();
             outputTriggerCollider = outputTrigger.GetComponent<Collider>();
         }
 
         public void Update()
         {
             input1TriggerCollider.enabled = input1Ingredient == null && localPlayer.currentlyHeldObjectServer != null;
-            input1Trigger.interactable = localPlayer.currentlyHeldObjectServer != null && !localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
-
-            input2TriggerCollider.enabled = input2Ingredient == null && localPlayer.currentlyHeldObjectServer != null;
-            input2Trigger.interactable = localPlayer.currentlyHeldObjectServer != null && !localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
+            inputTrigger.interactable = localPlayer.currentlyHeldObjectServer != null && !localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
 
             outputTriggerCollider.enabled = (input1Ingredient != null && input2Ingredient != null) || outputIngredient != null;
 
@@ -232,39 +224,13 @@ namespace LethalDiseases.Unlockables
         }
     }
 
-    public class ChemistryRecipe(ChemistryIngredient ingredientA, ChemistryIngredient ingredientB, Func<ChemistryIngredient, ChemistryIngredient, ChemistryIngredient> reaction, float mixTime = -1)
+    public class DistilleryRecipe(ChemistryIngredient ingredient, Func<ChemistryIngredient, ChemistryIngredient> reaction, float mixTime = -1)
     {
-        public ChemistryIngredient ingredientA = ingredientA;
-        public ChemistryIngredient ingredientB = ingredientB;
+        public ChemistryIngredient ingredient = ingredient;
 
-        public Func<ChemistryIngredient, ChemistryIngredient, ChemistryIngredient> reaction = reaction;
+        public Func<ChemistryIngredient, ChemistryIngredient> reaction = reaction;
         public float mixTime = mixTime;
     }
 
-    public class ChemistryFixedOutputReaction(ChemistryIngredient ingredientA, ChemistryIngredient ingredientB, ChemistryIngredient output, float mixTime = -1) : ChemistryRecipe(ingredientA, ingredientB, (ingredientA, ingredientB) => output, mixTime);
-
-    public class ChemistryLiquidAppearance(Color liquidColor, Color emissionColor, float emissionIntensity)
-    {
-        public Color liquidColor = liquidColor;
-        public Color emissionColor = emissionColor;
-        public float emissionIntensity = emissionIntensity;
-    }
-
-    public interface IChemistryIngredient
-    {
-        public ChemistryIngredient GetInputIngredient();
-        public void OnOutputIngredient(string specialInstructions);
-    }
-
-    public interface IChemistryOutputContainer
-    {
-        public bool ReceiveChemistryOutput(ChemistryIngredient ingredient);
-    }
-
-    public class ChemistryIngredient(Item item, ChemistryLiquidAppearance chemistryLiquidAppearance, string specialInstructions = "")
-    {
-        public Item item = item;
-        public ChemistryLiquidAppearance chemistryLiquidAppearance = chemistryLiquidAppearance;
-        public string specialInstructions = specialInstructions;
-    }
+    public class DistilleryFixedOutputReaction(ChemistryIngredient ingredient, ChemistryIngredient output, float mixTime = -1) : ChemistryRecipe(ingredient, (ingredient) => output, mixTime);
 }
