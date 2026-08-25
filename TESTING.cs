@@ -1,6 +1,9 @@
 using HarmonyLib;
 using LethalDiseases.Items;
 using SnowyLib;
+using System;
+using System.Collections;
+using UnityEngine;
 using static LethalDiseases.Plugin;
 
 /* bodyparts
@@ -23,6 +26,9 @@ namespace LethalDiseases
     {
         public static bool disableDiseaseSpawning = false;
         static Disease? nextEnemyDisease;
+
+        static bool goToNextSymptomInTest;
+        static bool symptomsTestRunning;
 
         [HarmonyPostfix, HarmonyPatch(typeof(HUDManager), nameof(HUDManager.PingScan_performed))]
         public static void PingScan_performedPostFix()
@@ -62,6 +68,19 @@ namespace LethalDiseases
                             logger?.LogDebug($"{symptom.name}: {symptom.description}");
                         }
                         break;
+                    case "/next":
+                        goToNextSymptomInTest = true;
+                        break;
+                    case "/symptomstest": // TODO: Use this for testing
+
+                        RunSymptomsTest();
+                        
+                        break;
+                    case "/symptomstestall": // TODO: Use this for testing
+
+                        RunSymptomsTestAll();
+
+                        break;
                     case "/diseases":
                         if (args.Length == 1)
                         {
@@ -92,6 +111,64 @@ namespace LethalDiseases
             {
                 return;
             }
+        }
+
+        public static void RunSymptomsTest()
+        {
+            logger.LogDebug("RunSymptomsTest");
+            HUDManager.Instance.DisplayTip("Server", "Starting symptoms test in 5 seconds, use /next for the next disease");
+
+            IEnumerator symptomsTest()
+            {
+                yield return null;
+
+                symptomsTestRunning = true;
+
+                yield return new WaitForSeconds(5f);
+
+                foreach (var symptom in Symptom.symptomList)
+                {
+                    HUDManager.Instance.DisplayTip(symptom.name, symptom.description);
+                    Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.symptomList.IndexOf(symptom));
+                    disease.latency = 0;
+                    localPlayer.Infect(disease);
+                    yield return new WaitUntil(() => goToNextSymptomInTest);
+                    goToNextSymptomInTest = false;
+                }
+
+                symptomsTestRunning = false;
+            }
+
+            NetworkHandler.Instance.StartCoroutine(symptomsTest());
+        }
+
+        public static void RunSymptomsTestAll()
+        {
+            HUDManager.Instance.DisplayTip("Server", "Starting symptoms test all in 5 seconds, good luck");
+
+            IEnumerator symptomsTestAll()
+            {
+                yield return null;
+
+                symptomsTestRunning = true;
+
+                yield return new WaitForSeconds(5f);
+
+                foreach (var symptom in Symptom.symptomList)
+                {
+                    Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.symptomList.IndexOf(symptom));
+                    disease.latency = 0;
+                    disease.strength = 1;
+                    disease.stability = 1;
+                    disease.transmissibility = 0;
+                    localPlayer.Infect(disease);
+                    yield return new WaitForSeconds(0.2f);
+                }
+
+                symptomsTestRunning = false;
+            }
+
+            NetworkHandler.Instance.StartCoroutine(symptomsTestAll());
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.Start))]

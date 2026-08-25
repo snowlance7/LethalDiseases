@@ -636,7 +636,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
         //    throw new NotImplementedException();
         //}
 
-        //[Symptom("Baculovirus", "", Symptom.SymptomType.Bad, 50)]
+        //[Symptom("Baculovirus", "", Symptom.SymptomType.Bad, 1)]
         //public static StatusEffect Baculovirus(Disease disease)
         //{
         //    // baculovirus. It makes caterpillars explode to infect other caterpillars. (By making them go high to the light but going to ship might be easier for coding reasons.) Not sure how hard/bad that would be but it'd be a fun zombie option
