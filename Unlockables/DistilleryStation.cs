@@ -14,75 +14,50 @@ namespace LethalDiseases.Unlockables
     internal class DistilleryStation : NetworkBehaviour
     {
         public static List<ChemistryIngredient> registeredIngredients = [];
-        public static List<ChemistryRecipe> registeredRecipies = [];
+        public static List<DistilleryRecipe> registeredRecipies = [];
 
         public InteractTrigger inputTrigger = null!;
-        public InteractTrigger outputTrigger = null!;
 
-        public MeshRenderer input1Renderer = null!;
+        public Collider inputTriggerCollider = null!;
+        public Collider outputTriggerCollider = null!;
+
+        public MeshRenderer inputRenderer = null!;
         public MeshRenderer outputRenderer = null!;
 
+        public ParticleSystem inputParticleSystem = null!;
+        public ParticleSystem outputParticleSystem = null!;
+
         public AudioSource audioSource = null!;
-        public Transform explosionPosition = null!;
 
-        public Sprite mixIcon = null!;
-        public Sprite handIcon = null!;
-
-        Collider input1TriggerCollider = null!;
-        Collider outputTriggerCollider = null!;
-
-        ChemistryIngredient? input1Ingredient;
+        ChemistryIngredient? inputIngredient;
         ChemistryIngredient? outputIngredient;
 
-        ChemistryRecipe? currentlyMixingRecipe;
+        DistilleryRecipe? currentlyMixingRecipe;
 
-        public bool mixing;
-        public float defaultMixingTime = 10f;
-
-        public void Awake()
-        {
-            input1TriggerCollider = inputTrigger.GetComponent<Collider>();
-            outputTriggerCollider = outputTrigger.GetComponent<Collider>();
-        }
+        bool mixing;
+        const float defaultMixingTime = 10f;
 
         public void Update()
         {
-            input1TriggerCollider.enabled = input1Ingredient == null && localPlayer.currentlyHeldObjectServer != null;
+            inputTriggerCollider.enabled = inputIngredient == null && localPlayer.currentlyHeldObjectServer != null;
             inputTrigger.interactable = localPlayer.currentlyHeldObjectServer != null && !localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
 
-            outputTriggerCollider.enabled = (input1Ingredient != null && input2Ingredient != null) || outputIngredient != null;
-
-            if (input1Ingredient != null && input2Ingredient != null && outputIngredient == null)
-            {
-                outputTrigger.hoverTip = "Mix [E]";
-                outputTrigger.hoverIcon = mixIcon;
-            }
-            else if (outputIngredient != null)
-            {
-                outputTrigger.hoverTip = "Take Ingredient [E]";
-                outputTrigger.hoverIcon = handIcon;
-            }
+            outputTriggerCollider.enabled = outputIngredient != null;
         }
 
-        public void Input1Trigger_Interact()
+        public void InputTrigger_Interact()
         {
             if (localPlayer.currentlyHeldObjectServer == null || localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded) { return; }
-            InputIngredientRpc(localPlayer.currentlyHeldObjectServer.NetworkObject, input1: true);
-        }
-
-        public void Input2Trigger_Interact()
-        {
-            if (localPlayer.currentlyHeldObjectServer == null || localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded) { return; }
-            InputIngredientRpc(localPlayer.currentlyHeldObjectServer.NetworkObject, input1: true);
+            InputIngredientRpc(localPlayer.currentlyHeldObjectServer.NetworkObject);
         }
 
         public void OutputTrigger_Interact()
         {
-            if ((input1Ingredient == null || input2Ingredient == null) && outputIngredient == null) { return; }
+            if (inputIngredient == null && outputIngredient == null) { return; }
             OutputTrigger_InteractRpc(localPlayer.actualClientId);
         }
 
-        public void SetFlaskColor(int flaskIndex, ChemistryLiquidAppearance color)
+        public void SetFlaskColor(bool outputFlask, ChemistryLiquidAppearance color)
         {
             Material material = outputRenderer.materials[0];
 
@@ -90,92 +65,79 @@ namespace LethalDiseases.Unlockables
             material.SetColor("_EmissionColor", color.emissionColor);
             material.SetFloat("_EmissionIntensity", color.emissionIntensity);
 
-            switch (flaskIndex)
+            if (outputFlask)
             {
-                case 1:
-                    input1Renderer.enabled = true;
-                    input1Renderer.material = material;
-                    break;
-                case 2:
-                    input2Renderer.enabled = true;
-                    input2Renderer.material = material;
-                    break;
-                case 3:
-                    outputRenderer.enabled = true;
-                    outputRenderer.material = material;
-                    break;
-                default:
-                    break;
+                outputRenderer.enabled = true;
+                outputRenderer.material = material;
+            }
+            else
+            {
+                inputRenderer.enabled = true;
+                inputRenderer.material = material;
             }
         }
 
         [Rpc(SendTo.Everyone)]
-        public void InputIngredientRpc(NetworkObjectReference netRef, bool input1)
+        public void InputIngredientRpc(NetworkObjectReference netRef)
         {
             if (!netRef.TryGet(out NetworkObject netObj)) { return; }
             if (!netObj.TryGetComponent(out GrabbableObject item)) { return; }
 
             ChemistryIngredient? ingredient = null;
+            bool despawningIngredientItem = false;
 
             if (item is IChemistryIngredient _ingredient)
                 ingredient = _ingredient.GetInputIngredient();
 
             if (ingredient == null)
-                ingredient = registeredIngredients.Where(x => x.item == item.itemProperties).FirstOrDefault();
+                despawningIngredientItem = true;
+
+            ingredient ??= registeredIngredients.Where(x => x.item == item.itemProperties).FirstOrDefault();
 
             if (ingredient == null)
             {
                 Color color = UnityEngine.Random.ColorHSV();
-                ingredient = new ChemistryIngredient(item.itemProperties, new ChemistryLiquidAppearance(color, color, 0));
+                ingredient = new ChemistryIngredient(item.itemProperties, new ChemistryLiquidAppearance(color, color, 5f));
             }
 
-            if (input1)
-            {
-                input1Ingredient = ingredient;
-                SetFlaskColor(1, ingredient.chemistryLiquidAppearance);
-            }
-            else
-            {
-                input2Ingredient = ingredient;
-                SetFlaskColor(2, ingredient.chemistryLiquidAppearance);
-            }
+            inputIngredient = ingredient;
+            SetFlaskColor(outputFlask: false, ingredient.chemistryLiquidAppearance);
+
+            currentlyMixingRecipe = registeredRecipies.Where(x => x.ingredient == inputIngredient).FirstOrDefault();
+
+            if (localPlayer == item.playerHeldBy && despawningIngredientItem)
+                localPlayer.DespawnHeldObject();
+
+            mixing = true;
+            MixIngredients();
         }
 
         [Rpc(SendTo.Everyone)]
         public void OutputTrigger_InteractRpc(ulong clientId)
         {
-            if (((input1Ingredient == null || input2Ingredient == null) && outputIngredient == null) || mixing) { return; }
+            if (outputIngredient == null || mixing) { return; }
 
-            if (input1Ingredient != null && input2Ingredient != null && outputIngredient == null) // Mixing
+            PlayerControllerB? player = PlayerFromId(clientId);
+            if (player == null) { return; }
+
+            if (IsServer && !(player.currentlyHeldObjectServer != null && player.currentlyHeldObjectServer is IChemistryOutputContainer container && container.ReceiveChemistryOutput(outputIngredient)))
             {
-                currentlyMixingRecipe = registeredRecipies.Where(x => (x.ingredientA == input1Ingredient && x.ingredientB == input2Ingredient) || (x.ingredientA == input2Ingredient && x.ingredientB == input1Ingredient)).FirstOrDefault();
-
-                mixing = true;
-                MixIngredients();
-            }
-            else if (outputIngredient != null) // Taking ingredient
-            {
-                PlayerControllerB? player = PlayerFromId(clientId);
-                if (player == null) { return; }
-
-                if (IsServer && !(player.currentlyHeldObjectServer != null && player.currentlyHeldObjectServer is IChemistryOutputContainer container && container.ReceiveChemistryOutput(outputIngredient)))
+                GrabbableObject? outputItem = Utils.SpawnItem(outputIngredient!.item.GetDawnInfo().TypedKey, player.transform.position);
+                if (outputItem != null)
                 {
-                    GrabbableObject? outputItem = Utils.SpawnItem(outputIngredient!.item.GetDawnInfo().TypedKey, player.transform.position);
-                    if (outputItem != null)
+                    IEnumerator sendSpawnOutputIngredient()
                     {
-                        IEnumerator sendSpawnOutputIngredient()
-                        {
-                            yield return new WaitUntil(() => outputItem.NetworkObject != null && outputItem.NetworkObject.IsSpawned);
-                            SpawnOutputIngredientRpc(clientId, outputItem.NetworkObject, outputIngredient.specialInstructions);
-                        }
-
-                        StartCoroutine(sendSpawnOutputIngredient());
+                        yield return new WaitUntil(() => outputItem.NetworkObject != null && outputItem.NetworkObject.IsSpawned);
+                        SpawnOutputIngredientRpc(clientId, outputItem.NetworkObject, outputIngredient.specialInstructions);
                     }
-                }
 
-                outputRenderer.enabled = false;
-                outputIngredient = null;
+                    StartCoroutine(sendSpawnOutputIngredient());
+                }
             }
+
+            outputParticleSystem.Stop();
+            outputRenderer.enabled = false;
+            outputIngredient = null;
         }
 
         [Rpc(SendTo.Everyone)]
@@ -198,6 +160,8 @@ namespace LethalDiseases.Unlockables
                 yield return null;
 
                 // TODO: Mix animations and sounds here
+                inputParticleSystem.Play();
+                audioSource.Play();
 
                 float mixTime = currentlyMixingRecipe != null && currentlyMixingRecipe.mixTime > 0 ? currentlyMixingRecipe.mixTime : defaultMixingTime;
 
@@ -205,18 +169,14 @@ namespace LethalDiseases.Unlockables
 
                 if (currentlyMixingRecipe != null)
                 {
-                    outputIngredient = currentlyMixingRecipe.reaction.Invoke(input1Ingredient!, input2Ingredient!);
-                    SetFlaskColor(3, outputIngredient.chemistryLiquidAppearance);
-                }
-                else
-                {
-                    Landmine.SpawnExplosion(explosionPosition.position, true, killRange: 0, nonLethalDamage: 5, physicsForce: 5f);
+                    outputIngredient = currentlyMixingRecipe.reaction.Invoke(inputIngredient!);
+                    SetFlaskColor(outputFlask: true, outputIngredient.chemistryLiquidAppearance);
                 }
 
-                input1Ingredient = null;
-                input2Ingredient = null;
-                input1Renderer.enabled = false;
-                input2Renderer.enabled = false;
+                inputParticleSystem.Stop();
+                outputParticleSystem.Play();
+                inputIngredient = null;
+                inputRenderer.enabled = false;
                 mixing = false;
             }
 
@@ -232,5 +192,5 @@ namespace LethalDiseases.Unlockables
         public float mixTime = mixTime;
     }
 
-    public class DistilleryFixedOutputReaction(ChemistryIngredient ingredient, ChemistryIngredient output, float mixTime = -1) : ChemistryRecipe(ingredient, (ingredient) => output, mixTime);
+    public class DistilleryFixedOutputReaction(ChemistryIngredient ingredient, ChemistryIngredient output, float mixTime = -1) : DistilleryRecipe(ingredient, (ingredient) => output, mixTime);
 }

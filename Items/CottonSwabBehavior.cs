@@ -6,6 +6,8 @@ namespace LethalDiseases.Items
 {
     internal class CottonSwabBehavior : PhysicsProp, IChemistryIngredient
     {
+        public MeshRenderer tipRenderer = null!;
+
         public string disease = "";
 
         public void Awake()
