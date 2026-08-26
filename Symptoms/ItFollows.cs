@@ -20,7 +20,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (!disease.hasActor) { return; }
                 NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
-            }, disease.id, "ItFollows", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "ItFollows", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [StaticUpdate]

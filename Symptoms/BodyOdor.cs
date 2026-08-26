@@ -20,7 +20,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 networkHandler.RemoveSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject);
-            }, disease.id, "BodyOdor", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "BodyOdor", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

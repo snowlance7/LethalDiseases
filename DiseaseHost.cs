@@ -57,14 +57,15 @@ namespace LethalDiseases
         public void AddDisease(Disease disease)
         {
             if (ImmuneDiseases.Contains(disease)) { return; }
-            var id = disease.id;
+            var id = disease.ToString();
             disease.host = this;
+            disease.frozen = false;
             DiseaseIds.Add(id);
             ImmuneDiseaseIds.Add(id);
             Diseases.Add(disease);
             ImmuneDiseases.Add(disease);
 
-            logger?.LogDebug($"Infected {GetInfectedName()} with disease {disease.name}:{disease.id}");
+            logger?.LogDebug($"Infected {GetInfectedName()} with disease {disease.name}:{disease.ToString()}");
         }
 
         void CreateDiseaseScanNode()

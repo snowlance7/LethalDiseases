@@ -157,7 +157,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (disease.player == null) { return; }
                 disease.player.criticallyInjured = true;
                 disease.player.playerBodyAnimator.SetBool("Limp", value: true);
-            }, disease.id, "Broken Legs", disease.strengthTime, SetHighestDurationAndDeny, onRemove: (effect) =>
+            }, disease.ToString(), "Broken Legs", disease.strengthTime, SetHighestDurationAndDeny, onRemove: (effect) =>
             {
                 if (disease.player == null) { return; }
                 disease.player.criticallyInjured = false;
@@ -173,7 +173,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (disease.player == null) { return; }
                 disease.player.PlayQuickSpecialAnimation(1.5f);
                 disease.player.playerBodyAnimator.SetTrigger("SA_PushLeverBack");
-            }, disease.id, "Clumsiness", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Clumsiness", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Buttery Fingers", "Periodically drop what you're holding", Symptom.SymptomType.Bad, 50)]
@@ -183,7 +183,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.player == null) { return; }
                 disease.player.DiscardHeldObject();
-            }, disease.id, "Buttery Fingers", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Buttery Fingers", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Infested", "Periodically spawn hoarderbugs around you", Symptom.SymptomType.Bad, 50)]
@@ -194,7 +194,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (disease.player == null) { return; }
                 if (!disease.player.isInsideFactory || UnityEngine.Random.Range(0, 2) == 1) { return; }
                 SnowyLib.NetworkHandler.Instance.SpawnEnemyRpc(EnemyKeys.Hoardingbug, disease.player.transform.position - disease.player.transform.forward);
-            }, disease.id, "Infested", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Infested", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Congested", "Your voice is muffled", Symptom.SymptomType.Bad, 50)]
@@ -207,7 +207,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.player == null) { return; }
                 SnowyLib.NetworkHandler.Instance.MufflePlayerRpc(disease.player.actualClientId, false);
-            }, disease.id, "Congested", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Congested", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Smoker Lungs", "You cough randomly, making noise", Symptom.SymptomType.Bad, 50)]
@@ -219,7 +219,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 networkHandler.PlaySoundEffectRpc(disease.player.actualClientId, SoundEffect.Cough, volume: 0.7f, cutoffFrequency: 1500);
                 if (disease.transmissionType == Disease.TransmissionType.Airborne)
                     disease.TrySpreadAirborne(disease.player.gameplayCamera.transform.position, 1.5f);
-            }, disease.id, "Smoker Lungs", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Smoker Lungs", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Trigger Finger", "Randomly use whatever youre holding (left mouse click)", Symptom.SymptomType.Bad, 100)]
@@ -231,7 +231,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (!disease.player.CanUseItem()) { return; }
                 if (UnityEngine.Random.Range(0, 2) == 0) { return; }
                 disease.player.currentlyHeldObjectServer?.UseItemOnClient(buttonDown: true);
-            }, disease.id, "Trigger Finger", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Trigger Finger", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Mucus Filled", "Periodically spit mucus on other player, which can spread the disease", Symptom.SymptomType.Bad, 50)]
@@ -250,8 +250,8 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     if (player == null) continue;
                     clientIds.Add(player.actualClientId);
                 }
-                networkHandler.SlimePlayersRpc(clientIds.ToArray(), disease.id); // TODO: Test this
-            }, disease.id, "Mucus Filled", disease.strengthTime, SetHighestDurationAndDeny);
+                networkHandler.SlimePlayersRpc(clientIds.ToArray(), disease.ToString()); // TODO: Test this
+            }, disease.ToString(), "Mucus Filled", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Lightheaded", "Get dizzy when running too much", Symptom.SymptomType.Bad, 50)]
@@ -261,7 +261,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.player == null) { return; }
                 disease.player.drunkness = Mathf.Max(disease.player.drunkness, 0.4f);
-            }, false, disease.id, 0, 0, "Lightheaded", disease.strengthTime, SetHighestDurationAndDeny);
+            }, false, disease.ToString(), 0, 0, "Lightheaded", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Nausea", "Get the TZP effect periodically and throw up if moving too much during it", Symptom.SymptomType.Bad, 50)]
@@ -301,7 +301,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     networkHandler.PlacePukeDecalRpc(disease.player.transform.position + disease.player.transform.up, Vector3.down);
                     playerThrewUp = true;
                 }
-            }, onEndAction: () => { }, disease.id, "Nausea", disease.strengthTime, SetHighestDurationAndDeny);
+            }, onEndAction: () => { }, disease.ToString(), "Nausea", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Klepto", "Randomly and periodically take items from nearby players", Symptom.SymptomType.Bad, 50)]
@@ -315,7 +315,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (grabbable == null || localPlayer.FirstEmptyItemSlot(grabbable) == -1) { return; }
                 networkHandler.PlayerDiscardHeldObjectRpc(player.actualClientId);
                 localPlayer.GrabGrabbableObject(grabbable);
-            }, disease.id, "Klepto", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Klepto", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Cursed", "Spawns a ghost girl that targets you", Symptom.SymptomType.Bad, 1)] // Spawn ghost girl
@@ -326,7 +326,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (disease.player == null || StartOfRound.Instance.inShipPhase) { return; }
                 if (RoundManager.Instance.SpawnedEnemies.Any(x => x is DressGirlAI girl && girl.hauntingPlayer == disease.player)) { return; }
                 networkHandler.SpawnGhostGirlRpc(disease.player.actualClientId);
-            }, disease.id, "Cursed", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Cursed", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Aquaphobia", "You fear water", Symptom.SymptomType.Neutral, 50)]
@@ -340,7 +340,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 if (player == null) { return; }
                 if (player.isInsideFactory || !Physics.Raycast(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward, 100f, mask)) { return; }
                 player.JumpToFearLevel(1f);
-            }, disease.id, "Aquaphobia", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Aquaphobia", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Paranoia", "You hear things you shouldnt", Symptom.SymptomType.Bad, 50)]
@@ -352,7 +352,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 var clips = audioLibrary.GetClips(SoundEffect.Paranoia.ToString());
                 var pos = RoundManager.Instance.GetRandomPositionInRadius(localPlayer.transform.position, 1f, 15f);
                 Utils.PlaySoundAtPosition(pos, clips, max3DDistance: 20);
-            }, disease.id, "Paranoia", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Paranoia", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Necrosis", "Randomly take damage until death", Symptom.SymptomType.Bad, 50)] // TODO: Body parts that fall off and you can sell
@@ -363,7 +363,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 return new RandomIntervalActionEffect(new BoundedRange(15f, 60f), () =>
                 {
                     disease.player.DamagePlayer(1);
-                }, disease.id, "Necrosis", disease.strengthTime, SetHighestDurationAndDeny);
+                }, disease.ToString(), "Necrosis", disease.strengthTime, SetHighestDurationAndDeny);
             }
             else
             {
@@ -373,7 +373,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     {
                         disease.enemy.HitEnemyOnLocalClient(1);
                     }
-                }, disease.id, "Necrosis", disease.strengthTime, SetHighestDurationAndDeny);
+                }, disease.ToString(), "Necrosis", disease.strengthTime, SetHighestDurationAndDeny);
             }
         }
 
@@ -384,7 +384,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.player == null) { return; }
                 disease.player.sprintMeter = Mathf.Clamp(disease.player.sprintMeter, 0, 0.75f);
-            }, disease.id, "Burnt Lungs", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Burnt Lungs", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
 
@@ -397,7 +397,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 var clips = audioLibrary.GetClips(SoundEffect.Duck.ToString());
                 var pos = RoundManager.Instance.GetRandomPositionInRadius(localPlayer.transform.position, 1f, 15f);
                 Utils.PlaySoundAtPosition(pos, clips, max3DDistance: 20);
-            }, disease.id, "Anitidaephobia", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Anitidaephobia", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Anarchist", "Randomly summon landmines in front of you", Symptom.SymptomType.Bad, 50)]
@@ -407,7 +407,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (disease.hasActor)
                     networkHandler.SpawnMapObjectRpc(MapObjectKeys.Landmine, disease.networkObject.gameObject.transform.position + disease.networkObject.gameObject.transform.forward * 2);
-            }, disease.id, "Anarchist", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Anarchist", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("IBS", "You explode on death", Symptom.SymptomType.Bad, 50)]
@@ -419,7 +419,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     networkHandler.SpawnExplosionRpc(disease.player.transform.position, true);
                 if (disease.enemy != null && disease.enemy.isEnemyDead)
                     networkHandler.SpawnExplosionRpc(disease.enemy.transform.position, true);
-            }, disease.id, "IBS", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "IBS", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Dementia", "Randomly teleport to a location periodically", Symptom.SymptomType.Bad, 50)] // TODO: Make them drop an item before teleporting
@@ -431,7 +431,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                 GameObject? node = Utils.allAINodes.GetRandom(Utils.randomLocal);
                 if (node == null) { return; }
                 disease.player.TeleportPlayer(node.transform.position);
-            }, disease.id, "Dementia", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Dementia", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Claustrophobia", "You fear being inside", Symptom.SymptomType.Bad, 50)]
@@ -441,7 +441,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
             {
                 if (localPlayer.isInsideFactory)
                     localPlayer.JumpToFearLevel(1f);
-            }, disease.id, "Claustrophobia", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Claustrophobia", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("MAD", "You kill the nearest living thing on death", Symptom.SymptomType.Neutral, 50)]
@@ -462,7 +462,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                         player.KillPlayerServerRpc(-1, true, Vector3.zero, 0, 0, Vector3.zero, false); // TODO: Test
                     }
                 }
-            }, disease.id, "IBS", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "IBS", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Split Personality", "Randomly swap positions with a random player periodically", Symptom.SymptomType.Bad, 10)]
@@ -478,7 +478,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                     disease.player.TeleportPlayer(randomPlayer.transform.position);
                     networkHandler.TeleportPlayerRpc(randomPlayer.actualClientId, playerPosition); // TODO: Test
                 }
-            }, disease.id, "Split Personality", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Split Personality", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [Symptom("Narcissism", "Everyone is invisible to you", Symptom.SymptomType.Bad, 50)]
@@ -503,7 +503,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
                         player.MakePlayerInvisible(false);
                     }
                 }
-            }, disease.id, "Narcissism", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Narcissism", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         //[Symptom("Arachnophobia", "Spiders instakill you", Symptom.SymptomType.Bad, 50)]
@@ -574,7 +574,7 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
         //        {
 
         //        }
-        //    }, disease.id, "", disease.strengthTime, SetHighestDurationAndDeny);
+        //    }, disease.ToString(), "", disease.strengthTime, SetHighestDurationAndDeny);
         //}
 
         //[Symptom("Mute", "Cant use comms to speak", Symptom.SymptomType.Bad, 50)]

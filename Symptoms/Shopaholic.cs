@@ -18,7 +18,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected["Shopaholic"] = false;
-            }, disease.id, "Shopaholic", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Shopaholic", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

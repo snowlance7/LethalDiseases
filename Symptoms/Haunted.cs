@@ -18,7 +18,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
-            }, disease.id, "Haunted", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Haunted", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

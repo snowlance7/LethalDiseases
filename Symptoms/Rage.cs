@@ -18,7 +18,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 NetworkHandler.Instance.AddSymptomAffectedObjectRpc("Rage", disease.player.NetworkObject);
-            }, disease.id, "Rage", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Rage", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

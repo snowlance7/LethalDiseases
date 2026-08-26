@@ -18,7 +18,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Scaly", disease.player.NetworkObject);
-            }, disease.id, "Scaly", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Scaly", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

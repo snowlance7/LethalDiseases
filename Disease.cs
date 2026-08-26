@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalDiseases.Unlockables;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,7 @@ namespace LethalDiseases
     public class Disease : IEquatable<Disease>
     {
         public static Dictionary<string, string> namedDiseases = new Dictionary<string, string>();
-        string _id = string.Empty;
-        public string id { get { return GetID(); } }
-        public string name { get { return namedDiseases.TryGetValue(id, out string _name) ? _name : "???"; } }
+        public string name { get { return namedDiseases.TryGetValue(ToString(), out string _name) ? _name : "???"; } }
 
         // How long it lasts
         public float strength { get; internal set; }
@@ -38,6 +37,7 @@ namespace LethalDiseases
         [System.Flags]
         public enum TransmissionType
         {
+            None = 0,
             Airborne = 1 << 0, // 1
             Contact = 1 << 1, // 2
             Blood = 1 << 2, // 4 // TODO
@@ -61,6 +61,8 @@ namespace LethalDiseases
         float timeSinceSpreadUpdate;
 
         public float nextPeriodicTriggerTime;
+
+        public bool frozen = true;
 
         public DiseaseHost? host;
 
@@ -155,7 +157,7 @@ namespace LethalDiseases
             return disease;
         }
 
-        string GetID()
+        public override string ToString()
         {
             // Ensure consistent float formatting
             string Format(float f) => f.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
@@ -173,7 +175,7 @@ namespace LethalDiseases
                    $"{symptomPart}";
         }
 
-        public static Disease? GetDiseaseFromID(string id)
+        public static Disease? GetDiseaseFromString(string id)
         {
             var parts = id.Split('|');
 
@@ -232,6 +234,8 @@ namespace LethalDiseases
 
         internal void Update(float deltaTime)
         {
+            if (frozen) { return; }
+
             elapsedTime += deltaTime * elapsedTimeMultiplier;
             timeSinceSpreadUpdate += deltaTime;
 
@@ -316,7 +320,33 @@ namespace LethalDiseases
 
         public bool Equals(Disease other)
         {
-            return this.id == other.id;
+            return this.ToString() == other.ToString();
+        }
+
+        public static Disease MergeDiseases(IEnumerable<Disease> diseases)
+        {
+            Disease mergedDisease = new Disease();
+
+            mergedDisease.strength = diseases.Max(d => d.strength);
+            mergedDisease.transmissibility = diseases.Max(d => d.transmissibility);
+            mergedDisease.stability = diseases.Max(d => d.stability);
+            mergedDisease.latency = diseases.Max(d => d.latency);
+
+            mergedDisease.symptoms = diseases.SelectMany(disease => disease.symptoms).Distinct().ToArray();
+            mergedDisease.transmissionType = diseases.Select(disease => disease.transmissionType).Aggregate(TransmissionType.None, (combined, type) => combined | type);
+
+            return mergedDisease;
+        }
+
+        public ChemistryLiquidAppearance GetChemistryLiquidAppearance()
+        {
+            Color color = GetColor();
+            return new ChemistryLiquidAppearance(color, Mathf.Lerp(0, 10f, transmissibility));
+        }
+
+        public Color GetColor()
+        {
+            return new Color(r: strength, g: stability, b: latency);
         }
     }
 }

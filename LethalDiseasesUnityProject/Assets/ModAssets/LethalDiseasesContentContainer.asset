@@ -21,7 +21,5 @@ MonoBehaviour:
     configName: Disease Analyzer
   - assetBundleName: biosampler
     configName: BioSampler
-  - assetBundleName: chemistry_station
-    configName: Chemistry Station
-  - assetBundleName: distillery_station
-    configName: Distillery Station
+  - assetBundleName: chemistry_table
+    configName: Chemistry Table

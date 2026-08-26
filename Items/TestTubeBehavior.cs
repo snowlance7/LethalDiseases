@@ -1,32 +1,40 @@
 ﻿using LethalDiseases.Unlockables;
 using UnityEngine;
+using static LethalDiseases.Plugin;
+using SnowyLib;
 
 namespace LethalDiseases.Items
 {
     internal class TestTubeBehavior : PhysicsProp, IChemistryIngredient
     {
-        public MeshRenderer liquidRenderer = null!;
+        public MeshRenderer fluidRenderer = null!;
 
-        public string[] filledDiseases = [];
-
-        Color liquidColor;
+        public string storedDisease = "";
 
         public ChemistryIngredient GetInputIngredient()
         {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(liquidColor, liquidColor, 5f), string.Join("^", filledDiseases));
+            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+        }
+
+        public void SetFluidColor(ChemistryLiquidAppearance color)
+        {
+            Material material = new(fluidRenderer.material);
+
+            material.color = color.liquidColor;
+            material.SetColor("_EmissionColor", color.liquidColor);
+            material.SetFloat("_EmissionIntensity", color.emissionIntensity);
+
+            fluidRenderer.material = material;
         }
 
         public void OnOutputIngredient(string specialInstructions)
         {
-            liquidRenderer.enabled = true;
-            filledDiseases = specialInstructions.Split("^");
-            liquidColor = Random.ColorHSV();
+            storedDisease = specialInstructions;
+            Disease? disease = Disease.GetDiseaseFromString(storedDisease);
 
-            Material liquidMaterial = liquidRenderer.material;
-            liquidMaterial.color = liquidColor;
-            liquidMaterial.SetColor("_EmissionColor", liquidColor);
-            liquidMaterial.SetFloat("_EmissionIntensity", 5f);
-            liquidRenderer.material = liquidMaterial;
+            if (disease != null)
+                SetFluidColor(disease.GetChemistryLiquidAppearance());
+
         }
     }
 }

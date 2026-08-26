@@ -18,7 +18,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected["ElectrolyteProficiency"] = false;
-            }, disease.id, "ElectrolyteProficiency", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "ElectrolyteProficiency", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

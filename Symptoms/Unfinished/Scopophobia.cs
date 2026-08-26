@@ -18,7 +18,7 @@
 //            {
 //                if (disease.player == null) { return; }
 //                localPlayerAffected["Scopophobia"] = false;
-//            }, disease.id, "Scopophobia", disease.strengthTime, SetHighestDurationAndDeny);
+//            }, disease.ToString(), "Scopophobia", disease.strengthTime, SetHighestDurationAndDeny);
 //        }
 //    }
 

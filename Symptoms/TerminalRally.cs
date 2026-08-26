@@ -24,7 +24,7 @@ namespace LethalDiseases.Symptoms
                     localPlayerAffected["TerminalRally"] = false;
                 if (disease.enemy != null)
                     symptomAffectedEnemies["TerminalRally"].Remove(disease.enemy);
-            }, disease.id, "TerminalRally", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "TerminalRally", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

@@ -21,3 +21,4 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [#3 Chemistry Dangerous - 3December2019](https://skfb.ly/6Rvyy) by Canary Games
 - [Alembic](https://skfb.ly/6sArM) by FlukierJupiter
 - [Chemistry 4 - Test Tube](https://skfb.ly/oIOPL) by Smoothie 3D
+- [Science lab cabinet](https://skfb.ly/6WCKo) by tboiston

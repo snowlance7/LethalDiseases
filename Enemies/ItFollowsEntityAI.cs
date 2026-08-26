@@ -51,7 +51,7 @@ namespace LethalDiseases.Enemies
             Vector3 mainEntrancePosition = RoundManager.FindMainEntrancePosition(getTeleportPosition: true, getOutsideEntrance: false);
             GameObject? spawnNode = Utils.insideAINodes.GetFarthestFromPosition(mainEntrancePosition, (x) => x.transform.position);
             if (spawnNode == null) { return; }
-            Instance = (ItFollowsEntity)Utils.SpawnEnemy(LethalDiseasesKeys.ItFollows, spawnNode.transform.position);
+            Instance = (ItFollowsEntity)Utils.SpawnEnemy(LethalDiseasesKeys.ItFollowsEntity, spawnNode.transform.position);
         }
 
         public override void Start()

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e80ae96b3eb9177eea5c8f9dadbcda1, type: 3}
-  m_Name: DistilleryStationBuy
+  m_Name: ChemistryTableBuy
   m_EditorClassIdentifier: 
-  displayText: 'You have requested to order a distillery station.
+  displayText: 'You have requested to order a chemistry table.
 
-    Total cost
-    of item: [totalCost].
+    Total cost of
+    item: [totalCost].
 
 
     Please CONFIRM or DENY.
@@ -33,15 +33,15 @@ MonoBehaviour:
   shipUnlockableID: -1
   buyUnlockable: 0
   returnFromStorage: 0
-  itemCost: 250
+  itemCost: 300
   creatureFileID: -1
-  creatureName: Distillery Station
+  creatureName: Chemistry Table
   storyLogFileID: -1
   overrideOptions: 1
   acceptAnything: 0
   terminalOptions:
   - noun: {fileID: 11400000, guid: 5c0ed503af85f7746acca24e7ee8b03a, type: 2}
-    result: {fileID: 11400000, guid: af27727cd649b914ead24655675bb4ad, type: 2}
+    result: {fileID: 11400000, guid: 776a775d7b1b13547b5e8360458e98ff, type: 2}
   - noun: {fileID: 11400000, guid: 04540c8c0a91d0842b155d67eea43873, type: 2}
     result: {fileID: 11400000, guid: fab3d404923611b4d94e7d1cc37d2953, type: 2}
   playClip: {fileID: 0}

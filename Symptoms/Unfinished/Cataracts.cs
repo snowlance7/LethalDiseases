@@ -11,7 +11,7 @@
 //            {
 //                if (disease.player == null) { return; }
 //                VignetteOverlay.Instance.SetIntensity(0.5f, 0.1f);
-//            }, disease.id, "Cataracts", disease.strengthTime, SetHighestDurationAndDeny, pauseInOrbit: false);
+//            }, disease.ToString(), "Cataracts", disease.strengthTime, SetHighestDurationAndDeny, pauseInOrbit: false);
 //        }
 //    }
 //}

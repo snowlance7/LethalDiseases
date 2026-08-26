@@ -17,7 +17,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 localPlayerAffected["Malfunction"] = false;
-            }, disease.id, "Malfunction", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Malfunction", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

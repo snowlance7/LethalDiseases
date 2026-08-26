@@ -16,7 +16,7 @@ namespace LethalDiseases.Symptoms
             return new OnRemoveActionEffect((effect) =>
             {
                 networkHandler.RemoveSymptomAffectedObjectRpc("Green Needle", disease.networkObject);
-            }, disease.id, "Green Needle", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Green Needle", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

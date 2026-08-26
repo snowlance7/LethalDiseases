@@ -48,7 +48,7 @@ namespace LethalDiseases
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void InfectRpc(NetworkObjectReference netRef, string diseaseId) // TODO: Should only have 1 reference
         {
-            Disease? disease = Disease.GetDiseaseFromID(diseaseId);
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null || !netRef.TryGet(out NetworkObject netObj) || netObj == null) { return; }
             logger?.LogDebug($"Infecting {netObj.gameObject.name} with disease ID: {diseaseId}");
             netObj.AddDisease(disease);

@@ -31,11 +31,8 @@ namespace LethalDiseases
         public class BioSamplerAssets(DuskMod mod, string filePath) : AssetBundleLoader<BioSamplerAssets>(mod, filePath) { }
         public BioSamplerAssets? BioSampler;
 
-        public class ChemistryStationAssets(DuskMod mod, string filePath) : AssetBundleLoader<ChemistryStationAssets>(mod, filePath) { }
-        public ChemistryStationAssets? ChemistryStation;
-
-        public class DistilleryStationAssets(DuskMod mod, string filePath) : AssetBundleLoader<DistilleryStationAssets>(mod, filePath) { }
-        public DistilleryStationAssets? DistilleryStation;
+        public class ChemistryTableAssets(DuskMod mod, string filePath) : AssetBundleLoader<ChemistryTableAssets>(mod, filePath) { }
+        public ChemistryTableAssets? ChemistryTable;
 
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
@@ -43,8 +40,7 @@ namespace LethalDiseases
             RegisterContent("disease_scanner", out DiseaseScanner);
             RegisterContent("disease_analyzer", out DiseaseAnalyzer);
             RegisterContent("biosampler", out BioSampler);
-            RegisterContent("chemistry_station", out ChemistryStation);
-            RegisterContent("distillery_station", out DistilleryStation);
+            RegisterContent("chemistry_table", out ChemistryTable);
         }
     }
 }

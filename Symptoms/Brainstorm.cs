@@ -18,7 +18,7 @@ namespace LethalDiseases.Symptoms
             return new OnRemoveActionEffect((effect) =>
             {
                 networkHandler.RemoveSymptomAffectedObjectRpc("Brainstorm", disease.networkObject);
-            }, disease.id, "Brainstorm", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Brainstorm", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 

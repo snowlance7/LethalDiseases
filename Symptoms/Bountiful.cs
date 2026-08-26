@@ -22,7 +22,7 @@ namespace LethalDiseases.Symptoms
                 if (disease.player == null) { return; }
                 localPlayerAffected["Bountiful"] = false;
                 StartOfRound.Instance.LocalPlayerDieEvent.RemoveListener(OnLocalPlayerDie);
-            }, disease.id, "Bountiful", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Bountiful", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         public static void OnLocalPlayerDie(PlayerControllerB player, int deathAnimation)

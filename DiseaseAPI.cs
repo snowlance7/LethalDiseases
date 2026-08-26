@@ -18,7 +18,7 @@ namespace LethalDiseases
 
         public static void Infect(this NetworkObject netObj, Disease disease)
         {
-            netObj.Infect(disease.id);
+            netObj.Infect(disease.ToString());
         }
 
         public static void Infect(this NetworkObject netObj, string diseaseId)
@@ -91,7 +91,7 @@ namespace LethalDiseases
 
         public static void AddDisease(this NetworkObject networkObject, Disease disease)
         {
-            logger?.LogDebug($"Trying to add disease to networkObject with id {networkObject.GetInstanceID()} with disease {disease.name}:{disease.id}");
+            logger?.LogDebug($"Trying to add disease to networkObject with id {networkObject.GetInstanceID()} with disease {disease.name}:{disease.ToString()}");
 
             DiseaseHost host = networkObject.GetHost();
             host.AddDisease(disease);
@@ -99,7 +99,7 @@ namespace LethalDiseases
 
         public static void AddDisease(this NetworkObject networkObject, string diseaseId)
         {
-            Disease? disease = Disease.GetDiseaseFromID(diseaseId);
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null) { return; }
             networkObject.AddDisease(disease);
         }
@@ -108,15 +108,15 @@ namespace LethalDiseases
         {
             foreach (var symptomIndex in disease.symptoms)
             {
-                networkObject.gameObject.StatusEffectController().RemoveEffect(e => e.source == disease.id);
+                networkObject.gameObject.StatusEffectController().RemoveEffect(e => e.source == disease.ToString());
             }
             networkObject.GetDiseases().Remove(disease);
-            networkObject.GetDiseaseIds().Remove(disease.id);
+            networkObject.GetDiseaseIds().Remove(disease.ToString());
         }
 
         public static void RemoveDisease(this NetworkObject networkObject, string diseaseId)
         {
-            Disease? disease = Disease.GetDiseaseFromID(diseaseId);
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null) { return; }
             networkObject.RemoveDisease(disease);
         }
@@ -143,7 +143,7 @@ namespace LethalDiseases
                 List<string> diseaseNames = [];
                 foreach (Disease disease in diseaseHost.Diseases)
                 {
-                    string diseaseName = $"{disease.name}:{disease.id}";
+                    string diseaseName = $"{disease.name}:{disease.ToString()}";
                     diseaseNames.Add(diseaseName);
                     logger?.LogInfo("- " + diseaseName);
                     foreach (var symptom in disease.symptoms)

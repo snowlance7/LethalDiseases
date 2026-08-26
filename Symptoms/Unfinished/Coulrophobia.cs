@@ -18,7 +18,7 @@
 //            {
 //                if (disease.player == null) { return; }
 //                localPlayerAffected["Coulrophobia"] = false;
-//            }, disease.id, "Coulrophobia", disease.strengthTime, SetHighestDurationAndDeny);
+//            }, disease.ToString(), "Coulrophobia", disease.strengthTime, SetHighestDurationAndDeny);
 //        }
 //    }
 

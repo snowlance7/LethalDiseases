@@ -26,14 +26,7 @@ namespace LethalDiseases
         public static PlayerControllerB? PlayerFromId(ulong id) { return StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == id).FirstOrDefault(); }
         public static bool IsServerOrHost { get { return NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost; } }
 
-        public const ulong RodrigoSteamID = 76561198164429786;
-        public const ulong LizzieSteamID = 76561199094139351;
-        public const ulong GlitchSteamID = 76561198984467725;
-        public const ulong RatSteamID = 76561199182474292;
-        public const ulong XuSteamID = 76561198399127090;
-        public const ulong SlayerSteamID = 76561198077184650;
-        public const ulong SnowySteamID = 76561198253760639;
-        public const ulong FunoSteamID = 76561198993437314;
+        public const int playerEnemiesPropsMask = 1; // TODO: Get this
 
         private void Awake()
         {

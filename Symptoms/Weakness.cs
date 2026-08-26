@@ -23,7 +23,7 @@ namespace LethalDiseases.Symptoms
                 if (disease.player == null) { return; }
                 StartOfRound.Instance.ChangedCarryWeight -= OnWeightChangedLocalClient;
                 disease.player.carryWeight = weaknessPreviousBaseWeight;
-            }, disease.id, "Weakness", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Weakness", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         static void OnWeightChangedLocalClient()

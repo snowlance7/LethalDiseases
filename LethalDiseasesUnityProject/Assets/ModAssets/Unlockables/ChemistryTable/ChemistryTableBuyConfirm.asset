@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e80ae96b3eb9177eea5c8f9dadbcda1, type: 3}
-  m_Name: DistilleryStationBuyConfirm
+  m_Name: ChemistryTableBuyConfirm
   m_EditorClassIdentifier: 
-  displayText: Ordered the distillery station! Your new balance is [playerCredits].
+  displayText: Ordered the chemistry table! Your new balance is [playerCredits].
   terminalEvent: 
   clearPreviousText: 1
   maxCharactersToType: 35
@@ -24,7 +24,7 @@ MonoBehaviour:
   shipUnlockableID: -1
   buyUnlockable: 1
   returnFromStorage: 0
-  itemCost: 250
+  itemCost: 300
   creatureFileID: -1
   creatureName: 
   storyLogFileID: -1

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1963577118, guid: 1f73291e6cf64124796e048d841e7d1f, type: 3}
-  m_Name: ChemistryStationDef
+  m_Name: ChemistryTableDef
   m_EditorClassIdentifier: 
   _configEntries: []
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: chemistry_station
+    _key: chemistry_table
   <UnlockableItem>k__BackingField:
-    unlockableName: Chemistry Station
-    prefabObject: {fileID: 2446349098237113865, guid: 6efee5a9955c8eb459bb8293190aa4d8,
+    unlockableName: Chemistry Table
+    prefabObject: {fileID: 8372402231144658936, guid: 8df7f274965407744b564404bed09a42,
       type: 3}
     unlockableType: 0
     shopSelectionNode: {fileID: 11400000, guid: 699d8b58c7c9ea2468d03394bdb12242,
@@ -41,10 +41,11 @@ MonoBehaviour:
     unlockedInChallengeFile: 0
     spawnPrefab: 1
     jumpAudio: {fileID: 0}
-  <InfoNodeText>k__BackingField: Mix ingredients to create ingredients
+  <InfoNodeText>k__BackingField: The chemistry table comes with an alembic for distilling,
+    mixer for mixing, and cotton swabs for sampling
   <TerminalPredicate>k__BackingField: {fileID: 0}
   <PricingStrategy>k__BackingField: {fileID: 0}
-  <Cost>k__BackingField: 500
+  <Cost>k__BackingField: 300
   <IsShipUpgrade>k__BackingField: 0
   <IsDecor>k__BackingField: 1
   <GenerateCostConfig>k__BackingField: 1

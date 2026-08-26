@@ -197,7 +197,7 @@ namespace LethalDiseases
                 disease = Disease.CreateRandomDisease();
                 if (now) { disease.latency = 0; }
                 localPlayer.NetworkObject.Infect(disease);
-                HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.id}");
+                HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
                 return;
             }
 
@@ -212,7 +212,7 @@ namespace LethalDiseases
                         disease = Disease.CreateRandomDisease();
                         if (now) { disease.latency = 0; }
                         nextEnemyDisease = disease;
-                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infecting next enemy spawn with disease {disease.id}");
+                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infecting next enemy spawn with disease {disease.ToString()}");
                         return;
                     }
 
@@ -223,7 +223,7 @@ namespace LethalDiseases
 
                     if (now) { disease.latency = 0; }
                     nextEnemyDisease = disease;
-                    HUDManager.Instance.DisplayTip("LethalDiseases", $"Infecting next enemy spawn with disease {disease.id}"); break;
+                    HUDManager.Instance.DisplayTip("LethalDiseases", $"Infecting next enemy spawn with disease {disease.ToString()}"); break;
                 default:
                     if (localPlayer.currentlyHeldObjectServer != null)
                     {
@@ -232,7 +232,7 @@ namespace LethalDiseases
                             disease = Disease.CreateRandomDisease();
                             if (now) { disease.latency = 0; }
                             localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
-                            HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.id}");
+                            HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
                             return;
                         }
 
@@ -243,7 +243,7 @@ namespace LethalDiseases
 
                         if (now) { disease.latency = 0; }
                         localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
-                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.id}");
+                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
                     }
                     else
                     {
@@ -254,7 +254,7 @@ namespace LethalDiseases
 
                         if (now) { disease.latency = 0; }
                         localPlayer.NetworkObject.Infect(disease);
-                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.id}");
+                        HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
                     }
                     break;
             }

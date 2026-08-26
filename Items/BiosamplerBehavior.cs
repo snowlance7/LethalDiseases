@@ -11,11 +11,11 @@ namespace LethalDiseases.Items
 {
     internal class BiosamplerBehavior : PhysicsProp, IChemistryIngredient, IChemistryOutputContainer
     {
-        public SkinnedMeshRenderer fluidRender = null!;
+        public SkinnedMeshRenderer fluidRenderer = null!;
 
-        public string[] filledDiseases = [];
+        public string filledDisease = "";
 
-        public bool isFilled => filledDiseases.Length > 0;
+        public bool isFilled => !filledDisease.IsNullOrWhiteSpace();
 
         public bool freezingLocalPlayer;
 
@@ -23,9 +23,20 @@ namespace LethalDiseases.Items
 
         const float fillTime = 1.5f;
 
+        public void SetFluidColor(ChemistryLiquidAppearance color)
+        {
+            Material material = new(fluidRenderer.material);
+
+            material.color = color.liquidColor;
+            material.SetColor("_EmissionColor", color.liquidColor);
+            material.SetFloat("_EmissionIntensity", color.emissionIntensity);
+
+            fluidRenderer.material = material;
+        }
+
         ChemistryIngredient IChemistryIngredient.GetInputIngredient()
         {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRender.material.color, fluidRender.material.GetColor("_EmissionColor"), fluidRender.material.GetFloat("_EmissionIntensity")), string.Join("^", filledDiseases));
+            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), filledDisease);
         }
 
         void IChemistryIngredient.OnOutputIngredient(string specialInstructions)
@@ -47,7 +58,7 @@ namespace LethalDiseases.Items
                 return false;
             }
 
-            filledDiseases = ingredient.specialInstructions.Split("^");
+            filledDisease = ingredient.specialInstructions;
             return true;
         }
 
@@ -71,20 +82,20 @@ namespace LethalDiseases.Items
         {
             base.EquipItem();
             playerHeldBy.equippedUsableItemQE = true;
-            fluidRender.enabled = isFilled;
+            fluidRenderer.enabled = isFilled;
         }
 
         public override void DiscardItem()
         {
             playerHeldBy.equippedUsableItemQE = false;
-            fluidRender.enabled = isFilled;
+            fluidRenderer.enabled = isFilled;
             base.DiscardItem();
         }
 
         public override void PocketItem()
         {
             playerHeldBy.equippedUsableItemQE = false;
-            fluidRender.enabled = false;
+            fluidRenderer.enabled = false;
             base.PocketItem();
         }
 
@@ -127,7 +138,7 @@ namespace LethalDiseases.Items
                 freezingLocalPlayer = true;
                 playerHeldBy.FreezePlayer(true);
                 playerHeldBy.playerBodyAnimator.speed = 0f;
-                fluidRender.enabled = true;
+                fluidRenderer.enabled = true;
 
                 float elapsedTime = 0f;
 
@@ -135,16 +146,17 @@ namespace LethalDiseases.Items
                 {
                     yield return null;
                     elapsedTime += Time.deltaTime;
-                    fluidRender.SetBlendShapeWeight(0, Mathf.Lerp(100, 0, elapsedTime / fillTime));
+                    fluidRenderer.SetBlendShapeWeight(0, Mathf.Lerp(100, 0, elapsedTime / fillTime));
                 }
 
-                fluidRender.SetBlendShapeWeight(0, 0);
+                fluidRenderer.SetBlendShapeWeight(0, 0);
                 playerHeldBy.FreezePlayer(false);
                 freezingLocalPlayer = false;
                 playerHeldBy.playerBodyAnimator.speed = 1f;
                 playerHeldBy.activatingItem = false;
 
-                FillRpc(string.Join("^", host.DiseaseIds));
+                Disease disease = Disease.MergeDiseases(host.Diseases);
+                FillRpc(disease.ToString());
                 routine = null;
             }
 
@@ -164,12 +176,12 @@ namespace LethalDiseases.Items
                 {
                     yield return null;
                     elapsedTime += Time.deltaTime;
-                    fluidRender.SetBlendShapeWeight(0, Mathf.Lerp(0, 100, elapsedTime / fillTime));
+                    fluidRenderer.SetBlendShapeWeight(0, Mathf.Lerp(0, 100, elapsedTime / fillTime));
                 }
 
-                fluidRender.SetBlendShapeWeight(0, 100);
+                fluidRenderer.SetBlendShapeWeight(0, 100);
 
-                fluidRender.enabled = false;
+                fluidRenderer.enabled = false;
                 routine = null;
             }
 
@@ -179,15 +191,15 @@ namespace LethalDiseases.Items
         [Rpc(SendTo.Everyone)]
         public void EmptyRpc()
         {
-            filledDiseases = [];
+            filledDisease = "";
             DoEmptyAnimation();
         }
 
         [Rpc(SendTo.Everyone)]
-        public void FillRpc(string diseases)
+        public void FillRpc(string disease)
         {
-            filledDiseases = diseases.Split("^");
-            fluidRender.SetBlendShapeWeight(0, 0);
+            filledDisease = disease;
+            fluidRenderer.SetBlendShapeWeight(0, 0);
         }
     }
 }

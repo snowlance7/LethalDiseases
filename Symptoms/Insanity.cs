@@ -14,7 +14,7 @@ namespace LethalDiseases.Symptoms
             {
                 if (disease.player == null) { return; }
                 networkHandler.RemoveSymptomAffectedObjectRpc("Insanity", disease.player.NetworkObject);
-            }, disease.id, "Insanity", disease.strengthTime, SetHighestDurationAndDeny);
+            }, disease.ToString(), "Insanity", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [StaticUpdate]
