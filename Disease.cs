@@ -302,7 +302,7 @@ namespace LethalDiseases
 
         internal void TrySpreadAirborne(Vector3 origin, float radius = default, float multiplier = 1)
         {
-            if (!host.hasActor) { return; }
+            if (host == null || !host.hasActor) { return; }
 
             radius = radius == default ? airborneSpreadRange.Value : radius;
 
@@ -323,7 +323,7 @@ namespace LethalDiseases
             return this.ToString() == other.ToString();
         }
 
-        public static Disease MergeDiseases(IEnumerable<Disease> diseases)
+        public static Disease MergeDiseases(params IEnumerable<Disease> diseases)
         {
             Disease mergedDisease = new Disease();
 

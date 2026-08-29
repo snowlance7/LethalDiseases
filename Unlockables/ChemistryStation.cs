@@ -48,11 +48,11 @@ namespace LethalDiseases.Unlockables
 
         const float defaultMixingTime = 10f;
 
-        public void RegisterRecipe(ChemistryRecipe recipe)
+        public static void RegisterRecipe(ChemistryRecipe recipe)
         {
             if (registeredRecipies.Contains(recipe)) { return; }
             if (registeredRecipies.Any(x => (x.ingredientA == recipe.ingredientA && x.ingredientB == recipe.ingredientB) || (x.ingredientA == recipe.ingredientB && x.ingredientB == recipe.ingredientA))) { logger.LogError($"Failed to register recipe {recipe}"); return; }
-            // TODO
+            registeredRecipies.Add(recipe);
         }
 
         public void Awake()
@@ -269,18 +269,13 @@ namespace LethalDiseases.Unlockables
 
         public override string ToString()
         {
-            return ingredientA + "|" + ingredientB; // TODO: Set this up better
-        }
-
-        public override bool Equals(object obj)
-        {
-            throw new System.NotImplementedException(); // TODO
+            return ingredientA + "|" + ingredientB;
         }
     }
 
     public class ChemistryFixedOutputReaction(ChemistryIngredient ingredientA, ChemistryIngredient ingredientB, ChemistryIngredient output, float mixTime = -1) : ChemistryRecipe(ingredientA, ingredientB, (ingredientA, ingredientB) => output, mixTime);
 
-    public class ChemistryLiquidAppearance(Color liquidColor, float emissionIntensity)
+    public class ChemistryLiquidAppearance(Color liquidColor = default, float emissionIntensity = 0f)
     {
         public Color liquidColor = liquidColor;
         public float emissionIntensity = emissionIntensity;
@@ -297,11 +292,16 @@ namespace LethalDiseases.Unlockables
         public bool ReceiveChemistryOutput(ChemistryIngredient ingredient);
     }
 
-    public class ChemistryIngredient(Item item, ChemistryLiquidAppearance chemistryLiquidAppearance, string specialInstructions = "")
+    public class ChemistryIngredient(Item item, ChemistryLiquidAppearance? chemistryLiquidAppearance = default, string specialInstructions = "") : IEquatable<ChemistryIngredient>
     {
         public Item item = item;
-        public ChemistryLiquidAppearance chemistryLiquidAppearance = chemistryLiquidAppearance;
+        public ChemistryLiquidAppearance chemistryLiquidAppearance = chemistryLiquidAppearance ?? new ChemistryLiquidAppearance();
         public string specialInstructions = specialInstructions;
+
+        public bool Equals(ChemistryIngredient other)
+        {
+            return item == other.item;
+        }
     }
 
     internal class DistilleryStation : NetworkBehaviour
