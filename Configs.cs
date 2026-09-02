@@ -11,8 +11,8 @@ namespace LethalDiseases
         {
             Plugin p = Plugin.Instance;
             Plugin.logger.LogDebug("INIT DISEASE CONFIGS");
-            minSymptoms = p.Config.Bind("Other", "Min Symptoms", 1, "Minimum number of symptoms a disease can have");
-            maxSymptoms = p.Config.Bind("Other", "Max Symptoms", 5, "Maximum number of symptoms a disease can have");
+            minSymptoms = p.Config.Bind("Other Options", "Min Symptoms", 1, "Minimum number of symptoms a disease can have");
+            maxSymptoms = p.Config.Bind("Other Options", "Max Symptoms", 5, "Maximum number of symptoms a disease can have");
 
             strengthRange = p.Config.Bind("Disease Stat Ranges", "Strength Range", new BoundedRange(500, 2800), "How long (in seconds) the symptoms can persist once they take effect/activate.");
             stabilityRange = p.Config.Bind("Disease Stat Ranges", "Stability Range", new BoundedRange(500, 1400), "How long (in seconds) the disease can survive outside of a host (player or enemy).");
@@ -25,13 +25,13 @@ namespace LethalDiseases
             foodborneTypeWeight = p.Config.Bind("Transmission Weights", "Foodborne Type Weight", 100, "Weighted chance that a disease will have `Foodborne` as its transmission type when created");
             extraTransmissionTypeChances = p.Config.Bind("Transmission Weights", "Extra Transmission Type Chances", "0.5,0.25,0.1", "Chances that a disease will have extra transmission types. Keep in mind diseases will always have at least one transmission type. Using the default '0.5,0.25,0.1' means that when a disease is generated, there will be a 50% chance it will have 2 transmission types, 25% to have 3, and 10% to have 4. Leave blank to restrict it to only one transmission type.");
 
-            airborneSpreadRange = p.Config.Bind("Other", "Airborne Spread Range", 10f, "Range for airborne spread");
+            airborneSpreadRange = p.Config.Bind("Other Options", "Airborne Spread Range", 10f, "Range for airborne spread");
 
             steamDiseaseChance = p.Config.Bind("Chances", "Steam Disease Chance", 0.1f, "0-1 chance that a steam valve (and steam) will have a random disease when a dungeon gets generated");
             monsterDiseaseChance = p.Config.Bind("Chances", "Monster Disease Chance", 0.25f, "0-1 chance that a monster will have a random disease when spawning from a vent");
             scrapDiseaseChance = p.Config.Bind("Chances", "Scrap Disease Chance", 0.1f, "0-1 chance for a scrap item to have a random disease when spawned during dungeon generation");
             
-            accessibilityMode = p.Config.Bind("Client Settings", "Accessibility Mode", false, "Enables accessibility features");
+            accessibilityMode = p.Config.Bind("Client Options", "Accessibility Mode", false, "Enables accessibility features");
         }
 
 #pragma warning disable CS8618
