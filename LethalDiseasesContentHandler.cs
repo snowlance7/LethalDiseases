@@ -6,6 +6,15 @@ namespace LethalDiseases
 {
     public class LethalDiseasesContentHandler : ContentHandler<LethalDiseasesContentHandler>
     {
+        public class BioSamplerAssets(DuskMod mod, string filePath) : AssetBundleLoader<BioSamplerAssets>(mod, filePath) { }
+        public BioSamplerAssets? BioSampler;
+
+        public class CottonSwabsAssets(DuskMod mod, string filePath) : AssetBundleLoader<CottonSwabsAssets>(mod, filePath) { }
+        public CottonSwabsAssets? CottonSwabs;
+
+        public class DiseaseAnalyzerAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseAnalyzerAssets>(mod, filePath) { }
+        public DiseaseAnalyzerAssets? DiseaseAnalyzer;
+
         public class DiseaseAssetsAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseAssetsAssets>(mod, filePath)
         {
             [LoadFromBundle("NetworkHandler.prefab")]
@@ -25,22 +34,13 @@ namespace LethalDiseases
         public class DiseaseScannerAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseScannerAssets>(mod, filePath) { }
         public DiseaseScannerAssets? DiseaseScanner;
 
-        public class DiseaseAnalyzerAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseAnalyzerAssets>(mod, filePath) { }
-        public DiseaseAnalyzerAssets? DiseaseAnalyzer;
-
-        public class BioSamplerAssets(DuskMod mod, string filePath) : AssetBundleLoader<BioSamplerAssets>(mod, filePath) { }
-        public BioSamplerAssets? BioSampler;
-
-        public class ChemistryTableAssets(DuskMod mod, string filePath) : AssetBundleLoader<ChemistryTableAssets>(mod, filePath) { }
-        public ChemistryTableAssets? ChemistryTable;
-
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
+            RegisterContent("biosampler", out BioSampler);
+            RegisterContent("cotton_swabs", out CottonSwabs);
+            RegisterContent("disease_analyzer", out DiseaseAnalyzer);
             RegisterContent("disease_assets", out DiseaseAssets);
             RegisterContent("disease_scanner", out DiseaseScanner);
-            RegisterContent("disease_analyzer", out DiseaseAnalyzer);
-            RegisterContent("biosampler", out BioSampler);
-            RegisterContent("chemistry_table", out ChemistryTable);
         }
     }
 }
