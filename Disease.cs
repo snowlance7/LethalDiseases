@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using LethalDiseases.Unlockables;
+using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Collections.Generic;

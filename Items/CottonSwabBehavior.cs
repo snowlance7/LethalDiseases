@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using SnowyCraftingCore;
 
 namespace LethalDiseases.Items
 {
@@ -14,6 +15,21 @@ namespace LethalDiseases.Items
         public string storedDisease = "";
 
         readonly float maxDistance = 2f;
+
+        ChemistryIngredient IChemistryIngredient.GetInputIngredient()
+        {
+            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+        }
+
+        void IChemistryIngredient.OnOutputIngredient(string specialInstructions)
+        {
+            SetDiseaseOnLocalClient(specialInstructions);
+        }
+
+        bool IChemistryIngredient.DespawnItemAfterInput()
+        {
+            return true;
+        }
 
         public void Awake()
         {
@@ -66,16 +82,6 @@ namespace LethalDiseases.Items
         public void SetDiseaseRpc(string _disease)
         {
             SetDiseaseOnLocalClient(_disease);
-        }
-
-        ChemistryIngredient IChemistryIngredient.GetInputIngredient()
-        {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
-        }
-
-        void IChemistryIngredient.OnOutputIngredient(string specialInstructions)
-        {
-            SetDiseaseOnLocalClient(specialInstructions);
         }
     }
 }

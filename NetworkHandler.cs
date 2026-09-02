@@ -8,6 +8,8 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
+using SnowyCraftingCore.Unlockables;
+using SnowyCraftingCore;
 
 namespace LethalDiseases
 {
@@ -38,7 +40,7 @@ namespace LethalDiseases
             Symptoms.Symptoms.Load();
 
             ChemistryIngredient recipe1Ingredient = new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item);
-            ChemistryStation.RegisterRecipe(new ChemistryRecipe(recipe1Ingredient, recipe1Ingredient, (ingredientA, ingredientB) =>
+            CraftingAPI.RegisterRecipe(new ChemistryRecipe(recipe1Ingredient, recipe1Ingredient, (ingredientA, ingredientB) =>
             {
                 Disease? disease1 = Disease.GetDiseaseFromString(ingredientA.specialInstructions);
                 Disease? disease2 = Disease.GetDiseaseFromString(ingredientB.specialInstructions);

@@ -6,6 +6,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using SnowyCraftingCore;
 
 namespace LethalDiseases.Items
 {
@@ -44,7 +45,12 @@ namespace LethalDiseases.Items
             return;
         }
 
-        public bool ReceiveChemistryOutput(ChemistryIngredient ingredient)
+        bool IChemistryIngredient.DespawnItemAfterInput()
+        {
+            return false;
+        }
+
+        bool IChemistryOutputContainer.ReceiveChemistryOutput(ChemistryIngredient ingredient)
         {
             if (isFilled)
             {
