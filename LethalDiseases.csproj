@@ -79,6 +79,10 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Assets\" />
+    </ItemGroup>
+
     <!-- Netcode Patcher Post-Build Event -->
   <Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
     <PropertyGroup>

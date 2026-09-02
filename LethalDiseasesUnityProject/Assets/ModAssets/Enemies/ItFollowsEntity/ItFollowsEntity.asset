@@ -55,7 +55,7 @@ MonoBehaviour:
   pushPlayerDistance: 0
   SizeLimit: 0
   EnemySize: 2
-  WaterType: 0
+  WaterType: 1
   timeToPlayAudio: 15
   loudnessMultiplier: 1
   overrideVentSFX: {fileID: 0}

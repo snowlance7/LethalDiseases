@@ -5,14 +5,14 @@
   },
   "LethalDiseasesUnlockableItemKeys": {
     "__type": "DawnUnlockableItemInfo",
-    "ChemistryTable": "lethal_diseases:chemistry_table"
+    "CottonSwabs": "lethal_diseases:cotton_swabs"
   },
   "LethalDiseasesItemKeys": {
     "__type": "DawnItemInfo",
     "BioSampler": "lethal_diseases:biosampler",
+    "CottonSwab": "lethal_diseases:cotton_swab",
     "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
     "DiseaseScanner": "lethal_diseases:disease_scanner",
-    "TestTube": "lethal_diseases:test_tube",
-    "CottonSwab": "lethal_diseases:cotton_swab"
+    "TestTube": "lethal_diseases:test_tube"
   }
 }

@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 507293d35d7a13e5b9ca9bb60e082e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverIcon: {fileID: 21300000, guid: 540d63f6f0bcc844a945fa9318866abb, type: 3}
+  hoverIcon: {fileID: 21300000, guid: 4d983286d7313204d9b8c2cc5b59f11d, type: 3}
   hoverTip: Take Cotton Swab [E]
   disabledHoverIcon: {fileID: 0}
   disabledHoverTip: 

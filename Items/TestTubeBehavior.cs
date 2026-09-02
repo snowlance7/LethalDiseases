@@ -10,7 +10,14 @@ namespace LethalDiseases.Items
     {
         public MeshRenderer fluidRenderer = null!;
 
+        ScanNodeProperties scanNode = null!;
+
         public string storedDisease = "";
+
+        public void Awake()
+        {
+            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
+        }
 
         ChemistryIngredient IChemistryIngredient.GetInputIngredient()
         {
@@ -21,6 +28,7 @@ namespace LethalDiseases.Items
         {
             storedDisease = specialInstructions;
             Disease? disease = Disease.GetDiseaseFromString(storedDisease);
+            scanNode.subText = disease?.name;
 
             if (disease != null)
                 SetFluidColor(disease.GetChemistryLiquidAppearance());

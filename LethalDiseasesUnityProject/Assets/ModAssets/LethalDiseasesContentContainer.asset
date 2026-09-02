@@ -15,13 +15,11 @@ MonoBehaviour:
   assetBundles:
   - assetBundleName: biosampler
     configName: Biosampler
-  - assetBundleName: chemical_analyzer
-    configName: Chemical Analyzer
-  - assetBundleName: chemical_distillery
-    configName: Chemical Distillery
-  - assetBundleName: chemical_mixer
-    configName: Chemical Mixer
   - assetBundleName: cotton_swabs
     configName: Cotton Swabs
   - assetBundleName: disease_analyzer
     configName: Disease Analyzer
+  - assetBundleName: disease_assets
+    configName: Other
+  - assetBundleName: disease_scanner
+    configName: Disease Scanner

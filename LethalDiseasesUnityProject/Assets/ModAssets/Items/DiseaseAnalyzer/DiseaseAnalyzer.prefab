@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4076410798
+  GlobalObjectIdHash: 2132510194
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -502,7 +502,7 @@ MonoBehaviour:
   scrollRect: {fileID: 1565672985581924792}
   diseaseContentPrefab: {fileID: 3567077860273359721, guid: 025480ce7fc93c844b8300076e7959b7,
     type: 3}
-  screenOnSFX: {fileID: 8300000, guid: 507200bf5eebd2540b781446bf7c8940, type: 3}
+  screenOnSFX: {fileID: 0}
 --- !u!1 &3038373582732178550
 GameObject:
   m_ObjectHideFlags: 0

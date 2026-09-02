@@ -18,7 +18,6 @@ namespace LethalDiseases.Items
         public RectTransform contentRect = null!;
         public ScrollRect scrollRect = null!;
         public GameObject diseaseContentPrefab = null!;
-        public AudioClip screenOnSFX = null!;
 
         PlayerControllerB previousPlayerHeldBy = null!;
 
@@ -131,7 +130,6 @@ namespace LethalDiseases.Items
         {
             base.EquipItem();
             screenRenderer.enabled = true;
-            audioSource.PlayOneShot(screenOnSFX);
             previousPlayerHeldBy = playerHeldBy;
             if (previousPlayerHeldBy != null && previousPlayerHeldBy == localPlayer)
                 previousPlayerHeldBy.equippedUsableItemQE = true;

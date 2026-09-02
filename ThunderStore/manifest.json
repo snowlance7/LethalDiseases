@@ -2,10 +2,11 @@
   "name": "LethalDiseases",
   "version_number": "0.1.0",
   "website_url": "https://github.com/snowlance7/LethalDiseases",
-  "description": "",
+  "description": "Collect samples from creatures and items, test and analyze unknown diseases, and experiment with them to create vaccines or new diseases for defensive and offensive use",
   "dependencies": [
     "BepInEx-BepInExPack-5.4.2305",
     "TeamXiaolan-DawnLib-0.9.25",
-    "Snowlance-SnowyLib-1.14.1"
+    "Snowlance-SnowyLib-1.14.1",
+    "Snowlance-SnowyCraftingCore-1.0.0"
   ]
 }
