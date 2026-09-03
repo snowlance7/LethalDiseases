@@ -192,12 +192,27 @@ namespace LethalDiseases
         static void Debug_Infect(string[] args, bool now = false)
         {
             Disease disease;
-            if (args.Length == 1 && localPlayer.currentlyHeldObjectServer == null)
+            if (args.Length == 1)
             {
-                disease = Disease.CreateRandomDisease();
-                if (now) { disease.latency = 0; }
-                localPlayer.NetworkObject.Infect(disease);
-                HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
+                if (localPlayer.currentlyHeldObjectServer != null)
+                {
+                    disease = Disease.CreateRandomDisease();
+                    if (now) { disease.latency = 0; }
+
+                    if (localPlayer.currentlyHeldObjectServer is CottonSwabBehavior cottonSwab)
+                        cottonSwab.SetDiseaseRpc(disease.ToString());
+                    else
+                        localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
+
+                    HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
+                }
+                else
+                {
+                    disease = Disease.CreateRandomDisease();
+                    if (now) { disease.latency = 0; }
+                    localPlayer.NetworkObject.Infect(disease);
+                    HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
+                }
                 return;
             }
 

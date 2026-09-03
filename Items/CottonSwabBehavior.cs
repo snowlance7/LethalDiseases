@@ -1,14 +1,15 @@
-﻿using LethalDiseases.Unlockables;
+﻿using Dawn;
+using LethalDiseases.Unlockables;
+using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
-using SnowyCraftingCore;
 
 namespace LethalDiseases.Items
 {
-    internal class CottonSwabBehavior : PhysicsProp, IChemistryIngredient
+    internal class CottonSwabBehavior : PhysicsProp, IDistillableIngredient
     {
         public MeshRenderer tipRenderer = null!;
 
@@ -16,22 +17,7 @@ namespace LethalDiseases.Items
 
         public string storedDisease = "";
 
-        readonly float maxDistance = 2f;
-
-        ChemistryIngredient IChemistryIngredient.GetInputIngredient()
-        {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
-        }
-
-        void IChemistryIngredient.OnOutputIngredient(string specialInstructions)
-        {
-            SetDiseaseOnLocalClient(specialInstructions);
-        }
-
-        bool IChemistryIngredient.DespawnItemAfterInput()
-        {
-            return true;
-        }
+        readonly float maxDistance = 5f;
 
         public void Awake()
         {
@@ -46,7 +32,7 @@ namespace LethalDiseases.Items
             base.ItemActivate(used, buttonDown);
             if (!buttonDown || storedDisease != "") { return; }
 
-            if (!Physics.Raycast(playerHeldBy.transform.position, playerHeldBy.transform.forward, out RaycastHit hitInfo, maxDistance, PluginInstance.playerEnemiesPropsMask)) { return; }
+            if (!Physics.Raycast(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward, out RaycastHit hitInfo, maxDistance, PluginInstance.playerEnemiesPropsMask)) { return; }
 
             logger.LogDebug(hitInfo.collider.gameObject.name);
 
@@ -63,18 +49,15 @@ namespace LethalDiseases.Items
 
         public void SetTipColor(ChemistryLiquidAppearance color)
         {
-            Material material = new(tipRenderer.material);
-
-            material.color = color.liquidColor;
-            material.SetColor("_EmissionColor", color.liquidColor);
-            material.SetFloat("_EmissionIntensity", color.emissionIntensity);
-
-            tipRenderer.material = material;
+            tipRenderer.enabled = true;
+            tipRenderer.material.color = color.liquidColor;
+            tipRenderer.material.SetColor("_EmissionColor", color.liquidColor);
+            tipRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
         }
 
         public void SetDiseaseOnLocalClient(string _disease)
         {
-            Disease? disease = Disease.GetDiseaseFromString(storedDisease);
+            Disease? disease = Disease.GetDiseaseFromString(_disease);
             if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
 
             storedDisease = _disease;
@@ -87,6 +70,31 @@ namespace LethalDiseases.Items
         public void SetDiseaseRpc(string _disease)
         {
             SetDiseaseOnLocalClient(_disease);
+        }
+
+        ChemistryIngredient? IDistillableIngredient.DistilleryOutput()
+        {
+            return new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+        }
+
+        float IDistillableIngredient.DistilleryMixTime()
+        {
+            return 10f;
+        }
+
+        bool IDistillableIngredient.DespawnItemAfterDistilleryInput()
+        {
+            return true;
+        }
+
+        ChemistryIngredient? IChemistryIngredient.GetIngredient()
+        {
+            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+        }
+
+        void IChemistryIngredient.OnChemicalMixerOutput(string specialInstructions)
+        {
+            SetDiseaseOnLocalClient(specialInstructions);
         }
     }
 }

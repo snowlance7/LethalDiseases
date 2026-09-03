@@ -39,8 +39,13 @@ namespace LethalDiseases
         {
             Symptoms.Symptoms.Load();
 
-            ChemistryIngredient recipe1Ingredient = new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item);
-            CraftingAPI.RegisterRecipe(new ChemistryRecipe(recipe1Ingredient, recipe1Ingredient, (ingredientA, ingredientB) =>
+            ChemistryIngredient testTubeIngredient = new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item);
+            CraftingAPI.RegisterIngredient(testTubeIngredient);
+
+            ChemistryIngredient cottonSwabIngredient = new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item);
+            CraftingAPI.RegisterIngredient(cottonSwabIngredient);
+
+            CraftingAPI.RegisterRecipe(new ChemistryRecipe(testTubeIngredient, testTubeIngredient, (ingredientA, ingredientB) =>
             {
                 Disease? disease1 = Disease.GetDiseaseFromString(ingredientA.specialInstructions);
                 Disease? disease2 = Disease.GetDiseaseFromString(ingredientB.specialInstructions);

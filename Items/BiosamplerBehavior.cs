@@ -1,24 +1,25 @@
 ﻿using BepInEx;
+using Dawn;
 using LethalDiseases.Unlockables;
+using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
-using SnowyCraftingCore;
 
 namespace LethalDiseases.Items
 {
-    internal class BiosamplerBehavior : PhysicsProp, IChemistryIngredient, IChemistryOutputContainer
+    internal class BiosamplerBehavior : PhysicsProp, IDistillableIngredient, IChemistryOutputContainer
     {
         public SkinnedMeshRenderer fluidRenderer = null!;
 
         ScanNodeProperties scanNode = null!;
 
-        public string filledDisease = "";
+        public string storedDisease = "";
 
-        public bool isFilled => !filledDisease.IsNullOrWhiteSpace();
+        public bool isFilled => !storedDisease.IsNullOrWhiteSpace();
 
         public bool freezingLocalPlayer;
 
@@ -28,46 +29,10 @@ namespace LethalDiseases.Items
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
-            Material material = new(fluidRenderer.material);
-
-            material.color = color.liquidColor;
-            material.SetColor("_EmissionColor", color.liquidColor);
-            material.SetFloat("_EmissionIntensity", color.emissionIntensity);
-
-            fluidRenderer.material = material;
-        }
-
-        ChemistryIngredient IChemistryIngredient.GetInputIngredient()
-        {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), filledDisease);
-        }
-
-        void IChemistryIngredient.OnOutputIngredient(string specialInstructions)
-        {
-            return;
-        }
-
-        bool IChemistryIngredient.DespawnItemAfterInput()
-        {
-            return false;
-        }
-
-        bool IChemistryOutputContainer.ReceiveChemistryOutput(ChemistryIngredient ingredient)
-        {
-            if (isFilled)
-            {
-                HUDManager.Instance.DisplayTip("Insert ingredient failed", "Container is already full", isWarning: true);
-                return false;
-            }
-
-            if (ingredient.specialInstructions.IsNullOrWhiteSpace())
-            {
-                HUDManager.Instance.DisplayTip("Insert ingredient failed", "No diseases to insert", isWarning: true);
-                return false;
-            }
-
-            filledDisease = ingredient.specialInstructions;
-            return true;
+            fluidRenderer.enabled = true;
+            fluidRenderer.material.color = color.liquidColor;
+            fluidRenderer.material.SetColor("_EmissionColor", color.liquidColor);
+            fluidRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
         }
 
         public void Awake()
@@ -203,7 +168,7 @@ namespace LethalDiseases.Items
         [Rpc(SendTo.Everyone)]
         public void EmptyRpc()
         {
-            filledDisease = "";
+            storedDisease = "";
             DoEmptyAnimation();
         }
 
@@ -213,10 +178,57 @@ namespace LethalDiseases.Items
             Disease? disease = Disease.GetDiseaseFromString(_disease);
             if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
 
-            filledDisease = _disease;
+            storedDisease = _disease;
 
+            fluidRenderer.enabled = true;
             fluidRenderer.SetBlendShapeWeight(0, 0);
             SetFluidColor(disease.GetChemistryLiquidAppearance());
+        }
+
+        ChemistryIngredient IChemistryIngredient.GetIngredient()
+        {
+            var _storedDisease = storedDisease;
+            storedDisease = "";
+            DoEmptyAnimation();
+            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+        }
+
+        void IChemistryIngredient.OnChemicalMixerOutput(string specialInstructions)
+        {
+            return;
+        }
+
+        ChemistryIngredient? IDistillableIngredient.DistilleryOutput()
+        {
+            return new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+        }
+
+        float IDistillableIngredient.DistilleryMixTime()
+        {
+            return 10f;
+        }
+
+        bool IDistillableIngredient.DespawnItemAfterDistilleryInput()
+        {
+            return false;
+        }
+
+        bool IChemistryOutputContainer.ReceiveChemistryOutput(ChemistryIngredient ingredient)
+        {
+            if (isFilled)
+            {
+                HUDManager.Instance.DisplayTip("Insert ingredient failed", "Container is already full", isWarning: true);
+                return false;
+            }
+
+            if (ingredient.specialInstructions.IsNullOrWhiteSpace())
+            {
+                HUDManager.Instance.DisplayTip("Insert ingredient failed", "No diseases to insert", isWarning: true);
+                return false;
+            }
+
+            storedDisease = ingredient.specialInstructions;
+            return true;
         }
     }
 }
