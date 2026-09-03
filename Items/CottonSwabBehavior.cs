@@ -12,6 +12,8 @@ namespace LethalDiseases.Items
     {
         public MeshRenderer tipRenderer = null!;
 
+        ScanNodeProperties scanNode = null!;
+
         public string storedDisease = "";
 
         readonly float maxDistance = 2f;
@@ -36,6 +38,7 @@ namespace LethalDiseases.Items
             itemProperties.positionOffset = new Vector3(0, 0, 0);
             itemProperties.rotationOffset = new Vector3(0, 0, 0);
             itemProperties.floorYOffset = 0;
+            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -71,10 +74,12 @@ namespace LethalDiseases.Items
 
         public void SetDiseaseOnLocalClient(string _disease)
         {
-            storedDisease = _disease;
-
             Disease? disease = Disease.GetDiseaseFromString(storedDisease);
             if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+
+            storedDisease = _disease;
+            scanNode.subText = disease.name;
+
             SetTipColor(disease.GetChemistryLiquidAppearance());
         }
 

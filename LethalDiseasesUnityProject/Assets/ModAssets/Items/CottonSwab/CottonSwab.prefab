@@ -214,8 +214,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.464275, y: 0.26649746, z: 0.20898055}
-  m_Center: {x: -0.002206779, y: 0.12908758, z: -0.004943398}
+  m_Size: {x: 2.5827763, y: 0.42447284, z: 0.33159947}
+  m_Center: {x: -0.005467385, y: 0.20807527, z: -0.006174566}
 --- !u!82 &8282058296226636046
 AudioSource:
   m_ObjectHideFlags: 0
@@ -427,7 +427,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.043, z: 0}
-  m_LocalScale: {x: 0.27777776, y: 0.27777776, z: 0.27777776}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1336766620292537160}

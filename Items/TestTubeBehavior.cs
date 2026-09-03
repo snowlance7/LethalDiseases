@@ -26,12 +26,13 @@ namespace LethalDiseases.Items
 
         void IChemistryIngredient.OnOutputIngredient(string specialInstructions)
         {
-            storedDisease = specialInstructions;
             Disease? disease = Disease.GetDiseaseFromString(storedDisease);
-            scanNode.subText = disease?.name;
+            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
 
-            if (disease != null)
-                SetFluidColor(disease.GetChemistryLiquidAppearance());
+            storedDisease = specialInstructions;
+            scanNode.subText = disease.name;
+
+            SetFluidColor(disease.GetChemistryLiquidAppearance());
         }
 
         bool IChemistryIngredient.DespawnItemAfterInput()

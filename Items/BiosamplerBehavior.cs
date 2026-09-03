@@ -14,6 +14,8 @@ namespace LethalDiseases.Items
     {
         public SkinnedMeshRenderer fluidRenderer = null!;
 
+        ScanNodeProperties scanNode = null!;
+
         public string filledDisease = "";
 
         public bool isFilled => !filledDisease.IsNullOrWhiteSpace();
@@ -72,8 +74,10 @@ namespace LethalDiseases.Items
         {
             itemProperties.positionOffset = new Vector3(-0.25f, 0.14f, -0.05f);
             itemProperties.rotationOffset = new Vector3(90, 80, 0);
-            itemProperties.floorYOffset = 1;
+            itemProperties.restingRotation = new Vector3(90, 90, 90);
+            itemProperties.floorYOffset = 0;
             itemProperties.grabAnim = "HoldKnife";
+            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 
         public override void OnDestroy()
@@ -141,6 +145,9 @@ namespace LethalDiseases.Items
                     yield break;
                 }
 
+                Disease disease = Disease.MergeDiseases(host.Diseases);
+                SetFluidColor(disease.GetChemistryLiquidAppearance());
+
                 freezingLocalPlayer = true;
                 playerHeldBy.FreezePlayer(true);
                 playerHeldBy.playerBodyAnimator.speed = 0f;
@@ -161,7 +168,6 @@ namespace LethalDiseases.Items
                 playerHeldBy.playerBodyAnimator.speed = 1f;
                 playerHeldBy.activatingItem = false;
 
-                Disease disease = Disease.MergeDiseases(host.Diseases);
                 FillRpc(disease.ToString());
                 routine = null;
             }
@@ -202,10 +208,15 @@ namespace LethalDiseases.Items
         }
 
         [Rpc(SendTo.Everyone)]
-        public void FillRpc(string disease)
+        public void FillRpc(string _disease)
         {
-            filledDisease = disease;
+            Disease? disease = Disease.GetDiseaseFromString(_disease);
+            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+
+            filledDisease = _disease;
+
             fluidRenderer.SetBlendShapeWeight(0, 0);
+            SetFluidColor(disease.GetChemistryLiquidAppearance());
         }
     }
 }
