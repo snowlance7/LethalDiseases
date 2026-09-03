@@ -9,7 +9,7 @@ namespace LethalDiseases
         [InitConfig]
         public static void Init()
         {
-            Plugin p = Plugin.Instance;
+            Plugin p = Plugin.PluginInstance;
             Plugin.logger.LogDebug("INIT DISEASE CONFIGS");
             minSymptoms = p.Config.Bind("Other Options", "Min Symptoms", 1, "Minimum number of symptoms a disease can have");
             maxSymptoms = p.Config.Bind("Other Options", "Max Symptoms", 5, "Maximum number of symptoms a disease can have");

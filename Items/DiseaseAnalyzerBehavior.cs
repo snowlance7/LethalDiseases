@@ -23,8 +23,6 @@ namespace LethalDiseases.Items
 
         HashSet<DiseaseScanNode> visibleNodes = new HashSet<DiseaseScanNode>();
 
-        int scanMask = 524872; // Props, InteractableObject, Enemies, Player
-
         Coroutine? scanRoutine;
 
         DiseaseScanNode? currentNodeInLOS;
@@ -48,7 +46,6 @@ namespace LethalDiseases.Items
             itemProperties.syncUseFunction = true;
             itemProperties.grabAnim = "HoldPatcherTool";
             grabbableToEnemies = false;
-            scanMask = Utils.CreateMask("Props", "InteractableObject", "Enemies", "Player");
         }
 
         public override void Update()
@@ -137,11 +134,11 @@ namespace LethalDiseases.Items
 
         public override void ItemInteractLeftRight(bool right)
         {
-            if (right) // E: Clear disease scan nodes TODO
+            if (right) // E: Clear disease scan nodes
             {
                 ClearNodes();
             }
-            else // Q: Scan self TODO
+            else // Q: Scan self
             {
                 animator.SetTrigger("self_scan");
                 audioSource.Play();
@@ -229,7 +226,7 @@ namespace LethalDiseases.Items
                 {
                     if (isPocketed || !isHeld) { yield break; }
                     DiseaseScanNode.EnableColliders(true);
-                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, scanMask);
+                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, PluginInstance.playerEnemiesPropsInteractableObjectMask);
                     DiseaseScanNode.EnableColliders(false);
                     logger.LogDebug($"Scanning {i}: {hitCount} hits");
                 }

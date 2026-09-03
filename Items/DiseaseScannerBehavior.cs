@@ -15,13 +15,10 @@ namespace LethalDiseases.Items
 
         PlayerControllerB previousPlayerHeldBy = null!;
 
-        const int mask = 524872; // Props, InteractableObject, Enemies, Player
-
         Coroutine? scanRoutine;
 
         const float scanRadius = 5f;
         const float scanDistance = 5f;
-        const bool bioOnly = false; // TODO: Set up configs
 
         public void Awake()
         {
@@ -120,7 +117,7 @@ namespace LethalDiseases.Items
                 if (base.IsOwner)
                 {
                     if (isPocketed || !isHeld) { yield break; }
-                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, mask);
+                    int hitCount = Physics.SphereCastNonAlloc(new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward), scanRadius, raycastHits, scanDistance, PluginInstance.playerEnemiesPropsInteractableObjectMask);
                     logger.LogDebug($"Scanning {i}: {hitCount} hits");
                 }
                 yield return new WaitForSeconds(0.09375f);

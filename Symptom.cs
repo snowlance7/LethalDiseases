@@ -42,7 +42,7 @@ namespace LethalDiseases
 
         public static void RegisterSymptom(Symptom symptom)
         {
-            ConfigEntry<bool> cfgEnabled = Plugin.Instance.Config.Bind<bool>($"{symptom.symptomType.ToString()} Symptom Options", symptom.name, true, $"Whether the symptom '{symptom.name}' can appear in diseases\n\n{symptom.description}");
+            ConfigEntry<bool> cfgEnabled = Plugin.PluginInstance.Config.Bind<bool>($"{symptom.symptomType.ToString()} Symptom Options", symptom.name, true, $"Whether the symptom '{symptom.name}' can appear in diseases\n\n{symptom.description}");
             if (!cfgEnabled.Value) { return; }
             symptomList.Add(symptom);
             symptomList.Sort((a, b) => a.name.CompareTo(b.name));

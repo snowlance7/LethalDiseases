@@ -35,9 +35,9 @@ namespace LethalDiseases.Items
 
         public void Awake()
         {
-            itemProperties.positionOffset = new Vector3(0, 0, 0);
-            itemProperties.rotationOffset = new Vector3(0, 0, 0);
-            itemProperties.floorYOffset = 0;
+            itemProperties.positionOffset = new Vector3(0.1f, 0.08f, 0.02f);
+            itemProperties.rotationOffset = new Vector3(0, 10, 0);
+            itemProperties.floorYOffset = 90;
             scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 
@@ -46,7 +46,7 @@ namespace LethalDiseases.Items
             base.ItemActivate(used, buttonDown);
             if (!buttonDown || storedDisease != "") { return; }
 
-            if (!Physics.Raycast(playerHeldBy.transform.position, playerHeldBy.transform.forward, out RaycastHit hitInfo, maxDistance, playerEnemiesPropsMask)) { return; }
+            if (!Physics.Raycast(playerHeldBy.transform.position, playerHeldBy.transform.forward, out RaycastHit hitInfo, maxDistance, PluginInstance.playerEnemiesPropsMask)) { return; }
 
             logger.LogDebug(hitInfo.collider.gameObject.name);
 

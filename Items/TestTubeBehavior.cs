@@ -16,6 +16,9 @@ namespace LethalDiseases.Items
 
         public void Awake()
         {
+            itemProperties.positionOffset = new Vector3(0.05f, 0.05f, 0.01f);
+            itemProperties.rotationOffset = new Vector3(0, 10, 0);
+            itemProperties.floorYOffset = 90;
             scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 

@@ -4,6 +4,7 @@ using Dawn;
 using Dusk;
 using GameNetcodeStuff;
 using HarmonyLib;
+using SnowyLib;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,7 +18,7 @@ namespace LethalDiseases
     [BepInDependency(SnowyLib.MyPluginInfo.PLUGIN_GUID)]
     internal class Plugin : BaseUnityPlugin
     {
-        public static Plugin Instance { get; private set; } = null!;
+        public static Plugin PluginInstance { get; private set; } = null!;
         public static ManualLogSource logger { get; private set; } = null!;
         public static DuskMod Mod { get; private set; } = null!;
 
@@ -26,13 +27,14 @@ namespace LethalDiseases
         public static PlayerControllerB? PlayerFromId(ulong id) { return StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == id).FirstOrDefault(); }
         public static bool IsServerOrHost { get { return NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost; } }
 
-        public const int playerEnemiesPropsMask = 1; // TODO: Get this
+        public readonly int playerEnemiesPropsMask = Utils.CreateMask("Props", "Enemies", "Player");
+        public readonly int playerEnemiesPropsInteractableObjectMask = Utils.CreateMask("Props", "InteractableObject", "Enemies", "Player");
 
         private void Awake()
         {
-            if (Instance == null) Instance = this;
+            if (PluginInstance == null) PluginInstance = this;
 
-            logger = Instance.Logger;
+            logger = PluginInstance.Logger;
 
             harmony.PatchAll();
 
