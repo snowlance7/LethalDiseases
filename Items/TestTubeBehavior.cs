@@ -4,6 +4,7 @@ using static LethalDiseases.Plugin;
 using SnowyLib;
 using SnowyCraftingCore;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LethalDiseases.Items
 {
@@ -37,7 +38,7 @@ namespace LethalDiseases.Items
 
         void IChemistryIngredient.OnChemicalMixerOutput(string specialInstructions)
         {
-            Disease? disease = Disease.GetDiseaseFromString(storedDisease);
+            Disease? disease = Disease.GetDiseaseFromString(specialInstructions);
             if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
 
             storedDisease = specialInstructions;
@@ -48,7 +49,10 @@ namespace LethalDiseases.Items
 
         Action<AnalyzableIngredient> IAnalyzableIngredient.OnAnalyze()
         {
-            throw new NotImplementedException(); // TODO
+            return static (ingredient) =>
+            {
+                // TODO
+            };
         }
 
         bool IAnalyzableIngredient.DespawnItemAfterAnalyzing()
