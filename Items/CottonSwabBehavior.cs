@@ -92,7 +92,7 @@ namespace LethalDiseases.Items
             return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
-        void IChemistryIngredient.OnChemicalMixerOutput(string specialInstructions)
+        void IChemistryIngredient.OnChemicalOutput(string specialInstructions)
         {
             SetDiseaseOnLocalClient(specialInstructions);
         }

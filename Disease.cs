@@ -327,6 +327,7 @@ namespace LethalDiseases
         public static Disease MergeDiseases(params IEnumerable<Disease> diseases)
         {
             Disease mergedDisease = new Disease();
+            if (diseases == null || diseases.Count() == 0) { return mergedDisease; }
 
             mergedDisease.strength = diseases.Max(d => d.strength);
             mergedDisease.transmissibility = diseases.Max(d => d.transmissibility);
@@ -348,6 +349,11 @@ namespace LethalDiseases
         public Color GetColor()
         {
             return new Color(r: strength, g: stability, b: latency);
+        }
+
+        public string GetTerminalDisplayText()
+        {
+            // TODO
         }
     }
 }

@@ -5,11 +5,13 @@ using SnowyLib;
 using SnowyCraftingCore;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using TerminalApi;
 
 namespace LethalDiseases.Items
 {
     internal class TestTubeBehavior : PhysicsProp, IAnalyzableIngredient, IMixableIngredient
     {
+        public static int resultCounter = 0;
         public MeshRenderer fluidRenderer = null!;
 
         ScanNodeProperties scanNode = null!;
@@ -26,6 +28,7 @@ namespace LethalDiseases.Items
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
+            logger.LogDebug("Setting fluid color to " + color.ToString());
             fluidRenderer.material.color = color.liquidColor;
             fluidRenderer.material.SetColor("_EmissionColor", color.liquidColor);
             fluidRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
@@ -36,8 +39,9 @@ namespace LethalDiseases.Items
             return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
-        void IChemistryIngredient.OnChemicalMixerOutput(string specialInstructions)
+        void IChemistryIngredient.OnChemicalOutput(string specialInstructions)
         {
+            logger.LogDebug("Test tube OnChemicalOutput start");
             Disease? disease = Disease.GetDiseaseFromString(specialInstructions);
             if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
 
@@ -52,12 +56,17 @@ namespace LethalDiseases.Items
             return static (ingredient) =>
             {
                 // TODO
+                Disease? disease = Disease.GetDiseaseFromString(ingredient.specialInstructions);
+                if (disease == null) { HUDManager.Instance.DisplayTip("Analysis failed", "No diseases found", true); return; }
+
+                resultCounter++;
+                TerminalApi.TerminalApi.AddCommand($"result{resultCounter}", disease.GetTerminalDisplayText());
             };
         }
 
         bool IAnalyzableIngredient.DespawnItemAfterAnalyzing()
         {
-            return true;
+            return false;
         }
 
         bool IMixableIngredient.DespawnItemAfterInput()

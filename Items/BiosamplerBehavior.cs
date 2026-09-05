@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using Dawn;
+using GameNetcodeStuff;
 using LethalDiseases.Unlockables;
 using SnowyCraftingCore;
 using SnowyLib;
@@ -25,7 +26,12 @@ namespace LethalDiseases.Items
 
         Coroutine? routine;
 
+        bool LocalPlayerIsLookingDown => Vector3.Dot(localPlayer.gameplayCamera.transform.forward, Vector3.down) > 0.98f;
+
+        string mainControlTip = "Extract [LMB]";
+
         const float fillTime = 1.5f;
+        const float distanceRequired = 1f;
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
@@ -43,6 +49,39 @@ namespace LethalDiseases.Items
             itemProperties.floorYOffset = 0;
             itemProperties.grabAnim = "HoldKnife";
             scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (playerHeldBy != null && playerHeldBy == localPlayer && isHeld)
+            {
+                if (LocalPlayerIsLookingDown)
+                {
+                    if (isFilled && mainControlTip != "Self Inject [LMB]")
+                    {
+                        mainControlTip = "Self Inject [LMB]";
+                        SetControlTipsForItem();
+                    }
+                    else if (!isFilled && mainControlTip != "Self Extract [LMB]")
+                    {
+                        mainControlTip = "Self Extract [LMB]";
+                        SetControlTipsForItem();
+                    }
+                }
+                else if (!LocalPlayerIsLookingDown && mainControlTip != "Extract [LMB]")
+                {
+                    mainControlTip = "Extract [LMB]";
+                    SetControlTipsForItem();
+                }
+            }
+        }
+
+        public override void SetControlTipsForItem()
+        {
+            string[] toolTips = [mainControlTip, "Empty [Q]"];
+            HUDManager.Instance.ChangeControlTipMultiple(toolTips, holdingItem: true, itemProperties);
         }
 
         public override void OnDestroy()
@@ -77,7 +116,7 @@ namespace LethalDiseases.Items
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             base.ItemActivate(used, buttonDown);
-            if (!buttonDown || isFilled || routine != null) { return; }
+            if (!buttonDown) { return; }
 
             DoStabAnimation();
         }
@@ -87,7 +126,7 @@ namespace LethalDiseases.Items
             base.ItemInteractLeftRight(right);
             if (right || !isFilled) { return; }
 
-            EmptyRpc();
+            EmptyAnimationRpc();
         }
 
         public void DoStabAnimation()
@@ -96,49 +135,97 @@ namespace LethalDiseases.Items
             {
                 yield return null;
 
-                playerHeldBy.playerBodyAnimator.SetTrigger("UseHeldItem1"); // Stab animation
+                localPlayer.playerBodyAnimator.SetTrigger("UseHeldItem1"); // Stab animation
+                DoStabAnimationRpc(localPlayer.actualClientId);
 
                 yield return new WaitForSeconds(11f / 60f);
 
-                float closestDistance = 0f;
-                DiseaseHost? host = DiseaseHost.Instances.Where(x => x.hasActor && x.hasDisease && x.player != playerHeldBy).GetClosestToPosition(transform.position, (x) => x.transform.position, out closestDistance, fastDistanceCheck: true);
-
-                if (host == null || closestDistance > 1.5f)
+                if (isFilled)
                 {
-                    playerHeldBy.activatingItem = false;
-                    routine = null;
-                    yield break;
+                    if (!LocalPlayerIsLookingDown)
+                    {
+                        CancelStabAnimation();
+                        yield break;
+                    }
+
+                    freezingLocalPlayer = true;
+                    localPlayer.FreezePlayer(true);
+                    localPlayer.playerBodyAnimator.speed = 0f;
+
+                    float elapsedTime = 0f;
+
+                    while (elapsedTime < fillTime)
+                    {
+                        yield return null;
+
+                        elapsedTime += Time.deltaTime;
+                        fluidRenderer.SetBlendShapeWeight(0, Mathf.Lerp(0, 100, elapsedTime / fillTime));
+                    }
+
+                    localPlayer.Infect(storedDisease);
+                    CancelStabAnimation();
+                    EmptyRpc();
                 }
-
-                Disease disease = Disease.MergeDiseases(host.Diseases);
-                SetFluidColor(disease.GetChemistryLiquidAppearance());
-
-                freezingLocalPlayer = true;
-                playerHeldBy.FreezePlayer(true);
-                playerHeldBy.playerBodyAnimator.speed = 0f;
-                fluidRenderer.enabled = true;
-
-                float elapsedTime = 0f;
-
-                while (elapsedTime < fillTime)
+                else
                 {
-                    yield return null;
-                    elapsedTime += Time.deltaTime;
-                    fluidRenderer.SetBlendShapeWeight(0, Mathf.Lerp(100, 0, elapsedTime / fillTime));
+                    float closestDistance = 0f;
+                    DiseaseHost? host = LocalPlayerIsLookingDown ? localPlayer.NetworkObject.GetHost() : DiseaseHost.Instances.Where(x => x.hasActor && x.hasDisease && x.player != localPlayer).GetClosestToPosition(transform.position, (x) => x.transform.position, out closestDistance, fastDistanceCheck: true);
+
+                    if (host == null || closestDistance > distanceRequired)
+                    {
+                        CancelStabAnimation();
+                        yield break;
+                    }
+
+                    Disease disease = Disease.MergeDiseases(host.Diseases);
+                    SetFluidColor(disease.GetChemistryLiquidAppearance());
+
+                    freezingLocalPlayer = true;
+                    localPlayer.FreezePlayer(true);
+                    localPlayer.playerBodyAnimator.speed = 0f;
+
+                    fluidRenderer.enabled = true;
+
+                    float elapsedTime = 0f;
+
+                    while (elapsedTime < fillTime)
+                    {
+                        yield return null;
+
+                        if ((host.transform.position - localPlayer.transform.position).sqrMagnitude > distanceRequired * distanceRequired)
+                        {
+                            fluidRenderer.SetBlendShapeWeight(0, 100);
+                            fluidRenderer.enabled = false;
+                            CancelStabAnimation();
+                            yield break;
+                        }
+
+                        elapsedTime += Time.deltaTime;
+                        fluidRenderer.SetBlendShapeWeight(0, Mathf.Lerp(100, 0, elapsedTime / fillTime));
+                    }
+
+                    fluidRenderer.SetBlendShapeWeight(0, 0);
+                    CancelStabAnimation();
+
+                    FillRpc(disease.ToString());
                 }
-
-                fluidRenderer.SetBlendShapeWeight(0, 0);
-                playerHeldBy.FreezePlayer(false);
-                freezingLocalPlayer = false;
-                playerHeldBy.playerBodyAnimator.speed = 1f;
-                playerHeldBy.activatingItem = false;
-
-                FillRpc(disease.ToString());
-                routine = null;
             }
 
-            playerHeldBy.activatingItem = true;
+            if (routine != null) { return; }
+            localPlayer.activatingItem = true;
             routine = StartCoroutine(doStabAnimation());
+        }
+
+        private void CancelStabAnimation()
+        {
+            if (freezingLocalPlayer)
+            {
+                localPlayer.FreezePlayer(false);
+                freezingLocalPlayer = false;
+            }
+            localPlayer.playerBodyAnimator.speed = 1f;
+            localPlayer.activatingItem = false;
+            routine = null;
         }
 
         public void DoEmptyAnimation()
@@ -162,11 +249,20 @@ namespace LethalDiseases.Items
                 routine = null;
             }
 
+            if (routine != null) { return; }
             routine = StartCoroutine(doEmptyAnimation());
         }
 
         [Rpc(SendTo.Everyone)]
         public void EmptyRpc()
+        {
+            fluidRenderer.SetBlendShapeWeight(0, 100);
+            fluidRenderer.enabled = false;
+            storedDisease = "";
+        }
+
+        [Rpc(SendTo.Everyone)]
+        public void EmptyAnimationRpc()
         {
             storedDisease = "";
             DoEmptyAnimation();
@@ -179,28 +275,36 @@ namespace LethalDiseases.Items
             if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
 
             storedDisease = _disease;
+            scanNode.subText = storedDisease;
 
             fluidRenderer.enabled = true;
             fluidRenderer.SetBlendShapeWeight(0, 0);
             SetFluidColor(disease.GetChemistryLiquidAppearance());
         }
 
+        [Rpc(SendTo.NotMe)]
+        public void DoStabAnimationRpc(ulong clientId)
+        {
+            PlayerControllerB? player = PlayerFromId(clientId);
+            player?.playerBodyAnimator.SetTrigger("UseHeldItem1");
+        }
+
         ChemistryIngredient IChemistryIngredient.GetIngredient()
         {
-            var _storedDisease = storedDisease;
-            storedDisease = "";
-            DoEmptyAnimation();
             return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
-        void IChemistryIngredient.OnChemicalMixerOutput(string specialInstructions)
+        void IChemistryIngredient.OnChemicalOutput(string specialInstructions)
         {
             return;
         }
 
         ChemistryIngredient? IDistillableIngredient.DistilleryOutput()
         {
-            return new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            var _storedDisease = storedDisease;
+            storedDisease = "";
+            DoEmptyAnimation();
+            return new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), _storedDisease);
         }
 
         float IDistillableIngredient.DistilleryMixTime()

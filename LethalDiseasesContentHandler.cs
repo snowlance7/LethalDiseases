@@ -28,6 +28,9 @@ namespace LethalDiseases
 
             [LoadFromBundle("AudioLibrary.asset")]
             public AudioLibrary AudioLibrary { get; private set; } = null!;
+
+            [LoadFromBundle("TestCommand.asset")]
+            public DuskTerminalCommandDefinition TestCommand { get; private set; } = null!;
         }
         public DiseaseAssetsAssets? DiseaseAssets;
 
