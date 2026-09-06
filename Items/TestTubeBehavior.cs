@@ -6,6 +6,7 @@ using SnowyCraftingCore;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using TerminalApi;
+using GameNetcodeStuff;
 
 namespace LethalDiseases.Items
 {
@@ -51,25 +52,30 @@ namespace LethalDiseases.Items
             SetFluidColor(disease.GetChemistryLiquidAppearance());
         }
 
-        Action<AnalyzableIngredient> IAnalyzableIngredient.OnAnalyze()
+        Action<AnalyzableIngredient, PlayerControllerB> IAnalyzableIngredient.OnAnalyze()
         {
-            return static (ingredient) =>
+            return static (ingredient, player) =>
             {
-                // TODO
                 Disease? disease = Disease.GetDiseaseFromString(ingredient.specialInstructions);
                 if (disease == null) { HUDManager.Instance.DisplayTip("Analysis failed", "No diseases found", true); return; }
 
                 resultCounter++;
                 TerminalApi.TerminalApi.AddCommand($"result{resultCounter}", disease.GetTerminalDisplayText());
+                HUDManager.Instance.DisplayTip("Analysis complete", $"Results sent to terminal (result{resultCounter})");
             };
         }
 
-        bool IAnalyzableIngredient.DespawnItemAfterAnalyzing()
+        bool IMixableIngredient.DespawnItemAfterInput()
+        {
+            return true;
+        }
+
+        bool IAnalyzableIngredient.DespawnItemOnAnalyze()
         {
             return false;
         }
 
-        bool IMixableIngredient.DespawnItemAfterInput()
+        bool IAnalyzableIngredient.HoldItem()
         {
             return true;
         }

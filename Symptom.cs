@@ -22,7 +22,7 @@ namespace LethalDiseases
                 switch (symptomType)
                 {
                     case SymptomType.Good:
-                        return $"<color=green>{name}</color>";
+                        return $"<color=blue>{name}</color>";
                     case SymptomType.Neutral:
                         return $"<color=yellow>{name}</color>";
                     case SymptomType.Bad:

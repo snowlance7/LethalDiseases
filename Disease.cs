@@ -354,6 +354,24 @@ namespace LethalDiseases
         public string GetTerminalDisplayText()
         {
             // TODO
+            string text = $"Name: {name}\n" +
+                $"\n" +
+                $"Strength: {strength * 100}% | {strengthTime} seconds\n" +
+                $"Stability: {stability * 100}% | {stabilityTime} seconds\n" +
+                $"Latency: {latency * 100}% | {latencyTime} seconds\n" +
+                $"Transmissibility: {transmissibility * 100}%\n" +
+                $"\n" +
+                $"Transmission Types: {transmissionType.ToString()}\n" +
+                $"\n" +
+                $"Symptoms:";
+
+            foreach (var symptomIndex in symptoms)
+            {
+                var symptom = Symptom.symptomList[symptomIndex];
+                text += $"\n- {symptom.DisplayName}: {symptom.description}";
+            }
+
+            return text;
         }
     }
 }
