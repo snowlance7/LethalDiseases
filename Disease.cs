@@ -353,7 +353,6 @@ namespace LethalDiseases
 
         public string GetTerminalDisplayText()
         {
-            // TODO
             string text = $"Name: {name}\n" +
                 $"\n" +
                 $"Strength: {strength * 100}% | {strengthTime} seconds\n" +
@@ -370,6 +369,8 @@ namespace LethalDiseases
                 var symptom = Symptom.symptomList[symptomIndex];
                 text += $"\n- {symptom.DisplayName}: {symptom.description}";
             }
+
+            text += "\n\n";
 
             return text;
         }

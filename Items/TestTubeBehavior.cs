@@ -7,6 +7,9 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using TerminalApi;
 using GameNetcodeStuff;
+using TerminalApi.Classes;
+using SnowyCraftingCore.TerminalAdditions;
+using Dawn;
 
 namespace LethalDiseases.Items
 {
@@ -40,7 +43,7 @@ namespace LethalDiseases.Items
             return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
-        void IChemistryIngredient.OnChemicalOutput(string specialInstructions)
+        public void OnChemicalOutput(string specialInstructions)
         {
             logger.LogDebug("Test tube OnChemicalOutput start");
             Disease? disease = Disease.GetDiseaseFromString(specialInstructions);
@@ -62,6 +65,24 @@ namespace LethalDiseases.Items
                 resultCounter++;
                 TerminalApi.TerminalApi.AddCommand($"result{resultCounter}", disease.GetTerminalDisplayText());
                 HUDManager.Instance.DisplayTip("Analysis complete", $"Results sent to terminal (result{resultCounter})");
+
+                if (ApparatusPowerPort.Instance == null || SmallItemDispenser.Instance == null) { return; }
+
+                TerminalApi.TerminalApi.AddCommand($"synthesize result{resultCounter}", new CommandInfo()
+                {
+                    Title = "synthesize [diseaseName/result]",
+                    DisplayTextSupplier = () =>
+                    {
+                        if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Not enough power to synthesize, alternative power source required"; }
+                        if (!ApparatusPowerPort.Instance.UsePower(0.1f)) { return "Not enough power available, new alternative power source required"; }
+                        SmallItemDispenser.Instance.ItemDispenseOperation(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, (item) =>
+                        {
+                            ((TestTubeBehavior)item).OnChemicalOutput(disease.ToString());
+                        }, 30f);
+                        return "Disease synthesized, 10% power used";
+                    },
+                    Category = "Other"
+                });
             };
         }
 

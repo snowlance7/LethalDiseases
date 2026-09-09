@@ -10,6 +10,9 @@ using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 using SnowyCraftingCore.Unlockables;
 using SnowyCraftingCore;
+using TerminalApi;
+using SnowyCraftingCore.TerminalAdditions;
+using TerminalApi.Classes;
 
 namespace LethalDiseases
 {
@@ -73,6 +76,16 @@ namespace LethalDiseases
                     return null; // TODO
                 }
             }));
+
+            /*TerminalApi.TerminalApi.AddCommand("AnalyzeSample", new CommandInfo() // TODO?
+            {
+                DisplayTextSupplier = () =>
+                {
+                    SmallItemDispenser.Instance.ItemExchangeOperation(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, LethalContent.Items[LethalDiseasesKeys.TestTube].Item, 15f, 5f, 15f);
+                    return "Input cotton swab into item port\n\n";
+                },
+                Category = "Other"
+            });*/
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
