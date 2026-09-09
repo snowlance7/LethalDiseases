@@ -103,6 +103,9 @@ namespace LethalDiseases
                                 break;
                         }
                         break;
+                    case "/analyze":
+                        // TODO
+                        break;
                     default:
                         break;
                 }

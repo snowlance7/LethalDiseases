@@ -1,10 +1,10 @@
 ﻿using GameNetcodeStuff;
-using LethalDiseases.Unlockables;
 using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Configs;
@@ -15,8 +15,8 @@ namespace LethalDiseases
 {
     public class Disease : IEquatable<Disease>
     {
-        public static Dictionary<string, string> namedDiseases = new Dictionary<string, string>();
-        public string name { get { return namedDiseases.TryGetValue(ToString(), out string _name) ? _name : "???"; } }
+        public static AutoDictionary<string, StringBuilder> namedDiseases = new(new(key => new StringBuilder($"disease{namedDiseases!.Count}")));
+        public string name { get { return namedDiseases[ToString()].ToString(); } }
 
         // How long it lasts
         public float strength { get; internal set; }
@@ -68,6 +68,11 @@ namespace LethalDiseases
         public DiseaseHost? host;
 
         Collider[] airborneColliders = []; // TODO: Test this
+
+        internal void Rename(string newName)
+        {
+            namedDiseases[ToString()] = new StringBuilder(newName);
+        }
 
         internal static Disease CreateRandomDisease()
         {
