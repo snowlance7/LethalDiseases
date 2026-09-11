@@ -1,18 +1,13 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
 using HarmonyLib;
-using LethalDiseases.Unlockables;
+using SnowyCraftingCore;
 using SnowyLib;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
-using SnowyCraftingCore.Unlockables;
-using SnowyCraftingCore;
-using TerminalApi;
-using SnowyCraftingCore.TerminalAdditions;
-using TerminalApi.Classes;
 
 namespace LethalDiseases
 {

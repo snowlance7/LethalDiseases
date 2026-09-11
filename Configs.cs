@@ -6,7 +6,7 @@ namespace LethalDiseases
 {
     internal static class Configs
     {
-        [InitConfig]
+        [StaticInit]
         public static void Init()
         {
             Plugin p = Plugin.PluginInstance;

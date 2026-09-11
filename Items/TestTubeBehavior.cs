@@ -53,8 +53,6 @@ namespace LethalDiseases.Items
             {
                 Disease? disease = Disease.GetDiseaseFromString(ingredient.specialInstructions);
                 if (disease == null) { HUDManager.Instance.DisplayTip("Analysis failed", "No diseases found", true); return; }
-
-                LethalDiseasesTerminalAPI.SetTerminalCommands(disease);
                 HUDManager.Instance.DisplayTip("Analysis complete", $"Results sent to terminal ({disease.name})");
             };
         }

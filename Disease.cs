@@ -15,8 +15,27 @@ namespace LethalDiseases
 {
     public class Disease : IEquatable<Disease>
     {
-        public static AutoDictionary<string, StringBuilder> namedDiseases = new(new(key => new StringBuilder($"disease{namedDiseases!.Count}")));
-        public string name { get { return namedDiseases[ToString()].ToString(); } }
+        public static Dictionary<string, string> namedDiseases = new Dictionary<string, string>();
+        public string name
+        {
+            get
+            {
+                if (namedDiseases.TryGetValue(ToString(), out string diseaseName))
+                {
+                    return diseaseName;
+                }
+                else
+                {
+                    string newDiseaseName = $"disease{namedDiseases.Count}";
+                    namedDiseases.Add(ToString(), newDiseaseName);
+                    return newDiseaseName;
+                }
+            }
+            set
+            {
+                namedDiseases[ToString()] = value;
+            }
+        }
 
         // How long it lasts
         public float strength { get; internal set; }
@@ -68,11 +87,6 @@ namespace LethalDiseases
         public DiseaseHost? host;
 
         Collider[] airborneColliders = []; // TODO: Test this
-
-        internal void Rename(string newName)
-        {
-            namedDiseases[ToString()] = new StringBuilder(newName);
-        }
 
         internal static Disease CreateRandomDisease()
         {
@@ -378,6 +392,20 @@ namespace LethalDiseases
             text += "\n\n";
 
             return text;
+        }
+
+        public static Disease? GetDiseaseFromName(string diseaseName)
+        {
+            try
+            {
+                var namedDisease = namedDiseases.Where(x => x.Value.ToString().ToLower() == diseaseName.ToLower()).First();
+                Disease? disease = GetDiseaseFromString(namedDisease.Key);
+                return disease;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
     }
 }

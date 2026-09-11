@@ -123,9 +123,6 @@
       <Reference Include="Snowlance.SnowyLib">
         <HintPath>..\..\..\..\AppData\Roaming\com.kesomannen.gale\lethal-company\profiles\Testing\BepInEx\plugins\Snowlance-SnowyLib\Snowlance.SnowyLib.dll</HintPath>
       </Reference>
-      <Reference Include="TerminalApi">
-        <HintPath>..\..\..\..\AppData\Roaming\com.kesomannen.gale\lethal-company\profiles\Testing\BepInEx\plugins\NotAtomicBomb-TerminalApi\TerminalApi.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
     <ItemGroup>
