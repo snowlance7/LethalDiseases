@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
+using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
@@ -14,6 +16,9 @@ namespace LethalDiseases.Items
         public GameObject syringePrefab = null!;
 
         public string storedDisease = "";
+        public int gunCompatibleAmmoID = 0115;
+        private int ammoSlotToUse;
+        bool isReloading;
 
         public override void EquipItem()
         {
@@ -47,6 +52,50 @@ namespace LethalDiseases.Items
             if (!right) { return; }
 
 
+        }
+
+        public void Reload()
+        {
+            if (!ReloadedGun()) { return; }
+            isReloading = true;
+
+        }
+
+        private int FindAmmoInInventory()
+        {
+            for (int i = 0; i < playerHeldBy.ItemSlots.Length; i++)
+            {
+                if (!(playerHeldBy.ItemSlots[i] == null))
+                {
+                    GunAmmo? gunAmmo = playerHeldBy.ItemSlots[i] as GunAmmo;
+                    if (gunAmmo != null && gunAmmo.ammoType == gunCompatibleAmmoID)
+                    {
+                        return i;
+                    }
+                }
+            }
+            if (playerHeldBy.ItemOnlySlot != null)
+            {
+                GunAmmo? gunAmmo = playerHeldBy.ItemOnlySlot as GunAmmo;
+                if (gunAmmo != null && gunAmmo.ammoType == gunCompatibleAmmoID)
+                {
+                    return 50;
+                }
+            }
+            return -1;
+        }
+
+        private bool ReloadedGun()
+        {
+            int num = FindAmmoInInventory();
+            if (num == -1)
+            {
+                Debug.Log("not reloading");
+                return false;
+            }
+            Debug.Log("reloading!");
+            ammoSlotToUse = num;
+            return true;
         }
     }
 }

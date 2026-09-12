@@ -13,6 +13,7 @@
     "CottonSwab": "lethal_diseases:cotton_swab",
     "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
     "DiseaseScanner": "lethal_diseases:disease_scanner",
+    "Syringe": "lethal_diseases:syringe",
     "TestTube": "lethal_diseases:test_tube"
   }
 }

@@ -37,6 +37,9 @@ namespace LethalDiseases
         public class DiseaseScannerAssets(DuskMod mod, string filePath) : AssetBundleLoader<DiseaseScannerAssets>(mod, filePath) { }
         public DiseaseScannerAssets? DiseaseScanner;
 
+        public class SyringeAssets(DuskMod mod, string filePath) : AssetBundleLoader<SyringeAssets>(mod, filePath) { }
+        public SyringeAssets? Syringe;
+
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
             RegisterContent("biosampler", out BioSampler);
@@ -44,6 +47,7 @@ namespace LethalDiseases
             RegisterContent("disease_analyzer", out DiseaseAnalyzer);
             RegisterContent("disease_assets", out DiseaseAssets);
             RegisterContent("disease_scanner", out DiseaseScanner);
+            RegisterContent("syringe", out Syringe);
         }
     }
 }

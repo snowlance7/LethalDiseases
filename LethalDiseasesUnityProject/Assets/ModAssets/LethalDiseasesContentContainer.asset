@@ -14,12 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   assetBundles:
   - assetBundleName: biosampler
+    enabledByDefault: 1
     configName: Biosampler
   - assetBundleName: cotton_swabs
+    enabledByDefault: 1
     configName: Cotton Swabs
   - assetBundleName: disease_analyzer
+    enabledByDefault: 1
     configName: Disease Analyzer
   - assetBundleName: disease_assets
+    enabledByDefault: 1
     configName: Other
   - assetBundleName: disease_scanner
+    enabledByDefault: 1
     configName: Disease Scanner
+  - assetBundleName: syringe
+    enabledByDefault: 1
+    configName: Syringe
