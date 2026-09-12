@@ -15,3 +15,4 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Retro Scanner](https://skfb.ly/oZSvv) by fizakhan1
 - [Eve Hypo](https://skfb.ly/oqUFX) by DealwithTheDevil
 - [Cotton Swabs](https://skfb.ly/o8qxV) by lsmine0
+- [Syringe Gun - Dirty](https://skfb.ly/o6ZJS) by Coozy

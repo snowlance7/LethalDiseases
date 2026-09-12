@@ -10,7 +10,7 @@ namespace LethalDiseases.Items
     {
         public MeshRenderer fluidRenderer = null!;
 
-        ScanNodeProperties scanNode = null!;
+        public ScanNodeProperties scanNode = null!;
 
         public string storedDisease = "";
 
@@ -49,10 +49,14 @@ namespace LethalDiseases.Items
 
         Action<AnalyzableIngredient, PlayerControllerB> IAnalyzableIngredient.OnAnalyze()
         {
+            
             return static (ingredient, player) =>
             {
                 Disease? disease = Disease.GetDiseaseFromString(ingredient.specialInstructions);
                 if (disease == null) { HUDManager.Instance.DisplayTip("Analysis failed", "No diseases found", true); return; }
+
+                disease.name = $"disease{Disease.namedDiseases.Count}";
+
                 HUDManager.Instance.DisplayTip("Analysis complete", $"Results sent to terminal ({disease.name})");
             };
         }

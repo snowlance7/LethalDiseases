@@ -26,9 +26,7 @@ namespace LethalDiseases
                 }
                 else
                 {
-                    string newDiseaseName = $"disease{namedDiseases.Count}";
-                    namedDiseases.Add(ToString(), newDiseaseName);
-                    return newDiseaseName;
+                    return "???";
                 }
             }
             set

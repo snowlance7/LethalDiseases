@@ -274,7 +274,7 @@ namespace LethalDiseases.Items
             if (timeSinceRefresh <= 1f) { return; }
             timeSinceRefresh = 0f;
 
-            diseaseName.text = disease.name == "???" ? $"Disease {index}" : disease.name;
+            diseaseName.text = disease.name;
             diseaseStats.text = $"Status: {(disease.isActive ? "<color=red>Active</color>" : "<color=yellow>Dormant</color>")}\n" +
                 $"Expiration: {(int)disease.timeLeft}\n";
             diseaseTransmissionTypeLabel.text = "Type:";

@@ -15,7 +15,8 @@ namespace LethalDiseases
         {
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseaseget", GetDisease, "Other", "DISEASEGET [diseaseName]", "Gets the analyzed information of a disease"));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseaserename", RenameDisease, "Other", "DISEASERENAME [diseaseName] [newDiseaseName]", "Renames a disease"));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseasesynthesize", SynthesizeDisease, "Other", "DISEASESYNTHESIZE [diseaseName] (10% apparatus power)", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize."));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseasesynthesize", SynthesizeDisease, "Other", "DISEASESYNTHESIZE [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize."));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseaseanalyze", AnalyzeDisease, "Other", "DISEASEANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze."));
         }
 
         private static string GetDisease(string[] args)
@@ -81,11 +82,31 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.UsePower(0.05f)) { return "Analysis failed, not enough power available for analysis, new alternative power source required"; }
 
-            string diseaseName = "";
+            SmallItemDispenser.Instance.ItemModificationOperation([LethalContent.Items[LethalDiseasesKeys.TestTube].Item, LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item], (inputItem) =>
+            {
+                Disease? disease = null;
 
-            // TODO
+                if (inputItem is CottonSwabBehavior cottonSwab)
+                {
+                    disease = Disease.GetDiseaseFromString(cottonSwab.storedDisease);
+                }
+                else if (inputItem is TestTubeBehavior testTube)
+                {
+                    disease = Disease.GetDiseaseFromString(testTube.storedDisease);
+                }
 
-            return $"Analysis succeeded, use 'DISEASEGET {diseaseName}' to see the results";
+                if (disease != null)
+                {
+                    disease.name = $"disease{Disease.namedDiseases.Count}";
+                    HUDManager.Instance.DisplayTip("Analysis succeeded", $"Use 'DISEASEGET {disease.name}' in the terminal to see the results");
+                }
+                else
+                {
+                    HUDManager.Instance.DisplayTip("Analysis failed", "No disease detected on sample");
+                }
+            }, 30f, 20f, 30f);
+
+            return $"Analysis ready, please input sample in item port";
         }
     }
 }
