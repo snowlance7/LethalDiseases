@@ -4,12 +4,17 @@ using LethalDiseases.Items;
 using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
 using System;
+using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases
 {
     internal static class LethalDiseasesTerminalAPI
     {
+        static DispensableItem testTubeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new Vector3(0, 0, 0), new Vector3(0, 180, 0));
+        static DispensableItem cottonSwabDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item, new Vector3(0.04f, 0f, 0f), new Vector3(0, 180, 0));
+        static DispensableItem syringeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.Syringe].Item, new Vector3(0.035f, -0.01f, 0f), new Vector3(0, 0, 0));
+
         [StaticInit]
         public static void Init()
         {
@@ -69,7 +74,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.UsePower(0.1f)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
-            SmallItemDispenser.Instance.ItemDispenseOperation(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, (item) => ((TestTubeBehavior)item).OnChemicalOutput(disease.ToString()), 30f);
+            SmallItemDispenser.Instance.ItemDispenseOperation(testTubeDispensable, (item) => ((TestTubeBehavior)item).OnChemicalOutput(disease.ToString()), 30f);
 
             return $"Synthesis succeeded, dispensing {diseaseName}";
         }
@@ -85,7 +90,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.UsePower(0.05f)) { return "Analysis failed, not enough power available for analysis, new alternative power source required"; }
 
-            SmallItemDispenser.Instance.ItemModificationOperation([LethalContent.Items[LethalDiseasesKeys.TestTube].Item, LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item], (inputItem) =>
+            SmallItemDispenser.Instance.ItemModificationOperation([testTubeDispensable, cottonSwabDispensable], (inputItem) =>
             {
                 Disease? disease = null;
 
@@ -130,7 +135,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.UsePower(0.1f)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
-            SmallItemDispenser.Instance.ItemModificationOperation(LethalContent.Items[LethalDiseasesKeys.Syringe].Item, (item) => ((SyringeBehavior)item).FillRpc(disease.ToString(), false), 30f, 10f, 30f);
+            SmallItemDispenser.Instance.ItemModificationOperation(syringeDispensable, (item) => ((SyringeBehavior)item).FillRpc(disease.ToString(), false), 30f, 10f, 30f);
 
             return $"Synthesis succeeded, dispensing {diseaseName}";
         }

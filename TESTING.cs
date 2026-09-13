@@ -3,6 +3,7 @@ using LethalDiseases.Items;
 using SnowyLib;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
@@ -129,8 +130,9 @@ namespace LethalDiseases
 
                 yield return new WaitForSeconds(5f);
 
-                foreach (var symptom in Symptom.symptomList)
+                foreach (var symptom in Symptom.symptomList.ToList())
                 {
+                    localPlayer.NetworkObject.ClearDiseases();
                     HUDManager.Instance.DisplayTip(symptom.name, symptom.description);
                     Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.symptomList.IndexOf(symptom));
                     disease.latency = 0;

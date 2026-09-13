@@ -21,8 +21,12 @@ namespace LethalDiseases.Symptoms
             {
                 PlayerControllerB? player = disease.player;
                 if (player == null) { return; }
-                if (player.isInsideFactory || !Physics.Raycast(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward, 100f, mask)) { return; }
-                player.JumpToFearLevel(1f);
+
+                if (Physics.Raycast(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward, 100f, mask) || (!player.isInsideFactory && (RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Stormy || RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Rainy || RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Flooded)))
+                {
+                    player.JumpToFearLevel(1f);
+                }
+
             }, disease.ToString(), "Aquaphobia", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

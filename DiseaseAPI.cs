@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using SnowyLib;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Disease;
@@ -123,7 +124,7 @@ namespace LethalDiseases
 
         public static void ClearDiseases(this NetworkObject networkObject, bool clearImmune = false)
         {
-            foreach (var disease in networkObject.GetDiseases()) // TODO: Make sure this is correct when im not high
+            foreach (var disease in networkObject.GetDiseases().ToList()) // TODO: Make sure this is correct when im not high
                 networkObject.RemoveDisease(disease);
             //networkObject.GetDiseases().Clear();
             networkObject.GetDiseaseIds().Clear();

@@ -14,6 +14,7 @@ namespace LethalDiseases.Symptoms
         [Symptom("BodyOdor", "Enemies prioritize targetting you first", Symptom.SymptomType.Bad, 100)]
         public static StatusEffect BodyOdor(Disease disease)
         {
+
             if (disease.player != null)
                 networkHandler.AddSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
             return new OnRemoveActionEffect((effect) =>

@@ -73,7 +73,7 @@ namespace LethalDiseases
         public bool isActive { get; private set; }
 
         public float elapsedTime;
-        public float elapsedTimeMultiplier;
+        public float elapsedTimeMultiplier = 1f;
         public float timeLeft => isActive ? strengthTime - elapsedTime : (host != null && host.hasActor ? (strengthTime + latencyTime) - elapsedTime : stabilityTime - elapsedTime);
 
         float timeSinceSpreadUpdate;
