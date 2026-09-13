@@ -13,10 +13,11 @@ namespace LethalDiseases
         [StaticInit]
         public static void Init()
         {
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseaseget", GetDisease, "Other", "DISEASEGET [diseaseName]", "Gets the analyzed information of a disease"));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseaserename", RenameDisease, "Other", "DISEASERENAME [diseaseName] [newDiseaseName]", "Renames a disease"));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseasesynthesize", SynthesizeDisease, "Other", "DISEASESYNTHESIZE [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize."));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseaseanalyze", AnalyzeDisease, "Other", "DISEASEANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze."));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dget", GetDisease, "Other", "DGET [diseaseName]", "Gets the analyzed information of a disease"));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("drename", RenameDisease, "Other", "DRENAME [diseaseName] [newDiseaseName]", "Renames a disease"));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize."));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeDiseaseSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize."));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze."));
         }
 
         private static string GetDisease(string[] args)
@@ -41,6 +42,8 @@ namespace LethalDiseases
             string diseaseName = args[1];
             string newDiseaseName = args[2];
 
+            if (newDiseaseName.Length > 8) { return "Rename failed, new disease name can only be 8 characters long"; }
+
             Disease? disease = Disease.GetDiseaseFromName(diseaseName);
             if (disease == null) { return $"Rename failed, could not find disease with name: {diseaseName}\n\n"; }
             if (Disease.GetDiseaseFromName(newDiseaseName) != null) { return $"Rename failed, there is already a disease with the name: {newDiseaseName}\n\n"; }
@@ -53,7 +56,7 @@ namespace LethalDiseases
             if (ApparatusPowerPort.Instance == null) { return "Synthesis failed, requires apparatus port module, which is not installed"; }
             if (SmallItemDispenser.Instance == null) { return "Synthesis failed, requires small item dispenser module, which is not installed"; }
             if (args.Length == 1) { return "Synthesis failed, no diseaseName specified\n\n"; }
-            if (args.Length > 2) { return "Synthesis failed, incorrect syntax (expected syntax: DISEASESYNTHESIZE [diseaseName])"; }
+            if (args.Length > 2) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTH [diseaseName])"; }
 
             string diseaseName = args[1];
 
@@ -98,7 +101,7 @@ namespace LethalDiseases
                 if (disease != null)
                 {
                     disease.name = $"disease{Disease.namedDiseases.Count}";
-                    HUDManager.Instance.DisplayTip("Analysis succeeded", $"Use 'DISEASEGET {disease.name}' in the terminal to see the results");
+                    HUDManager.Instance.DisplayTip("Analysis succeeded", $"Use 'DGET {disease.name}' in the terminal to see the results");
                 }
                 else
                 {
@@ -107,6 +110,29 @@ namespace LethalDiseases
             }, 30f, 20f, 30f);
 
             return $"Analysis ready, please input sample in item port";
+        }
+
+        private static string SynthesizeDiseaseSyringe(string[] args)
+        {
+            if (ApparatusPowerPort.Instance == null) { return "Synthesis failed, requires apparatus port module, which is not installed"; }
+            if (SmallItemDispenser.Instance == null) { return "Synthesis failed, requires small item dispenser module, which is not installed"; }
+            if (args.Length == 1) { return "Synthesis failed, no diseaseName specified\n\n"; }
+            if (args.Length > 2) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTHS [diseaseName])"; }
+
+            string diseaseName = args[1];
+
+            Disease? disease = Disease.GetDiseaseFromName(diseaseName);
+            if (disease == null) { return $"Synthesis failed, could not find disease with name: {diseaseName}\n\n"; }
+
+            if (SmallItemDispenser.Instance.IsBeingUsed) { return "Synthesis failed, small item dispenser is already in use"; }
+
+            if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Synthesis failed, not enough power available for synthesis, alternative power source required"; }
+
+            if (!ApparatusPowerPort.Instance.UsePower(0.1f)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
+
+            SmallItemDispenser.Instance.ItemModificationOperation(LethalContent.Items[LethalDiseasesKeys.Syringe].Item, (item) => ((SyringeBehavior)item).FillRpc(disease.ToString(), false), 30f, 10f, 30f);
+
+            return $"Synthesis succeeded, dispensing {diseaseName}";
         }
     }
 }
