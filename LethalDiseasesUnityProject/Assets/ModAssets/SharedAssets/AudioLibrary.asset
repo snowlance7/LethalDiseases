@@ -159,4 +159,8 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 2f8fdca3c8a50ed4082d77c9a43638f0, type: 3}
     - {fileID: 8300000, guid: 2d26e86f28f66644f971baab9fa4eed9, type: 3}
     - {fileID: 8300000, guid: 747ee9e606e603c4a8a5f8e39b15435e, type: 3}
+  - Id: sponge
+    Clips:
+    - {fileID: 8300000, guid: 878a6fb7136db2147861b43a72a17845, type: 3}
+    - {fileID: 8300000, guid: 999c760d9fab7d34cbc32c9cc5343281, type: 3}
   Clips: []

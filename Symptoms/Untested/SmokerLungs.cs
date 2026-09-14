@@ -19,7 +19,7 @@ namespace LethalDiseases.Symptoms
             return new RandomIntervalActionEffect(new BoundedRange(15, 60), () =>
             {
                 if (disease.player == null) { return; }
-                networkHandler.PlaySoundEffectRpc(disease.player.actualClientId, SoundEffect.Cough, volume: 0.7f, cutoffFrequency: 1500);
+                networkHandler.PlaySoundAtPositionRpc(disease.player.actualClientId, SoundEffect.Cough, volume: 0.7f, cutoffFrequency: 1500);
                 if (disease.transmissionType == Disease.TransmissionType.Airborne)
                     disease.TrySpreadAirborne(disease.player.gameplayCamera.transform.position, 1.5f);
             }, disease.ToString(), "Smoker Lungs", disease.strengthTime, SetHighestDurationAndDeny);

@@ -21,7 +21,8 @@ namespace LethalDiseases
             Cough,
             CoughHeavy,
             Paranoia,
-            Duck // TODO: Set up
+            Duck,
+            Sponge
         }
 
         public override void OnNetworkSpawn()
@@ -71,16 +72,6 @@ namespace LethalDiseases
                     return null; // TODO
                 }
             }));
-
-            /*TerminalApi.TerminalApi.AddCommand("AnalyzeSample", new CommandInfo() // TODO?
-            {
-                DisplayTextSupplier = () =>
-                {
-                    SmallItemDispenser.Instance.ItemExchangeOperation(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, LethalContent.Items[LethalDiseasesKeys.TestTube].Item, 15f, 5f, 15f);
-                    return "Input cotton swab into item port\n\n";
-                },
-                Category = "Other"
-            });*/
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -101,23 +92,43 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void PlaySoundEffectRpc(ulong clientId, SoundEffect soundEffect, int bodyPartIndex = 0, float volume = 1f, float min3DDistance = 1f, float max3DDistance = 10f, float cutoffFrequency = 22000, int audibleNoiseID = 0)
+        public void PlaySoundAtPositionRpc(ulong clientId, SoundEffect soundEffect, int bodyPartIndex = 0, float volume = 1f, float min3DDistance = 1f, float max3DDistance = 10f, float cutoffFrequency = 22000, int audibleNoiseID = 0)
         {
             PlayerControllerB? player = PlayerFromId(clientId);
             if (player == null) { return; }
             Transform position = player.bodyParts[bodyPartIndex];
 
-            var clips = LethalDiseasesContentHandler.Instance.DiseaseAssets.AudioLibrary.GetClips(soundEffect.ToString());
+            var clips = LethalDiseasesContentHandler.Instance.DiseaseAssets!.AudioLibrary.GetClips(soundEffect.ToString());
             if (clips == null) { logger.LogError($"Couldnt find audio clips for {soundEffect} sound effect"); return; }
             Utils.PlaySoundAtPosition(position, clips, volume, true, true, min3DDistance, max3DDistance, cutoffFrequency, audibleNoiseID);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void PlaySoundEffectRpc(Vector3 position, SoundEffect soundEffect, float volume = 1f, float min3DDistance = 1f, float max3DDistance = 10f, float cutoffFrequency = 22000, int audibleNoiseID = 0)
+        public void PlaySoundAtPositionRpc(Vector3 position, SoundEffect soundEffect, float volume = 1f, float min3DDistance = 1f, float max3DDistance = 10f, float cutoffFrequency = 22000, int audibleNoiseID = 0)
         {
-            var clips = LethalDiseasesContentHandler.Instance.DiseaseAssets.AudioLibrary.GetClips(soundEffect.ToString());
+            var clips = LethalDiseasesContentHandler.Instance.DiseaseAssets!.AudioLibrary.GetClips(soundEffect.ToString());
             if (clips == null) { logger.LogError($"Couldnt find audio clips for {soundEffect} sound effect"); return; }
             Utils.PlaySoundAtPosition(position, clips, volume, true, true, min3DDistance, max3DDistance, cutoffFrequency, audibleNoiseID);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void PlaySoundAtPositionRpc(ulong clientId, string clipName, int bodyPartIndex = 0, float volume = 1f, float min3DDistance = 1f, float max3DDistance = 10f, float cutoffFrequency = 22000, int audibleNoiseID = 0)
+        {
+            PlayerControllerB? player = PlayerFromId(clientId);
+            if (player == null) { return; }
+            Transform position = player.bodyParts[bodyPartIndex];
+
+            var clip = LethalDiseasesContentHandler.Instance.DiseaseAssets!.AudioLibrary.GetClip(clipName);
+            if (clip == null) { logger.LogError($"Couldnt find audio clip for {clipName}"); return; }
+            Utils.PlaySoundAtPosition(position, clip, volume, true, true, min3DDistance, max3DDistance, cutoffFrequency, audibleNoiseID);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void PlaySoundAtPositionRpc(Vector3 position, string clipName, float volume = 1f, float min3DDistance = 1f, float max3DDistance = 10f, float cutoffFrequency = 22000, int audibleNoiseID = 0)
+        {
+            var clip = LethalDiseasesContentHandler.Instance.DiseaseAssets!.AudioLibrary.GetClip(clipName);
+            if (clip == null) { logger.LogError($"Couldnt find audio clip for {clipName}"); return; }
+            Utils.PlaySoundAtPosition(position, clip, volume, true, true, min3DDistance, max3DDistance, cutoffFrequency, audibleNoiseID);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

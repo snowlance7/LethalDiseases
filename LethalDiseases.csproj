@@ -87,7 +87,6 @@
       <Compile Remove="Symptoms\Unfinished\Scopophobia.cs" />
       <Compile Remove="Symptoms\Unfinished\SelectiveHearing.cs" />
       <Compile Remove="Symptoms\Unfinished\Shroombiosis.cs" />
-      <Compile Remove="Symptoms\Unfinished\SpongeLegs.cs" />
       <Compile Remove="Symptoms\Unfinished\Sproodling.cs" />
       <Compile Remove="Symptoms\Unfinished\Sterile.cs" />
       <Compile Remove="Symptoms\Unfinished\StressEating.cs" />
