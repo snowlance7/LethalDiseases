@@ -1,8 +1,6 @@
 ﻿using Dawn.Utils;
 using GameNetcodeStuff;
-using LethalDiseases.Enemies;
 using SnowyLib;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,32 +15,30 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect ItFollows(Disease disease)
         {
             logger?.LogDebug("Init symptom ItFollows");
-            if (disease.hasActor)
+            if (disease.player != null)
             {
-
-                NetworkHandler.Instance.AddSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
+                AddSymptomAffectedObject("ItFollows", disease.networkObject);
             }
             return new OnRemoveActionEffect((effect) =>
             {
-                if (!disease.hasActor) { return; }
-                NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("ItFollows", disease.networkObject);
+                if (disease.player == null) { return; }
+                RemoveSymptomAffectedObject("ItFollows", disease.networkObject);
             }, disease.ToString(), "ItFollows", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
         [StaticUpdate]
         public static void ItFollowsUpdate()
         {
-            if (!IsServerOrHost || ItFollowsEntity.Instance != null || StartOfRound.Instance.inShipPhase || StartOfRound.Instance.shipIsLeaving || symptomAffectedObjects["ItFollows"].Count <= 0) { return; }
+            if (!IsServerOrHost || ItFollowsEntityAI.Instance != null || StartOfRound.Instance.inShipPhase || StartOfRound.Instance.shipIsLeaving || symptomAffectedPlayers["ItFollows"].Count <= 0) { return; }
             logger?.LogDebug("Spawning ItFollowsEntity");
-            ItFollowsEntity.Init();
+            ItFollowsEntityAI.Init();
         }
     }
 
-    internal class ItFollowsEntity : NetworkBehaviour
+    internal class ItFollowsEntityAI : NetworkBehaviour
     {
-        public static ItFollowsEntity? Instance { get; private set; }
+        public static ItFollowsEntityAI? Instance { get; private set; }
 
-        public Transform turnCompass = null!;
         public Collider collider = null!;
         public SmartAgentNavigator nav = null!;
         public ScanNodeProperties scanNode = null!;
@@ -66,7 +62,7 @@ namespace LethalDiseases.Symptoms
             Vector3 mainEntrancePosition = RoundManager.FindMainEntrancePosition(getTeleportPosition: true, getOutsideEntrance: false);
             GameObject? spawnNode = Utils.insideAINodes.GetFarthestFromPosition(mainEntrancePosition, (x) => x.transform.position);
             if (spawnNode == null) { return; }
-            Instance = (ItFollowsEntity)Utils.SpawnEnemy(LethalDiseasesKeys.ItFollowsEntity, spawnNode.transform.position);
+            Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets.ItFollowsEntityPrefab, spawnNode.transform.position, Quaternion.identity);
         }
 
         public void Start()
@@ -75,12 +71,21 @@ namespace LethalDiseases.Symptoms
             logger?.LogDebug("ItFollowsEntity spawned");
         }
 
-        public override void OnDestroy()
+        public override void OnNetworkDespawn()
         {
-            base.OnDestroy();
+            base.OnNetworkDespawn();
             if (Instance != null && Instance == this)
             {
                 Instance = null;
+            }
+        }
+
+        public override void OnNetworkPostSpawn()
+        {
+            base.OnNetworkPostSpawn();
+            if (Instance == null)
+            {
+                Instance = this;
             }
         }
 
@@ -141,21 +146,11 @@ namespace LethalDiseases.Symptoms
             previousFootstepClip = index;
         }
 
-        bool IsLocalPlayerTarget()
-        {
-            foreach (var affectedObject in targets)
-            {
-                if (!affectedObject.gameObject.TryGetComponent(out PlayerControllerB player)) { continue; }
-                if (player == localPlayer) { return true; }
-            }
-            return false;
-        }
-
         void SetVisibility()
         {
-            bool shouldBeVisible = IsLocalPlayerTarget();
-            if (shouldBeVisible == enemyMeshEnabled) { return; }
-            EnableEnemyMesh(shouldBeVisible);
+            bool shouldBeVisible = symptomAffectedPlayers["ItFollows"].Contains(localPlayer);
+            if (shouldBeVisible == meshEnabled) { return; }
+            EnableMesh(shouldBeVisible);
         }
 
         public void EnableMesh(bool enable)
@@ -165,12 +160,24 @@ namespace LethalDiseases.Symptoms
             collider.enabled = enable;
         }
 
-        public override void OnCollideWithPlayer(Collider other)
+        public void OnCollideWithPlayer(Collider other)
         {
-            base.OnCollideWithPlayer(other);
             PlayerControllerB player = other.gameObject.GetComponent<PlayerControllerB>();
             if (player == null || player != localPlayer || player != targetPlayer) { return; }
             player.KillPlayer(Vector3.zero);
+        }
+    }
+
+    internal class ItFollowsEntityCollisionDetect : MonoBehaviour
+    {
+        public ItFollowsEntityAI mainScript = null!;
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                mainScript.OnCollideWithPlayer(other);
+            }
         }
     }
 }

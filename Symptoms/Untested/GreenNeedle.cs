@@ -12,10 +12,10 @@ namespace LethalDiseases.Symptoms
         [Symptom("Green Needle", "You are never targeted by lightning strikes", Symptom.SymptomType.Good, 50)]
         public static StatusEffect GreenNeedle(Disease disease)
         {
-            networkHandler.AddSymptomAffectedObjectRpc("Green Needle", disease.networkObject);
+            AddSymptomAffectedObject("Green Needle", disease.networkObject);
             return new OnRemoveActionEffect((effect) =>
             {
-                networkHandler.RemoveSymptomAffectedObjectRpc("Green Needle", disease.networkObject);
+                RemoveSymptomAffectedObject("Green Needle", disease.networkObject);
             }, disease.ToString(), "Green Needle", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

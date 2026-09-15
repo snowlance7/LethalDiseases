@@ -16,11 +16,11 @@ namespace LethalDiseases.Symptoms
         {
 
             if (disease.player != null)
-                networkHandler.AddSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject); // TODO CONTINUE
+                AddSymptomAffectedObject("BodyOdor", disease.player.NetworkObject);
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                networkHandler.RemoveSymptomAffectedObjectRpc("BodyOdor", disease.player.NetworkObject);
+                RemoveSymptomAffectedObject("BodyOdor", disease.player.NetworkObject);
             }, disease.ToString(), "BodyOdor", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

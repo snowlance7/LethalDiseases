@@ -10,6 +10,7 @@ using UnityEngine;
 using static LethalDiseases.Plugin;
 using static SnowyLib.PlayerControllerBExtensions;
 using static LethalDiseases.NetworkHandler;
+using Unity.Netcode;
 
 namespace LethalDiseases.Symptoms // TODO: Add accessibility features
 {
@@ -147,6 +148,16 @@ namespace LethalDiseases.Symptoms // TODO: Add accessibility features
         {
             existing.duration = Mathf.Max(existing.duration, incoming.duration);
             return StatusEffectController.ConflictResult.Deny;
+        }
+
+        public static void AddSymptomAffectedObject(string symptomName, NetworkObjectReference netRef)
+        {
+            networkHandler.AddSymptomAffectedObjectRpc(symptomName, netRef);
+        }
+
+        public static void RemoveSymptomAffectedObject(string symptomName, NetworkObjectReference netRef)
+        {
+            networkHandler.RemoveSymptomAffectedObjectRpc(symptomName, netRef);
         }
 
         //[Symptom("", "", Symptom.SymptomType.Bad, 50)]

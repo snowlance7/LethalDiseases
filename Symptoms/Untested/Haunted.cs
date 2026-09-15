@@ -13,11 +13,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Haunted(Disease disease)
         {
             if (disease.player != null)
-                NetworkHandler.Instance.AddSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
+                AddSymptomAffectedObject("Haunted", disease.player.NetworkObject);
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                NetworkHandler.Instance.RemoveSymptomAffectedObjectRpc("Haunted", disease.player.NetworkObject);
+                RemoveSymptomAffectedObject("Haunted", disease.player.NetworkObject);
             }, disease.ToString(), "Haunted", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

@@ -14,11 +14,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect SpongeLegs(Disease disease)
         {
             if (disease.player != null)
-                networkHandler.AddSymptomAffectedObjectRpc("SpongeLegs", disease.player.NetworkObject);
+                AddSymptomAffectedObject("SpongeLegs", disease.player.NetworkObject);
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                networkHandler.RemoveSymptomAffectedObjectRpc("SpongeLegs", disease.player.NetworkObject);
+                RemoveSymptomAffectedObject("SpongeLegs", disease.player.NetworkObject);
             }, disease.ToString(), "SpongeLegs", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
