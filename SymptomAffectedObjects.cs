@@ -12,7 +12,7 @@ namespace LethalDiseases
         public static AutoDictionary<string, HashSet<NetworkObject>> symptomAffectedObjects { get; private set; } = new AutoDictionary<string, HashSet<NetworkObject>>((x) => new HashSet<NetworkObject>());
         public static AutoDictionary<string, HashSet<PlayerControllerB>> symptomAffectedPlayers { get; private set; } = new AutoDictionary<string, HashSet<PlayerControllerB>>((x) => new HashSet<PlayerControllerB>());
         public static AutoDictionary<string, HashSet<EnemyAI>> symptomAffectedEnemies { get; private set; } = new AutoDictionary<string, HashSet<EnemyAI>>((x) => new HashSet<EnemyAI>());
-        // steamValve = netObj.gameObject.GetComponent<SteamValveHazard>();
+        
         public static void AddSymptomAffectedObject(string symptomName, NetworkObjectReference netRef)
         {
             if (!netRef.TryGet(out NetworkObject networkObject) || networkObject == null) { return; }

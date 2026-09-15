@@ -10,16 +10,16 @@ namespace LethalDiseases.Symptoms
 {
     internal static partial class Symptoms
     {
-        [Symptom("Sponge Legs", "You make an annoying sound when you walk", Symptom.SymptomType.Neutral, 50)]
+        [Symptom("SpongeLegs", "You make an annoying sound when you walk", Symptom.SymptomType.Neutral, 50)]
         public static StatusEffect SpongeLegs(Disease disease)
         {
             if (disease.player != null)
-                networkHandler.AddSymptomAffectedObjectRpc("Sponge Legs", disease.player.NetworkObject);
+                networkHandler.AddSymptomAffectedObjectRpc("SpongeLegs", disease.player.NetworkObject);
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                networkHandler.RemoveSymptomAffectedObjectRpc("Sponge Legs", disease.player.NetworkObject);
-            }, disease.ToString(), "Sponge Legs", disease.strengthTime, SetHighestDurationAndDeny);
+                networkHandler.RemoveSymptomAffectedObjectRpc("SpongeLegs", disease.player.NetworkObject);
+            }, disease.ToString(), "SpongeLegs", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }
 
@@ -31,7 +31,7 @@ namespace LethalDiseases.Symptoms
         {
             try
             {
-                if (symptomAffectedPlayers["Sponge Legs"].Count == 0 || !symptomAffectedPlayers["Sponge Legs"].Contains(__instance)) { return true; }
+                if (symptomAffectedPlayers["SpongeLegs"].Count == 0 || !symptomAffectedPlayers["SpongeLegs"].Contains(__instance)) { return true; }
 
                 var clips = LethalDiseasesContentHandler.Instance.DiseaseAssets!.AudioLibrary.GetClips(SoundEffect.Sponge.ToString());
                 RoundManager.PlayRandomClip(__instance.movementAudio, clips);
