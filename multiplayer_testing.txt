@@ -1,0 +1,2 @@
+drename only works for client using it
+dsynth only works for host
