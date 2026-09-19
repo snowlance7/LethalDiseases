@@ -32,7 +32,7 @@ namespace LethalDiseases.Items
 
         ChemistryIngredient IChemistryIngredient.GetIngredient()
         {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
         public void OnChemicalOutput(string specialInstructions)

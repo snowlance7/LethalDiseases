@@ -253,7 +253,7 @@ namespace LethalDiseases.Items
             routine = StartCoroutine(doEmptyAnimation());
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void EmptyRpc()
         {
             fluidRenderer.SetBlendShapeWeight(0, 100);
@@ -261,14 +261,14 @@ namespace LethalDiseases.Items
             storedDisease = "";
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void EmptyAnimationRpc()
         {
             storedDisease = "";
             DoEmptyAnimation();
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void FillRpc(string _disease)
         {
             Disease? disease = Disease.GetDiseaseFromString(_disease);
@@ -282,7 +282,7 @@ namespace LethalDiseases.Items
             SetFluidColor(disease.GetChemistryLiquidAppearance());
         }
 
-        [Rpc(SendTo.NotMe)]
+        [Rpc(SendTo.NotMe, RequireOwnership = false)]
         public void DoStabAnimationRpc(ulong clientId)
         {
             PlayerControllerB? player = PlayerFromId(clientId);
@@ -291,7 +291,7 @@ namespace LethalDiseases.Items
 
         ChemistryIngredient IChemistryIngredient.GetIngredient()
         {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.Biosampler, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
         void IChemistryIngredient.OnChemicalOutput(string specialInstructions)
@@ -304,7 +304,7 @@ namespace LethalDiseases.Items
             var _storedDisease = storedDisease;
             storedDisease = "";
             DoEmptyAnimation();
-            return new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), _storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), _storedDisease);
         }
 
         float IDistillableIngredient.DistilleryMixTime()

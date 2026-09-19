@@ -66,7 +66,7 @@ namespace LethalDiseases.Items
             SetTipColor(disease.GetChemistryLiquidAppearance());
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void SetDiseaseRpc(string _disease)
         {
             SetDiseaseOnLocalClient(_disease);
@@ -74,7 +74,7 @@ namespace LethalDiseases.Items
 
         ChemistryIngredient? IDistillableIngredient.DistilleryOutput()
         {
-            return new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
         float IDistillableIngredient.DistilleryMixTime()
@@ -89,7 +89,7 @@ namespace LethalDiseases.Items
 
         ChemistryIngredient? IChemistryIngredient.GetIngredient()
         {
-            return new ChemistryIngredient(itemProperties, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.CottonSwab, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
         void IChemistryIngredient.OnChemicalOutput(string specialInstructions)

@@ -17,7 +17,7 @@ namespace LethalDiseases.Unlockables
             SpawnCottonSwabServerRpc(localPlayer.actualClientId);
         }
 
-        [Rpc(SendTo.Server)]
+        [Rpc(SendTo.Server, RequireOwnership = false)]
         public void SpawnCottonSwabServerRpc(ulong clientGrabbingId)
         {
             if (!IsServer) { return; }
@@ -35,7 +35,7 @@ namespace LethalDiseases.Unlockables
             }
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void SpawnCottonSwabClientRpc(ulong clientGrabbingId, NetworkObjectReference netRef)
         {
             spawningCottonSwab = false;

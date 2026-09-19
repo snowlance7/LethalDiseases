@@ -38,10 +38,10 @@ namespace LethalDiseases
         {
             Symptoms.Symptoms.Load();
 
-            ChemistryIngredient testTubeIngredient = new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item);
+            ChemistryIngredient testTubeIngredient = new ChemistryIngredient(LethalDiseasesKeys.TestTube);
             CraftingAPI.RegisterIngredient(testTubeIngredient);
 
-            ChemistryIngredient cottonSwabIngredient = new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item);
+            ChemistryIngredient cottonSwabIngredient = new ChemistryIngredient(LethalDiseasesKeys.CottonSwab);
             CraftingAPI.RegisterIngredient(cottonSwabIngredient);
 
             CraftingAPI.RegisterRecipe(new ChemistryRecipe(testTubeIngredient, testTubeIngredient, (ingredientA, ingredientB) =>
@@ -57,7 +57,7 @@ namespace LethalDiseases
                     var result = array1.Except(array2).Concat(array2.Except(array1)).ToArray();
                     Disease disease3 = Disease.MergeDiseases(disease1, disease2);
                     disease3.symptoms = result;
-                    return new ChemistryIngredient(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, disease3.GetChemistryLiquidAppearance(), disease3.ToString());
+                    return new ChemistryIngredient(LethalDiseasesKeys.TestTube, disease3.GetChemistryLiquidAppearance(), disease3.ToString());
                 }
                 else if (disease1 != null)
                 {

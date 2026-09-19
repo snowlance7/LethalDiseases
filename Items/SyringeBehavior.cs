@@ -251,14 +251,14 @@ namespace LethalDiseases.Items
             routine = null;
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void EmptyRpc()
         {
             animator.SetTrigger("inject");
             storedDisease = "";
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void FillRpc(string _disease, bool doAnimation)
         {
             Disease? disease = Disease.GetDiseaseFromString(_disease);
@@ -270,7 +270,7 @@ namespace LethalDiseases.Items
             animator.SetTrigger(doAnimation ? "fill" : "filled");
         }
 
-        [Rpc(SendTo.NotMe)]
+        [Rpc(SendTo.NotMe, RequireOwnership = false)]
         public void DoStabAnimationRpc(ulong clientId)
         {
             PlayerControllerB? player = PlayerFromId(clientId);
