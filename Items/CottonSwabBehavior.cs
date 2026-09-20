@@ -91,7 +91,7 @@ namespace LethalDiseases.Items
         public void SetDisease(string diseaseId)
         {
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+            if (disease == null) { logger.LogError($"Unable to parse disease from id ({diseaseId})"); return; }
 
             storedDisease = diseaseId;
             scanNode.subText = disease.name;

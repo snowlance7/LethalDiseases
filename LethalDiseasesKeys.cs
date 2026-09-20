@@ -2,8 +2,10 @@
 
 namespace LethalDiseases
 {
-    public static class LethalDiseasesKeys
+    internal static class LethalDiseasesKeys
     {
+        public static readonly NamespacedKey NamedDiseasesKey = NamespacedKey.From("lethal_diseases", "named_diseases");
+
         public static readonly NamespacedKey<DawnEnemyInfo> ItFollowsEntity = NamespacedKey<DawnEnemyInfo>.From("lethal_diseases", "it_follows_entity");
 
         public static readonly NamespacedKey<DawnUnlockableItemInfo> CottonSwabs = NamespacedKey<DawnUnlockableItemInfo>.From("lethal_diseases", "cotton_swabs");

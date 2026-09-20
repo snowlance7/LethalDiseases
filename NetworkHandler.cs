@@ -29,11 +29,16 @@ namespace LethalDiseases
 
         public override void OnNetworkSpawn()
         {
-            if (IsServer)
-                Instance?.gameObject.GetComponent<NetworkObject>().Despawn(destroy: true);
+            if (IsServer) { Instance?.gameObject.GetComponent<NetworkObject>().Despawn(destroy: true); }
             Instance = this;
             logger?.LogDebug("NetworkHandler spawned");
             base.OnNetworkSpawn();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            if (Instance != null && Instance == this) { Instance = null!; }
+            base.OnNetworkDespawn();
         }
 
         public void Start()

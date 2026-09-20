@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using Dawn;
+using GameNetcodeStuff;
 using SnowyCraftingCore;
 using SnowyLib;
 using System;
@@ -175,7 +176,7 @@ namespace LethalDiseases
             return disease;
         }
 
-        public override string ToString()
+        public override string ToString() // Format: 0.00|0.00|0.00|0.00|0|0,0,0,0,0,0
         {
             // Ensure consistent float formatting
             string Format(float f) => f.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
@@ -406,6 +407,37 @@ namespace LethalDiseases
             {
                 return null;
             }
+        }
+
+        public static void LoadNamedDiseases()
+        {
+            var contract = DawnLib.GetCurrentContract();
+            if (contract == null) { logger.LogError("Failed to get named diseases, current contract does not exist"); return; }
+
+            string namedDiseasesString = contract.GetOrSetDefault(LethalDiseasesKeys.NamedDiseasesKey, "");
+            if (string.IsNullOrWhiteSpace(namedDiseasesString)) { logger.LogDebug("NamedDiseasesString is empty"); return; }
+
+            var diseases = namedDiseasesString.Split("/");
+            foreach (var namedDisease in diseases)
+            {
+                var nameId = namedDisease.Split(":");
+                string name = nameId[0];
+                string id = nameId[1];
+                namedDiseases.Add(id, name);
+            }
+            logger.LogDebug($"LoadNamedDiseases completed, loaded {namedDiseases.Count} diseases");
+        }
+
+        public static void SaveNamedDiseases()
+        {
+            if (namedDiseases.Count == 0) { logger.LogDebug("No named diseases to save"); return; }
+
+            var contract = DawnLib.GetCurrentContract();
+            if (contract == null) { logger.LogError("Failed to get named diseases, current contract does not exist"); return; }
+
+            string saveString = string.Join("/", namedDiseases.Select(x => x.Value + ":" + x.Key));
+            contract.Set(LethalDiseasesKeys.NamedDiseasesKey, saveString);
+            logger.LogDebug($"SaveNamedDiseases completed: {saveString}");
         }
     }
 }

@@ -271,12 +271,12 @@ namespace LethalDiseases.Items
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void FillRpc(string _disease)
+        public void FillRpc(string diseaseId)
         {
-            Disease? disease = Disease.GetDiseaseFromString(_disease);
-            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            if (disease == null) { logger.LogError($"Unable to parse disease from id ({diseaseId})"); return; }
 
-            storedDisease = _disease;
+            storedDisease = diseaseId;
             scanNode.subText = storedDisease;
 
             fluidRenderer.enabled = true;
@@ -343,7 +343,7 @@ namespace LethalDiseases.Items
         public void SetDisease(string diseaseId)
         {
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+            if (disease == null) { logger.LogError($"Unable to parse disease from id ({diseaseId})"); return; }
 
             storedDisease = diseaseId;
             scanNode.subText = disease.name;

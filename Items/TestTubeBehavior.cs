@@ -1,12 +1,10 @@
 ﻿using Dawn.Interfaces;
 using GameNetcodeStuff;
-using InjectionLibrary.Attributes;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using System;
 using UnityEngine;
 using static LethalDiseases.Plugin;
-using static Steamworks.InventoryRecipe;
 
 namespace LethalDiseases.Items
 {
@@ -29,6 +27,7 @@ namespace LethalDiseases.Items
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
             logger.LogDebug("Setting fluid color to " + color.ToString());
+            fluidRenderer.enabled = true;
             fluidRenderer.material.color = color.liquidColor;
             fluidRenderer.material.SetColor("_EmissionColor", color.liquidColor);
             fluidRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
@@ -70,8 +69,9 @@ namespace LethalDiseases.Items
 
         public void SetDisease(string diseaseId)
         {
+            logger.LogDebug($"Setting stored disease to disease with id: {diseaseId}");
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+            if (disease == null) { logger.LogError($"Unable to parse disease from id ({diseaseId})"); return; }
 
             storedDisease = diseaseId;
             scanNode.subText = disease.name;
@@ -81,11 +81,13 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
+            logger.LogDebug("GetDawnDataToSave");
             return JToken.FromObject((object)storedDisease);
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
+            logger.LogDebug("LoadDawnSaveData");
             storedDisease = saveData.Value<string>();
             SetDisease(storedDisease);
         }
