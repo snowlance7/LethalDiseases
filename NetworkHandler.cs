@@ -1,7 +1,9 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
 using HarmonyLib;
+using LethalDiseases.Items;
 using SnowyCraftingCore;
+using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
 using System.Linq;
 using Unity.Netcode;
@@ -241,6 +243,64 @@ namespace LethalDiseases
         {
             if (!IsServer) { return; }
             Utils.SpawnMapObject(key, position, rotation);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void RenameDiseaseRpc(string id, string name)
+        {
+            Disease? disease = Disease.GetDiseaseFromString(id);
+            if (disease == null) { logger.LogError($"Failed to rename disease with id: {id}, disease not found"); return; }
+            string previousName = disease.name;
+            disease.name = name;
+
+            Utils.LogChat($"Disease {previousName} has been renamed to {name}");
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SynthesizeDiseaseRpc(string id)
+        {
+            SmallItemDispenser.Instance!.ItemDispenseOperation(LethalDiseasesTerminalAPI.testTubeDispensable, (item) => ((TestTubeBehavior)item).OnChemicalOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, specialInstructions: id)), 30f);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SynthesizeDiseaseSyringeRpc(string id)
+        {
+            SmallItemDispenser.Instance!.ItemModificationOperation(LethalDiseasesTerminalAPI.syringeDispensable, (item) => ((SyringeBehavior)item).SetDiseaseRpc(id, false), 30f, 10f, 30f);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void AnalyzeDiseaseRpc(ulong clientId)
+        {
+            SmallItemDispenser.Instance!.ItemModificationOperation([LethalDiseasesTerminalAPI.testTubeDispensable, LethalDiseasesTerminalAPI.cottonSwabDispensable], (inputItem) =>
+            {
+                Disease? disease = null;
+
+                if (inputItem is CottonSwabBehavior cottonSwab)
+                {
+                    disease = Disease.GetDiseaseFromString(cottonSwab.storedDisease);
+                }
+                else if (inputItem is TestTubeBehavior testTube)
+                {
+                    disease = Disease.GetDiseaseFromString(testTube.storedDisease);
+                }
+
+                if (disease != null)
+                {
+                    disease.name = $"disease{Disease.namedDiseases.Count}";
+
+                    if (localPlayer.actualClientId == clientId)
+                    {
+                        HUDManager.Instance.DisplayTip("Analysis succeeded", $"Use 'DGET {disease.name}' in the terminal to see the results");
+                    }
+                }
+                else
+                {
+                    if (localPlayer.actualClientId == clientId)
+                    {
+                        HUDManager.Instance.DisplayTip("Analysis failed", "No disease detected on sample");
+                    }
+                }
+            }, 30f, 20f, 30f);
         }
     }
 

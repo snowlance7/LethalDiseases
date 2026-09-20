@@ -1,5 +1,7 @@
 ﻿using Dawn;
+using Dawn.Interfaces;
 using LethalDiseases.Unlockables;
+using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class CottonSwabBehavior : PhysicsProp, IDistillableIngredient
+    internal class CottonSwabBehavior : PhysicsProp, IDistillableIngredient, IDawnSaveData
     {
         public MeshRenderer tipRenderer = null!;
 
@@ -47,7 +49,7 @@ namespace LethalDiseases.Items
             SetDiseaseRpc(disease.ToString());
         }
 
-        public void SetTipColor(ChemistryLiquidAppearance color)
+        public void SetFluidColor(ChemistryLiquidAppearance color)
         {
             tipRenderer.enabled = true;
             tipRenderer.material.color = color.liquidColor;
@@ -55,21 +57,10 @@ namespace LethalDiseases.Items
             tipRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
         }
 
-        public void SetDiseaseOnLocalClient(string _disease)
-        {
-            Disease? disease = Disease.GetDiseaseFromString(_disease);
-            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
-
-            storedDisease = _disease;
-            scanNode.subText = disease.name;
-
-            SetTipColor(disease.GetChemistryLiquidAppearance());
-        }
-
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SetDiseaseRpc(string _disease)
+        public void SetDiseaseRpc(string disease)
         {
-            SetDiseaseOnLocalClient(_disease);
+            SetDisease(disease);
         }
 
         ChemistryIngredient? IDistillableIngredient.DistilleryOutput()
@@ -92,9 +83,31 @@ namespace LethalDiseases.Items
             return new ChemistryIngredient(LethalDiseasesKeys.CottonSwab, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
-        void IChemistryIngredient.OnChemicalOutput(string specialInstructions)
+        public void OnChemicalOutput(ChemistryIngredient ingredient)
         {
-            SetDiseaseOnLocalClient(specialInstructions);
+            SetDisease(ingredient.specialInstructions);
+        }
+
+        public void SetDisease(string diseaseId)
+        {
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+
+            storedDisease = diseaseId;
+            scanNode.subText = disease.name;
+
+            SetFluidColor(disease.GetChemistryLiquidAppearance());
+        }
+
+        public JToken GetDawnDataToSave()
+        {
+            return JToken.FromObject((object)storedDisease);
+        }
+
+        public void LoadDawnSaveData(JToken saveData)
+        {
+            storedDisease = saveData.Value<string>();
+            SetDisease(storedDisease);
         }
     }
 }

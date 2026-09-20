@@ -1,7 +1,9 @@
 ﻿using BepInEx;
 using Dawn;
+using Dawn.Interfaces;
 using GameNetcodeStuff;
 using LethalDiseases.Unlockables;
+using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections;
@@ -12,7 +14,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class SyringeBehavior : GunAmmo, IChemistryOutputContainer
+    internal class SyringeBehavior : GunAmmo, IChemistryOutputContainer, IDawnSaveData
     {
         public SkinnedMeshRenderer fluidRenderer = null!;
         public Animator animator = null!;
@@ -159,7 +161,7 @@ namespace LethalDiseases.Items
             base.ItemInteractLeftRight(right);
             if (right || !isFilled) { return; }
 
-            EmptyRpc();
+            SetDiseaseRpc("");
         }
 
         public void DoStabAnimation()
@@ -224,8 +226,7 @@ namespace LethalDiseases.Items
                     CancelStabAnimation();
 
                     host.networkObject.Infect(storedDisease);
-                    storedDisease = "";
-                    EmptyRpc();
+                    SetDiseaseRpc("");
                 }
                 else
                 {
@@ -251,23 +252,29 @@ namespace LethalDiseases.Items
             routine = null;
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void EmptyRpc()
+        public void SetDisease(string diseaseId, bool doAnimation = true)
         {
-            animator.SetTrigger("inject");
-            storedDisease = "";
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            
+            if (disease != null)
+            {
+                storedDisease = diseaseId;
+                scanNode.subText = disease.name;
+
+                SetFluidColor(disease.GetChemistryLiquidAppearance());
+                animator.SetTrigger(doAnimation ? "fill" : "filled");
+            }
+            else
+            {
+                storedDisease = "";
+                animator.SetTrigger("inject");
+            }
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void FillRpc(string _disease, bool doAnimation)
+        public void SetDiseaseRpc(string diseaseId, bool doAnimation = false)
         {
-            Disease? disease = Disease.GetDiseaseFromString(_disease);
-            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
-
-            storedDisease = _disease;
-            scanNode.subText = storedDisease;
-
-            animator.SetTrigger(doAnimation ? "fill" : "filled");
+            SetDisease(diseaseId, doAnimation);
         }
 
         [Rpc(SendTo.NotMe, RequireOwnership = false)]
@@ -280,12 +287,19 @@ namespace LethalDiseases.Items
         bool IChemistryOutputContainer.ReceiveChemistryOutput(ChemistryIngredient ingredient)
         {
             if (isFilled) { return false; }
-            storedDisease = ingredient.specialInstructions;
-            scanNode.subText = storedDisease;
-
-            SetFluidColor(ingredient.chemistryLiquidAppearance);
-            animator.SetTrigger("fill");
+            SetDisease(ingredient.specialInstructions);
             return true;
+        }
+
+        public JToken GetDawnDataToSave()
+        {
+            return JToken.FromObject((object)storedDisease);
+        }
+
+        public void LoadDawnSaveData(JToken saveData)
+        {
+            storedDisease = saveData.Value<string>();
+            SetDisease(storedDisease);
         }
     }
 }

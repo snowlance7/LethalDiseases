@@ -1,12 +1,16 @@
-﻿using GameNetcodeStuff;
+﻿using Dawn.Interfaces;
+using GameNetcodeStuff;
+using InjectionLibrary.Attributes;
+using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using System;
 using UnityEngine;
 using static LethalDiseases.Plugin;
+using static Steamworks.InventoryRecipe;
 
 namespace LethalDiseases.Items
 {
-    internal class TestTubeBehavior : PhysicsProp, IAnalyzableIngredient, IMixableIngredient
+    internal class TestTubeBehavior : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData
     {
         public MeshRenderer fluidRenderer = null!;
 
@@ -35,16 +39,9 @@ namespace LethalDiseases.Items
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
-        public void OnChemicalOutput(string specialInstructions)
+        public void OnChemicalOutput(ChemistryIngredient ingredient)
         {
-            logger.LogDebug("Test tube OnChemicalOutput start");
-            Disease? disease = Disease.GetDiseaseFromString(specialInstructions);
-            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
-
-            storedDisease = specialInstructions;
-            scanNode.subText = disease.name;
-
-            SetFluidColor(disease.GetChemistryLiquidAppearance());
+            SetDisease(ingredient.specialInstructions);
         }
 
         Action<AnalyzableIngredient, PlayerControllerB> IAnalyzableIngredient.OnAnalyze()
@@ -66,14 +63,31 @@ namespace LethalDiseases.Items
             return true;
         }
 
-        bool IAnalyzableIngredient.DespawnItemOnAnalyze()
-        {
-            return false;
-        }
-
         bool IAnalyzableIngredient.HoldItem()
         {
             return true;
+        }
+
+        public void SetDisease(string diseaseId)
+        {
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+
+            storedDisease = diseaseId;
+            scanNode.subText = disease.name;
+
+            SetFluidColor(disease.GetChemistryLiquidAppearance());
+        }
+
+        public JToken GetDawnDataToSave()
+        {
+            return JToken.FromObject((object)storedDisease);
+        }
+
+        public void LoadDawnSaveData(JToken saveData)
+        {
+            storedDisease = saveData.Value<string>();
+            SetDisease(storedDisease);
         }
     }
 }

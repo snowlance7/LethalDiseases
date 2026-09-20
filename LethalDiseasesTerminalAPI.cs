@@ -1,9 +1,6 @@
 ﻿using Dawn;
-using HarmonyLib;
-using LethalDiseases.Items;
 using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
-using System;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
@@ -11,9 +8,9 @@ namespace LethalDiseases
 {
     internal static class LethalDiseasesTerminalAPI
     {
-        static DispensableItem testTubeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new Vector3(0, 0, 0), new Vector3(0, 180, 0));
-        static DispensableItem cottonSwabDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item, new Vector3(0.04f, 0f, 0f), new Vector3(0, 180, 0));
-        static DispensableItem syringeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.Syringe].Item, new Vector3(0.035f, -0.01f, 0f), new Vector3(0, 0, 0));
+        public static DispensableItem testTubeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new Vector3(0, 0, 0), new Vector3(0, 180, 0));
+        public static DispensableItem cottonSwabDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item, new Vector3(0.04f, 0f, 0f), new Vector3(0, 180, 0));
+        public static DispensableItem syringeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.Syringe].Item, new Vector3(0.035f, -0.01f, 0f), new Vector3(0, 0, 0));
 
         [StaticInit]
         public static void Init()
@@ -23,6 +20,13 @@ namespace LethalDiseases
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize."));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeDiseaseSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize."));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze."));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseases", GetDiseases, "Other", "DISEASES", "Gets all previously analyzed disease names as a list."));
+        }
+
+        private static string GetDiseases(string[] args)
+        {
+            if (Disease.namedDiseases.Count == 0) { return "No analyzed diseases available"; }
+            return string.Join("\n", Disease.namedDiseases.Values) + "\n\n";
         }
 
         private static string GetDisease(string[] args)
@@ -52,7 +56,7 @@ namespace LethalDiseases
             Disease? disease = Disease.GetDiseaseFromName(diseaseName);
             if (disease == null) { return $"Rename failed, could not find disease with name: {diseaseName}\n\n"; }
             if (Disease.GetDiseaseFromName(newDiseaseName) != null) { return $"Rename failed, there is already a disease with the name: {newDiseaseName}\n\n"; }
-            disease.name = newDiseaseName;
+            NetworkHandler.Instance.RenameDiseaseRpc(disease.ToString(), newDiseaseName);
             return $"Rename succeeded, changed {diseaseName} to {newDiseaseName}\n\n";
         }
 
@@ -74,7 +78,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.UsePower(0.1f)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
-            SmallItemDispenser.Instance.ItemDispenseOperation(testTubeDispensable, (item) => ((TestTubeBehavior)item).OnChemicalOutput(disease.ToString()), 30f);
+            NetworkHandler.Instance.SynthesizeDiseaseRpc(disease.ToString());
 
             return $"Synthesis succeeded, dispensing {diseaseName}";
         }
@@ -90,29 +94,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.UsePower(0.05f)) { return "Analysis failed, not enough power available for analysis, new alternative power source required"; }
 
-            SmallItemDispenser.Instance.ItemModificationOperation([testTubeDispensable, cottonSwabDispensable], (inputItem) =>
-            {
-                Disease? disease = null;
-
-                if (inputItem is CottonSwabBehavior cottonSwab)
-                {
-                    disease = Disease.GetDiseaseFromString(cottonSwab.storedDisease);
-                }
-                else if (inputItem is TestTubeBehavior testTube)
-                {
-                    disease = Disease.GetDiseaseFromString(testTube.storedDisease);
-                }
-
-                if (disease != null)
-                {
-                    disease.name = $"disease{Disease.namedDiseases.Count}";
-                    HUDManager.Instance.DisplayTip("Analysis succeeded", $"Use 'DGET {disease.name}' in the terminal to see the results");
-                }
-                else
-                {
-                    HUDManager.Instance.DisplayTip("Analysis failed", "No disease detected on sample");
-                }
-            }, 30f, 20f, 30f);
+            NetworkHandler.Instance.AnalyzeDiseaseRpc(localPlayer.actualClientId);
 
             return $"Analysis ready, please input sample in item port";
         }
@@ -135,7 +117,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.UsePower(0.1f)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
-            SmallItemDispenser.Instance.ItemModificationOperation(syringeDispensable, (item) => ((SyringeBehavior)item).FillRpc(disease.ToString(), false), 30f, 10f, 30f);
+            NetworkHandler.Instance.SynthesizeDiseaseSyringeRpc(disease.ToString());
 
             return $"Synthesis succeeded, dispensing {diseaseName}";
         }

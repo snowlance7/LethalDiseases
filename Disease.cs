@@ -195,6 +195,8 @@ namespace LethalDiseases
 
         public static Disease? GetDiseaseFromString(string id)
         {
+            if (string.IsNullOrWhiteSpace(id)) { return null; }
+
             var parts = id.Split('|');
 
             if (parts.Length != 6)

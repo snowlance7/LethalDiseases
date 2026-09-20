@@ -1,7 +1,9 @@
 ﻿using BepInEx;
 using Dawn;
+using Dawn.Interfaces;
 using GameNetcodeStuff;
 using LethalDiseases.Unlockables;
+using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections;
@@ -12,7 +14,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class BiosamplerBehavior : PhysicsProp, IDistillableIngredient, IChemistryOutputContainer
+    internal class BiosamplerBehavior : PhysicsProp, IDistillableIngredient, IChemistryOutputContainer, IDawnSaveData
     {
         public SkinnedMeshRenderer fluidRenderer = null!;
 
@@ -294,9 +296,11 @@ namespace LethalDiseases.Items
             return new ChemistryIngredient(LethalDiseasesKeys.Biosampler, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
         }
 
-        void IChemistryIngredient.OnChemicalOutput(string specialInstructions)
+        public void OnChemicalOutput(ChemistryIngredient ingredient)
         {
-            return;
+            if (string.IsNullOrWhiteSpace(ingredient.specialInstructions)) { return; }
+            storedDisease = ingredient.specialInstructions;
+
         }
 
         ChemistryIngredient? IDistillableIngredient.DistilleryOutput()
@@ -332,7 +336,30 @@ namespace LethalDiseases.Items
             }
 
             storedDisease = ingredient.specialInstructions;
+
             return true;
+        }
+
+        public void SetDisease(string diseaseId)
+        {
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            if (disease == null) { logger.LogError("Unable to parse disease from id"); return; }
+
+            storedDisease = diseaseId;
+            scanNode.subText = disease.name;
+
+            SetFluidColor(disease.GetChemistryLiquidAppearance());
+        }
+
+        public JToken GetDawnDataToSave()
+        {
+            return JToken.FromObject((object)storedDisease);
+        }
+
+        public void LoadDawnSaveData(JToken saveData)
+        {
+            storedDisease = saveData.Value<string>();
+            SetDisease(storedDisease);
         }
     }
 }
