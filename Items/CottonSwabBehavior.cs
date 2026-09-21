@@ -1,6 +1,4 @@
-﻿using Dawn;
-using Dawn.Interfaces;
-using LethalDiseases.Unlockables;
+﻿using Dawn.Interfaces;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using SnowyLib;
@@ -53,8 +51,8 @@ namespace LethalDiseases.Items
         {
             tipRenderer.enabled = true;
             tipRenderer.material.color = color.liquidColor;
-            tipRenderer.material.SetColor("_EmissionColor", color.liquidColor);
-            tipRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
+            tipRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
+            tipRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -63,24 +61,24 @@ namespace LethalDiseases.Items
             SetDisease(disease);
         }
 
-        ChemistryIngredient? IDistillableIngredient.DistilleryOutput()
+        public ChemistryIngredient? DistilleryOutput()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
         }
 
-        float IDistillableIngredient.DistilleryMixTime()
+        public float DistilleryMixTime()
         {
             return 10f;
         }
 
-        bool IDistillableIngredient.DespawnItemAfterDistilleryInput()
+        public bool DespawnItemAfterDistilleryInput()
         {
             return true;
         }
 
-        ChemistryIngredient? IChemistryIngredient.GetIngredient()
+        public ChemistryIngredient? GetIngredient()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.CottonSwab, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.CottonSwab, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
         }
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
@@ -101,12 +99,13 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
-            return JToken.FromObject((object)storedDisease);
+            return JToken.FromObject(storedDisease);
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
             storedDisease = saveData.Value<string>();
+            if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
             SetDisease(storedDisease);
         }
     }

@@ -44,7 +44,6 @@ namespace LethalDiseases.Items
             itemProperties.syncGrabFunction = true;
             itemProperties.syncDiscardFunction = true;
             itemProperties.syncUseFunction = true;
-            itemProperties.grabAnim = "HoldPatcherTool";
             grabbableToEnemies = false;
         }
 

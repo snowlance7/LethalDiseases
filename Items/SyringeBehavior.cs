@@ -1,23 +1,20 @@
 ﻿using BepInEx;
-using Dawn;
 using Dawn.Interfaces;
-using GameNetcodeStuff;
-using LethalDiseases.Unlockables;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class SyringeBehavior : GunAmmo, IChemistryOutputContainer, IDawnSaveData
+    internal class SyringeBehavior : PhysicsProp, IChemistryOutputContainer, IDawnSaveData
     {
         public SkinnedMeshRenderer fluidRenderer = null!;
         public Animator animator = null!;
+        public Transform needleTip = null!;
 
         ScanNodeProperties scanNode = null!;
 
@@ -43,10 +40,9 @@ namespace LethalDiseases.Items
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
-            fluidRenderer.enabled = true;
             fluidRenderer.material.color = color.liquidColor;
-            fluidRenderer.material.SetColor("_EmissionColor", color.liquidColor);
-            fluidRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
+            fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
+            fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
         }
 
         public void Awake()
@@ -161,7 +157,7 @@ namespace LethalDiseases.Items
             base.ItemInteractLeftRight(right);
             if (right || !isFilled) { return; }
 
-            SetDiseaseRpc("");
+            SetDiseaseRpc("", true);
         }
 
         public void DoStabAnimation()
@@ -172,7 +168,7 @@ namespace LethalDiseases.Items
 
                 inStabbingAnimation = true;
                 localPlayer.playerBodyAnimator.SetTrigger("UseHeldItem1"); // Stab animation
-                DoStabAnimationRpc(localPlayer.actualClientId);
+                DoStabAnimationRpc();
 
                 yield return new WaitForSeconds(11f / 60f);
 
@@ -195,18 +191,34 @@ namespace LethalDiseases.Items
                         }
                     }
 
-
-                    if (host == null )
+                    if (host == null)
                     {
                         CancelStabAnimation();
                         yield break;
+                    }
+
+                    if (host.player != null)
+                    {
+                        if (host.player == localPlayer)
+                        {
+                            if (localPlayer.health != 1)
+                            {
+                                localPlayer.inSpecialInteractAnimation = true;
+                                localPlayer.DamagePlayer(1, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
+                                localPlayer.inSpecialInteractAnimation = false;
+                            }
+                        }
+                        else
+                        {
+                            DamagePlayerRpc(host.player.actualClientId);
+                        }
                     }
 
                     freezingLocalPlayer = true;
                     localPlayer.FreezePlayer(true);
                     localPlayer.playerBodyAnimator.speed = 0f;
 
-                    animator.SetTrigger("inject");
+                    animator.SetTrigger("empty");
 
                     float elapsedTime = 0f;
                     while (elapsedTime < fillTime)
@@ -215,7 +227,7 @@ namespace LethalDiseases.Items
 
                         if ((host.transform.position - localPlayer.transform.position).sqrMagnitude > maxDistance * maxDistance)
                         {
-                            animator.SetTrigger("fill");
+                            animator.SetTrigger("filled");
                             CancelStabAnimation();
                             yield break;
                         }
@@ -226,7 +238,7 @@ namespace LethalDiseases.Items
                     CancelStabAnimation();
 
                     host.networkObject.Infect(storedDisease);
-                    SetDiseaseRpc("");
+                    SetDiseaseRpc("", false);
                 }
                 else
                 {
@@ -252,7 +264,7 @@ namespace LethalDiseases.Items
             routine = null;
         }
 
-        public void SetDisease(string diseaseId, bool doAnimation = true)
+        public void SetDisease(string diseaseId, bool doAnimation)
         {
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             
@@ -267,39 +279,48 @@ namespace LethalDiseases.Items
             else
             {
                 storedDisease = "";
-                animator.SetTrigger("inject");
+                animator.SetTrigger(doAnimation ? "empty" : "emptied");
             }
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SetDiseaseRpc(string diseaseId, bool doAnimation = false)
+        public void DamagePlayerRpc(ulong clientId)
+        {
+            if (localPlayer.actualClientId != clientId || localPlayer.health == 1) { return; }
+            localPlayer.inSpecialInteractAnimation = true;
+            localPlayer.DamagePlayer(1, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
+            localPlayer.inSpecialInteractAnimation = false;
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SetDiseaseRpc(string diseaseId, bool doAnimation)
         {
             SetDisease(diseaseId, doAnimation);
         }
 
         [Rpc(SendTo.NotMe, RequireOwnership = false)]
-        public void DoStabAnimationRpc(ulong clientId)
+        public void DoStabAnimationRpc()
         {
-            PlayerControllerB? player = PlayerFromId(clientId);
-            player?.playerBodyAnimator.SetTrigger("UseHeldItem1");
+            playerHeldBy?.playerBodyAnimator.SetTrigger("UseHeldItem1");
         }
 
-        bool IChemistryOutputContainer.ReceiveChemistryOutput(ChemistryIngredient ingredient)
+        public bool ReceiveChemistryOutput(ChemistryIngredient ingredient)
         {
             if (isFilled) { return false; }
-            SetDisease(ingredient.specialInstructions);
+            SetDisease(ingredient.specialInstructions, false);
             return true;
         }
 
         public JToken GetDawnDataToSave()
         {
-            return JToken.FromObject((object)storedDisease);
+            return JToken.FromObject(storedDisease);
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
             storedDisease = saveData.Value<string>();
-            SetDisease(storedDisease);
+            if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
+            SetDisease(storedDisease, false);
         }
     }
 }

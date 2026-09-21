@@ -1,8 +1,4 @@
 {
-  "LethalDiseasesEnemyKeys": {
-    "__type": "DawnEnemyInfo",
-    "ItFollowsEntity": "lethal_diseases:it_follows_entity"
-  },
   "LethalDiseasesUnlockableItemKeys": {
     "__type": "DawnUnlockableItemInfo",
     "CottonSwabs": "lethal_diseases:cotton_swabs"
@@ -14,6 +10,7 @@
     "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
     "DiseaseScanner": "lethal_diseases:disease_scanner",
     "Syringe": "lethal_diseases:syringe",
+    "SyringeGun": "lethal_diseases:syringe_gun",
     "TestTube": "lethal_diseases:test_tube"
   }
 }

@@ -514,9 +514,41 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
-  ammoType: 115
   fluidRenderer: {fileID: 4872128383870050272}
   animator: {fileID: 9056994842333451120}
+  storedDisease: 
+  freezingLocalPlayer: 0
+--- !u!1 &4777163979673032808
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8326840311305458990}
+  m_Layer: 0
+  m_Name: Syringe_Tip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8326840311305458990
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4777163979673032808}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 1, y: 0.0095639825, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2211161362599370061}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
 --- !u!1 &5228208440721263535
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,6 +583,7 @@ Transform:
   - {fileID: 7852209198468045676}
   - {fileID: 9090994873320229363}
   - {fileID: 3402662450779323285}
+  - {fileID: 8326840311305458990}
   m_Father: {fileID: 1385518006321906571}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6787672768587440348

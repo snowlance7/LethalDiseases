@@ -31,3 +31,6 @@ MonoBehaviour:
   - assetBundleName: syringe
     enabledByDefault: 1
     configName: Syringe
+  - assetBundleName: syringe_gun
+    enabledByDefault: 1
+    configName: Syringe Gun

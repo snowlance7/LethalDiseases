@@ -26,12 +26,12 @@ MonoBehaviour:
   itemSpawnsOnGround: 1
   isConductiveMetal: 0
   isScrap: 0
-  creditsWorth: 50
+  creditsWorth: 70
   lockedInDemo: 0
   highestSalePercentage: 80
   maxValue: 0
   minValue: 0
-  spawnPrefab: {fileID: 2200709558110771366, guid: 892fec46e639045479e6eab9b4e07e2d,
+  spawnPrefab: {fileID: 6572819129475953353, guid: 892fec46e639045479e6eab9b4e07e2d,
     type: 3}
   requiresBattery: 0
   batteryUsage: 0

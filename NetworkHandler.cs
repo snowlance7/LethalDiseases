@@ -37,7 +37,11 @@ namespace LethalDiseases
 
         public override void OnNetworkDespawn()
         {
-            if (Instance != null && Instance == this) { Instance = null!; }
+            if (Instance != null && Instance == this)
+            {
+                Instance = null!;
+                Disease.namedDiseases.Clear();
+            }
             base.OnNetworkDespawn();
         }
 
@@ -90,7 +94,7 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void InfectRpc(NetworkObjectReference netRef, string diseaseId) // TODO: Should only have 1 reference
+        public void InfectRpc(NetworkObjectReference netRef, string diseaseId) // Should only have 1 reference
         {
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null || !netRef.TryGet(out NetworkObject netObj) || netObj == null) { return; }
@@ -270,7 +274,7 @@ namespace LethalDiseases
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void SynthesizeDiseaseSyringeRpc(string id)
         {
-            SmallItemDispenser.Instance!.ItemModificationOperation(LethalDiseasesTerminalAPI.syringeDispensable, (item) => ((SyringeBehavior)item).SetDiseaseRpc(id, false), 30f, 10f, 30f);
+            SmallItemDispenser.Instance!.ItemModificationOperation(LethalDiseasesTerminalAPI.syringeDispensable, (item) => ((SyringeBehavior)item).SetDiseaseRpc(id, false), 30f, 10f, 30f, "Requires syringe");
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -305,7 +309,7 @@ namespace LethalDiseases
                         HUDManager.Instance.DisplayTip("Analysis failed", "No disease detected on sample");
                     }
                 }
-            }, 30f, 20f, 30f);
+            }, 30f, 20f, 30f, "Requires sample");
         }
     }
 

@@ -29,13 +29,13 @@ namespace LethalDiseases.Items
             logger.LogDebug("Setting fluid color to " + color.ToString());
             fluidRenderer.enabled = true;
             fluidRenderer.material.color = color.liquidColor;
-            fluidRenderer.material.SetColor("_EmissionColor", color.liquidColor);
-            fluidRenderer.material.SetFloat("_EmissionIntensity", color.emissionIntensity);
+            fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
+            fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
         }
 
         ChemistryIngredient IChemistryIngredient.GetIngredient()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissionIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
         }
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
@@ -81,14 +81,13 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
-            logger.LogDebug("GetDawnDataToSave");
-            return JToken.FromObject((object)storedDisease);
+            return JToken.FromObject(storedDisease);
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
-            logger.LogDebug("LoadDawnSaveData");
             storedDisease = saveData.Value<string>();
+            if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
             SetDisease(storedDisease);
         }
     }
