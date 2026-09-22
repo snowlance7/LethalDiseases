@@ -16,3 +16,5 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Eve Hypo](https://skfb.ly/oqUFX) by DealwithTheDevil
 - [Cotton Swabs](https://skfb.ly/o8qxV) by lsmine0
 - [Syringe Gun - Dirty](https://skfb.ly/o6ZJS) by Coozy
+- [Assorted Bottle - Chemical Lab](https://skfb.ly/oST6v) by kane_sk06
+- [Syringe Dart Launcher](https://skfb.ly/6qCJG) by Rectus

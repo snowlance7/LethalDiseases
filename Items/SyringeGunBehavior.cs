@@ -1,8 +1,7 @@
-﻿using SnowyCraftingCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using GameNetcodeStuff;
+using SnowyCraftingCore;
+using SnowyLib;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
@@ -14,6 +13,7 @@ namespace LethalDiseases.Items
         public Animator animator = null!;
         public AudioSource audioSource = null!;
         public SkinnedMeshRenderer syringeFluidRenderer = null!;
+        public GameObject syringeProjectilePrefab = null!;
         public AudioClip reloadSFX = null!;
         public AudioClip fireSFX = null!;
         public AudioClip clickSFX = null!;
@@ -22,15 +22,18 @@ namespace LethalDiseases.Items
 
         int mask;
 
+        bool hitSomething;
+        RaycastHit hit;
+
         public string storedDisease = "";
-        private float maxDistance;
+        public static float maxDistance = 400f;
 
         public void Awake()
         {
             itemProperties.positionOffset = new Vector3(-0.04f, 0.26f, 0.07f);
             itemProperties.rotationOffset = new Vector3(10, -90, 90);
             itemProperties.floorYOffset = 0;
-            mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain");
+            mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain", "Colliders");
         }
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
@@ -80,21 +83,47 @@ namespace LethalDiseases.Items
                 return;
             }
 
-            // scp4666 knife 
-            // TODO: Figure this out later when im hyperfocused
+            // scp4666 knife
+            GetEndPoint();
+
+            if (hitSomething)
+            {
+                Vector3 position = hit.point;
+                Quaternion rotation = Quaternion.LookRotation(localPlayer.gameplayCamera.transform.forward);
+
+                if (hit.collider.CompareTag("Player"))
+                {
+                    PlayerControllerB player = hit.collider.gameObject.GetComponent<PlayerControllerB>();
+                    SpawnSyringeProjectileRpc(player.actualClientId, position, rotation);
+                }
+                else if (hit.collider.CompareTag("Enemy"))
+                {
+                    EnemyAI enemy = hit.collider.gameObject.GetComponent<EnemyAICollisionDetect>().mainScript;
+                    SpawnSyringeProjectileRpc(enemy.NetworkObject, position, rotation);
+                }
+                else
+                {
+                    SpawnSyringeProjectileRpc(position, rotation);
+                }
+            }
+            else
+            {
+                SpawnSyringeRpc(hit.point);
+            }
         }
 
-        Vector3 GetEndPoint()
+        void GetEndPoint()
         {
-            Ray ray = new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward);
-            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, StartOfRound.Instance.collidersAndRoomMask))
+            hitSomething = false;
+            Ray ray = new Ray(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward);
+            if (Physics.Raycast(ray, out hit, maxDistance, mask))
             {
-                //float offset = Vector3.Distance(knifeTip.position, transform.position);
-                //return hit.point - transform.forward * offset;
+                hitSomething = true;
+                return;
             }
 
-            logger.LogDebug("Couldnt find wall");
-            return ray.GetPoint(maxDistance);
+            logger.LogDebug("Couldnt find hittable surface");
+            hit.point = ray.GetPoint(maxDistance);
         }
 
         public void Reload()
@@ -135,6 +164,8 @@ namespace LethalDiseases.Items
             return -1;
         }
 
+
+
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void ReloadRpc(string diseaseId)
         {
@@ -143,6 +174,122 @@ namespace LethalDiseases.Items
             storedDisease = diseaseId;
             SetFluidColor(disease.GetChemistryLiquidAppearance());
             animator.SetTrigger("reload");
+            audioSource.PlayOneShot(reloadSFX);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SpawnSyringeRpc(Vector3 position)
+        {
+            animator.SetTrigger("fire");
+            audioSource.PlayOneShot(fireSFX);
+
+            string diseaseId = storedDisease;
+            storedDisease = "";
+
+            if (!IsServer) { return; }
+            SyringeBehavior? syringe = Utils.SpawnItem(LethalDiseasesKeys.Syringe, position) as SyringeBehavior;
+            if (syringe == null) { logger.LogError($"Failed to spawn syringe at {position}"); return; }
+
+            IEnumerator setDiseaseAfterNetworkSpawn()
+            {
+                yield return new WaitUntil(() => syringe.NetworkObject != null && syringe.NetworkObject.IsSpawned);
+                syringe.SetDiseaseRpc(diseaseId, false);
+            }
+
+            StartCoroutine(setDiseaseAfterNetworkSpawn());
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SpawnSyringeProjectileRpc(Vector3 position, Quaternion rotation)
+        {
+            animator.SetTrigger("fire");
+            audioSource.PlayOneShot(fireSFX);
+
+            string diseaseId = storedDisease;
+            storedDisease = "";
+
+            if (!IsServer) { return; }
+            GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
+            syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SpawnSyringeProjectileRpc(ulong clientId, Vector3 position, Quaternion rotation)
+        {
+            animator.SetTrigger("fire");
+            audioSource.PlayOneShot(fireSFX);
+
+            string diseaseId = storedDisease;
+            storedDisease = "";
+
+            PlayerControllerB? player = PlayerFromId(clientId);
+            if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
+
+            if (localPlayer == player)
+            {
+                if (localPlayer.health != 1)
+                {
+                    localPlayer.inSpecialInteractAnimation = true;
+                    localPlayer.DamagePlayer(1, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
+                    localPlayer.inSpecialInteractAnimation = false;
+                }
+            }
+
+            if (!IsServer) { return; }
+            GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
+            var syringe = syringeObj.GetComponent<SyringeProjectile>();
+            syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+
+            IEnumerator parentSyringeProjectile()
+            {
+                yield return new WaitUntil(() => syringe.NetworkObject != null && syringe.NetworkObject.IsSpawned);
+                syringe.NetworkObject.TrySetParent(player.NetworkObject, worldPositionStays: true);
+            }
+
+            StartCoroutine(parentSyringeProjectile());
+            player.Infect(diseaseId);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SpawnSyringeProjectileRpc(NetworkObjectReference enemyNetRef, Vector3 position, Quaternion rotation)
+        {
+            animator.SetTrigger("fire");
+            audioSource.PlayOneShot(fireSFX);
+
+            string diseaseId = storedDisease;
+            storedDisease = "";
+
+            if (!IsServer) { return; }
+            if (!enemyNetRef.TryGet(out NetworkObject netObj)) { logger.LogError("Failed to get networkobject from networkobjectreference"); return; }
+            EnemyAI enemy = netObj.GetComponent<EnemyAI>();
+
+            GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
+            var syringe = syringeObj.GetComponent<SyringeProjectile>();
+            syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+
+            IEnumerator parentSyringeProjectile()
+            {
+                yield return new WaitUntil(() => syringe.NetworkObject != null && syringe.NetworkObject.IsSpawned);
+                syringe.NetworkObject.TrySetParent(enemy.NetworkObject, worldPositionStays: true);
+            }
+
+            StartCoroutine(parentSyringeProjectile());
+            enemy.Infect(diseaseId);
+        }
+    }
+
+    public class SyringeProjectile : NetworkBehaviour
+    {
+        public void OnTriggerInteract() // InteractTrigger
+        {
+            localPlayer.SpawnAndGrabItem(LethalDiseasesKeys.Syringe);
+            DespawnRpc();
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void DespawnRpc()
+        {
+            NetworkObject.Despawn(destroy: true);
         }
     }
 }

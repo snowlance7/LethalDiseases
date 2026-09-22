@@ -14,7 +14,6 @@ namespace LethalDiseases.Items
     {
         public SkinnedMeshRenderer fluidRenderer = null!;
         public Animator animator = null!;
-        public Transform needleTip = null!;
 
         ScanNodeProperties scanNode = null!;
 

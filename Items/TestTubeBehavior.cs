@@ -3,6 +3,7 @@ using GameNetcodeStuff;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
@@ -89,6 +90,12 @@ namespace LethalDiseases.Items
             storedDisease = saveData.Value<string>();
             if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
             SetDisease(storedDisease);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SetDiseaseRpc(string diseaseId)
+        {
+            SetDisease(diseaseId);
         }
     }
 }

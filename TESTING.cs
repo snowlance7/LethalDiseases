@@ -1,3 +1,4 @@
+using Dawn;
 using HarmonyLib;
 using LethalDiseases.Items;
 using SnowyLib;
@@ -104,8 +105,8 @@ namespace LethalDiseases
                                 break;
                         }
                         break;
-                    case "/analyze":
-                        // TODO
+                    case "/test":
+                        BuyItem(LethalDiseasesKeys.TestTube);
                         break;
                     default:
                         break;
@@ -115,6 +116,17 @@ namespace LethalDiseases
             {
                 return;
             }
+        }
+
+        public static void BuyItem(NamespacedKey<DawnItemInfo> key)
+        {
+            // AddToDropship?
+
+            //Utils.terminal!.groupCredits -= ScrapDroneAI.scrapDroneFee;
+            //Utils.terminal.SyncGroupCreditsServerRpc(Utils.terminal.groupCredits, 0);
+            // TODO
+            Utils.terminal.SyncBoughtItemsWithServer(Utils.terminal.orderedItemsFromTerminal.ToArray(), Utils.terminal.numberOfItemsInDropship);
+            throw new NotImplementedException();
         }
 
         public static void RunSymptomsTest()
@@ -206,6 +218,10 @@ namespace LethalDiseases
 
                     if (localPlayer.currentlyHeldObjectServer is CottonSwabBehavior cottonSwab)
                         cottonSwab.SetDiseaseRpc(disease.ToString());
+                    else if (localPlayer.currentlyHeldObjectServer is SyringeBehavior syringe)
+                        syringe.SetDiseaseRpc(disease.ToString(), true);
+                    else if (localPlayer.currentlyHeldObjectServer is TestTubeBehavior testTube)
+                        testTube.SetDiseaseRpc(disease.ToString());
                     else
                         localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
 

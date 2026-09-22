@@ -534,9 +534,12 @@ MonoBehaviour:
   animator: {fileID: 5063214126424838209}
   audioSource: {fileID: 7786588953156833934}
   syringeFluidRenderer: {fileID: 3988862671445623291}
-  syringePrefab: {fileID: 0}
+  syringeProjectilePrefab: {fileID: 1521272316618449946, guid: 783ec992ac9d53d459ae167a5636d5f8,
+    type: 3}
+  reloadSFX: {fileID: 8300000, guid: e363a9ec0700f1244835b2858ba1ccaf, type: 3}
+  fireSFX: {fileID: 8300000, guid: bd19aedc16ae56c4cb5416cc92db664c, type: 3}
+  clickSFX: {fileID: 8300000, guid: 3a02bb048bc7a754e937042315d89d32, type: 3}
   storedDisease: 
-  gunCompatibleAmmoID: 0
 --- !u!95 &5063214126424838209
 Animator:
   serializedVersion: 5
