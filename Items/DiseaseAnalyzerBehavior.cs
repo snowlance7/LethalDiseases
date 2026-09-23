@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using Dawn;
+using GameNetcodeStuff;
 using SnowyLib;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace LethalDiseases.Items
 {
     internal class DiseaseAnalyzerBehavior : PhysicsProp // TODO: add scan self behavior (use overheat player animation for it?)
     {
+        public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DiseaseAnalyzer] != null;
+
         public Animator animator = null!;
         public AudioSource audioSource = null!;
         public MeshRenderer screenRenderer = null!;

@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using Dawn;
+using GameNetcodeStuff;
 using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections;
@@ -10,6 +11,8 @@ namespace LethalDiseases.Items
 {
     internal class SyringeGunBehavior : PhysicsProp
     {
+        public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.SyringeGun] != null;
+
         public Animator animator = null!;
         public AudioSource audioSource = null!;
         public SkinnedMeshRenderer syringeFluidRenderer = null!;

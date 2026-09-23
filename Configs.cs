@@ -33,10 +33,9 @@ namespace LethalDiseases
             
             AccessibilityMode = p.Config.Bind("Client Options", "Accessibility Mode", false, "Enables accessibility features");
 
-            SynthesizeDiseasePowerUsage = p.Config.Bind("Terminal Commands", "Synthesize Disease Power Usage", 0.1f, "The amount of apparatus power this command uses");
+            SynthesizePowerUsage = p.Config.Bind("Terminal Commands", "Synthesize Power Usage", 0.1f, "The amount of apparatus power this command uses");
             AnalyzeDiseasePowerUsage = p.Config.Bind("Terminal Commands", "Analyze Disease Power Usage", 0.05f, "The amount of apparatus power this command uses");
-            SynthesizeDiseaseSyringePowerUsage = p.Config.Bind("Terminal Commands", "Synthesize Disease Syringe Power Usage", 0.1f, "The amount of apparatus power this command uses");
-            SynthesizeDiseaseDartGunAmmoPowerUsage = p.Config.Bind("Terminal Commands", "Synthesize Disease Dart Gun Ammo Power Usage", 0.5f, "The amount of apparatus power this command uses");
+            SynthesizeSyringePowerUsage = p.Config.Bind("Terminal Commands", "Synthesize Syringe Power Usage", 0.1f, "The amount of apparatus power this command uses");
         }
 
 #pragma warning disable CS8618
@@ -61,10 +60,9 @@ namespace LethalDiseases
 
         public static ConfigEntry<bool> AccessibilityMode { get; private set; }
 
-        public static ConfigEntry<float> SynthesizeDiseasePowerUsage { get; private set; }
+        public static ConfigEntry<float> SynthesizePowerUsage { get; private set; }
         public static ConfigEntry<float> AnalyzeDiseasePowerUsage { get; private set; }
-        public static ConfigEntry<float> SynthesizeDiseaseSyringePowerUsage { get; private set; }
-        public static ConfigEntry<float> SynthesizeDiseaseDartGunAmmoPowerUsage { get; private set; }
+        public static ConfigEntry<float> SynthesizeSyringePowerUsage { get; private set; }
 #pragma warning restore CS8618
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using Dawn;
 using Dawn.Interfaces;
 using GameNetcodeStuff;
 using Newtonsoft.Json.Linq;
@@ -13,6 +14,8 @@ namespace LethalDiseases.Items
 {
     internal class BiosamplerBehavior : PhysicsProp, IDistillableIngredient, IChemistryOutputContainer, IDawnSaveData
     {
+        public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.Biosampler] != null;
+
         public Animator animator = null!;
         public SkinnedMeshRenderer fluidRenderer = null!;
 

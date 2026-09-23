@@ -1,4 +1,5 @@
-﻿using Dawn.Interfaces;
+﻿using Dawn;
+using Dawn.Interfaces;
 using GameNetcodeStuff;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
@@ -11,6 +12,8 @@ namespace LethalDiseases.Items
 {
     internal class TestTubeBehavior : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData
     {
+        public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.TestTube] != null;
+
         public MeshRenderer fluidRenderer = null!;
 
         public ScanNodeProperties scanNode = null!;

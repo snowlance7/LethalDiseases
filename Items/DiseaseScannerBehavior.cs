@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using Dawn;
+using GameNetcodeStuff;
 using SnowyLib;
 using System.Collections;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace LethalDiseases.Items
 {
     internal class DiseaseScannerBehavior : PhysicsProp // TODO: add scan self behavior
     {
+        public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DiseaseScanner] != null;
+
         public Animator animator = null!;
         public AudioSource audioSource = null!;
 

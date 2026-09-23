@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using Dawn;
 using Dawn.Interfaces;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
@@ -12,6 +13,8 @@ namespace LethalDiseases.Items
 {
     internal class SyringeBehavior : PhysicsProp, IChemistryOutputContainer, IDawnSaveData
     {
+        public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.Syringe] != null;
+
         public SkinnedMeshRenderer fluidRenderer = null!;
         public Animator animator = null!;
 

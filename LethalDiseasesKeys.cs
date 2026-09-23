@@ -17,5 +17,7 @@ namespace LethalDiseases
         public static readonly NamespacedKey<DawnItemInfo> TestTube = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "test_tube");
         public static readonly NamespacedKey<DawnItemInfo> Syringe = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "syringe");
         public static readonly NamespacedKey<DawnItemInfo> SyringeGun = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "syringe_gun");
+        public static readonly NamespacedKey<DawnItemInfo> DartGun = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "dart_gun");
+        public static readonly NamespacedKey<DawnItemInfo> DartGunAmmo = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "dart_gun_ammo");
     }
 }

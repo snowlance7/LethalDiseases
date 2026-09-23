@@ -1,4 +1,5 @@
-﻿using Dawn.Interfaces;
+﻿using Dawn;
+using Dawn.Interfaces;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using SnowyLib;
@@ -11,6 +12,8 @@ namespace LethalDiseases.Items
 {
     internal class CottonSwabBehavior : PhysicsProp, IDistillableIngredient, IDawnSaveData
     {
+        public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.CottonSwab] != null;
+
         public MeshRenderer tipRenderer = null!;
 
         ScanNodeProperties scanNode = null!;

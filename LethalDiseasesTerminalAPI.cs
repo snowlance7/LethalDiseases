@@ -18,7 +18,7 @@ namespace LethalDiseases
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dget", GetDisease, "Other", "DGET [diseaseName]", "Gets the analyzed information of a disease"));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("drename", RenameDisease, "Other", "DRENAME [diseaseName] [newDiseaseName]", "Renames a disease"));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize."));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeDiseaseSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize."));
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize."));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze."));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseases", GetDiseases, "Other", "DISEASES", "Gets all previously analyzed disease names as a list."));
         }
@@ -76,7 +76,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Synthesis failed, not enough power available for synthesis, alternative power source required"; }
 
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizeDiseasePowerUsage.Value)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
+            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizePowerUsage.Value)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
             NetworkHandler.Instance.SynthesizeDiseaseRpc(disease.ToString());
 
@@ -99,7 +99,7 @@ namespace LethalDiseases
             return $"Analysis ready, please input sample in item port";
         }
 
-        private static string SynthesizeDiseaseSyringe(string[] args)
+        private static string SynthesizeSyringe(string[] args) // TODO: Use syringebehavior.isenabled to check if it can spawn one
         {
             if (ApparatusPowerPort.Instance == null) { return "Synthesis failed, requires apparatus port module, which is not installed"; }
             if (SmallItemDispenser.Instance == null) { return "Synthesis failed, requires small item dispenser module, which is not installed"; }
@@ -115,31 +115,26 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Synthesis failed, not enough power available for synthesis, alternative power source required"; }
 
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizeDiseaseSyringePowerUsage.Value)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
+            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizeSyringePowerUsage.Value)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
             NetworkHandler.Instance.SynthesizeDiseaseSyringeRpc(disease.ToString());
 
             return $"Synthesis succeeded, dispensing {diseaseName}";
         }
 
-        private static string SynthesizeDiseaseDartGunAmmo(string[] args) // TODO
+        public static string SynthesizeDartGunAmmo(string[] args) // TODO // TODO: Use dartgunammobehavior.isenabled to check if it can spawn one
         {
-            throw new System.NotImplementedException();
-            if (ApparatusPowerPort.Instance == null) { return "Synthesis failed, requires apparatus port module, which is not installed"; }
-            if (SmallItemDispenser.Instance == null) { return "Synthesis failed, requires small item dispenser module, which is not installed"; }
             if (args.Length == 1) { return "Synthesis failed, no diseaseName specified\n\n"; }
-            if (args.Length > 2) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTHS [diseaseName])"; }
+            if (args.Length > 2) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTHS [diseaseName] [amount(optional)])"; }
 
             string diseaseName = args[1];
 
             Disease? disease = Disease.GetDiseaseFromName(diseaseName);
             if (disease == null) { return $"Synthesis failed, could not find disease with name: {diseaseName}\n\n"; }
 
-            if (SmallItemDispenser.Instance.IsBeingUsed) { return "Synthesis failed, small item dispenser is already in use"; }
+            var dawnItem = LethalContent.Items[LethalDiseasesKeys.DartGunAmmo];
 
-            if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Synthesis failed, not enough power available for synthesis, alternative power source required"; }
-
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizeDiseaseDartGunAmmoPowerUsage.Value)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
+            int newGroupCredits = Utils.terminal!.groupCredits - (int)(dawnItem.ShopInfo.DawnPurchaseInfo.Cost.Provide() * (dawnItem.ShopInfo.GetSalePercentage() / 100f));
 
             NetworkHandler.Instance.SynthesizeDiseaseSyringeRpc(disease.ToString());
 

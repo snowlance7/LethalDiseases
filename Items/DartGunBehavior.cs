@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using Dawn;
+using GameNetcodeStuff;
 using LethalDiseases;
 using LethalDiseases.Items;
 using SnowyCraftingCore;
@@ -17,6 +18,10 @@ namespace LethalDiseases.Items;
 
 internal class DartGunBehavior : PhysicsProp
 {
+    public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGun] != null;
+
+    public static string nextSpawnedStoredDisease = "";
+
     public Animator animator = null!;
     public GameObject dartPrefab = null!;
     public AudioSource audioSource = null!;

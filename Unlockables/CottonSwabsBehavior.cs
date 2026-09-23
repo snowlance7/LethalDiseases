@@ -1,4 +1,5 @@
-﻿using SnowyLib;
+﻿using Dawn;
+using SnowyLib;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,6 +9,8 @@ namespace LethalDiseases.Unlockables
 {
     internal class CottonSwabsBehavior : NetworkBehaviour
     {
+        public static bool IsEnabled => LethalContent.Unlockables[LethalDiseasesKeys.CottonSwabs] != null;
+
         bool spawningCottonSwab;
 
         public void Interact()
