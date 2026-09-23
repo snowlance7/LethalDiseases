@@ -38,15 +38,15 @@ namespace LethalDiseases
 
         // How long it lasts
         public float strength { get; internal set; }
-        public float strengthTime => Mathf.Lerp(strengthRange.Value.Min, strengthRange.Value.Max, strength);
+        public float strengthTime => Mathf.Lerp(StrengthRange.Value.Min, StrengthRange.Value.Max, strength);
 
         // How long it lasts outside the player
         public float stability { get; internal set; }
-        public float stabilityTime => Mathf.Lerp(stabilityRange.Value.Min, stabilityRange.Value.Max, stability);
+        public float stabilityTime => Mathf.Lerp(StabilityRange.Value.Min, StabilityRange.Value.Max, stability);
 
         // How long it takes for the symptoms to show up
         public float latency { get; internal set; }
-        public float latencyTime => Mathf.Lerp(latencyRange.Value.Min, latencyRange.Value.Max, latency);
+        public float latencyTime => Mathf.Lerp(LatencyRange.Value.Min, LatencyRange.Value.Max, latency);
 
         // Likelyhood it will transmit based on transmission type
         public float transmissibility { get; internal set; }
@@ -100,8 +100,8 @@ namespace LethalDiseases
                 transmissionType = CreateRandomTransmissionType()
             };
 
-            int min = Mathf.Clamp(Mathf.Min(minSymptoms.Value, maxSymptoms.Value), 0, Symptom.symptomList.Count);
-            int max = Mathf.Clamp(Mathf.Max(minSymptoms.Value, maxSymptoms.Value), 0, Symptom.symptomList.Count);
+            int min = Mathf.Clamp(Mathf.Min(MinSymptoms.Value, MaxSymptoms.Value), 0, Symptom.symptomList.Count);
+            int max = Mathf.Clamp(Mathf.Max(MinSymptoms.Value, MaxSymptoms.Value), 0, Symptom.symptomList.Count);
 
             int symptomCount = UnityEngine.Random.Range(min, max + 1);
 
@@ -118,10 +118,10 @@ namespace LethalDiseases
         {
             List<(TransmissionType Type, int Weight)> transmissionTypes = new()
             {
-                (TransmissionType.Airborne, airborneTypeWeight.Value),
-                (TransmissionType.Contact, contactTypeWeight.Value),
-                (TransmissionType.Blood, bloodTypeWeight.Value),
-                (TransmissionType.Foodborne, foodborneTypeWeight.Value)
+                (TransmissionType.Airborne, AirborneTypeWeight.Value),
+                (TransmissionType.Contact, ContactTypeWeight.Value),
+                (TransmissionType.Blood, BloodTypeWeight.Value),
+                (TransmissionType.Foodborne, FoodborneTypeWeight.Value)
             };
 
             int index = RoundManager.Instance.GetRandomWeightedIndexList(transmissionTypes.Select(x => x.Weight).ToList());
@@ -129,7 +129,7 @@ namespace LethalDiseases
             TransmissionType transmissionType = transmissionTypes[index].Type;
             transmissionTypes.RemoveAt(index);
 
-            string[] extraTypeChances = Configs.extraTransmissionTypeChances.Value
+            string[] extraTypeChances = Configs.ExtraTransmissionTypeChances.Value
                 .Replace(" ", "")
                 .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
@@ -169,7 +169,7 @@ namespace LethalDiseases
                 stability = RandomPercent(),
                 latency = RandomPercent(),
                 transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(
-                    new int[] { airborneTypeWeight.Value, contactTypeWeight.Value, bloodTypeWeight.Value, foodborneTypeWeight.Value })
+                    new int[] { AirborneTypeWeight.Value, ContactTypeWeight.Value, BloodTypeWeight.Value, FoodborneTypeWeight.Value })
             };
 
             disease.symptoms = [symptomIndex];
@@ -314,7 +314,7 @@ namespace LethalDiseases
 
                     if (origin == Vector3.zero) { return; }
 
-                    float radius = host.hasActor ? airborneSpreadRange.Value : 10f;
+                    float radius = host.hasActor ? AirborneSpreadRange.Value : 10f;
 
                     TrySpreadAirborne(origin, radius, 0.5f);
                 }
@@ -325,7 +325,7 @@ namespace LethalDiseases
         {
             if (host == null || !host.hasActor) { return; }
 
-            radius = radius == default ? airborneSpreadRange.Value : radius;
+            radius = radius == default ? AirborneSpreadRange.Value : radius;
 
             Physics.OverlapSphereNonAlloc(origin, radius, airborneColliders);
 

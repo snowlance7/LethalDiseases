@@ -105,9 +105,6 @@ namespace LethalDiseases
                                 break;
                         }
                         break;
-                    case "/test":
-                        BuyItem(LethalDiseasesKeys.TestTube);
-                        break;
                     default:
                         break;
                 }
@@ -116,17 +113,6 @@ namespace LethalDiseases
             {
                 return;
             }
-        }
-
-        public static void BuyItem(NamespacedKey<DawnItemInfo> key)
-        {
-            // AddToDropship?
-
-            //Utils.terminal!.groupCredits -= ScrapDroneAI.scrapDroneFee;
-            //Utils.terminal.SyncGroupCreditsServerRpc(Utils.terminal.groupCredits, 0);
-            // TODO
-            Utils.terminal.SyncBoughtItemsWithServer(Utils.terminal.orderedItemsFromTerminal.ToArray(), Utils.terminal.numberOfItemsInDropship);
-            throw new NotImplementedException();
         }
 
         public static void RunSymptomsTest()

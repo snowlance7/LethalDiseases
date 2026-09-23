@@ -20,7 +20,7 @@ namespace LethalDiseases.Patches
             {
                 if (!__instance.IsServer || TESTING.disableDiseaseSpawning) { return; }
 
-                if (UnityEngine.Random.Range(0f, 1f) < monsterDiseaseChance.Value)
+                if (UnityEngine.Random.Range(0f, 1f) < MonsterDiseaseChance.Value)
                     __instance.NetworkObject.Infect();
             }
             catch (System.Exception e)
@@ -38,7 +38,7 @@ namespace LethalDiseases.Patches
             {
                 if (!__instance.fixInteract.IsServer || TESTING.disableDiseaseSpawning) { return; }
 
-                if (UnityEngine.Random.Range(0f, 1f) < steamDiseaseChance.Value)
+                if (UnityEngine.Random.Range(0f, 1f) < SteamDiseaseChance.Value)
                     __instance.fixInteract.NetworkObject.Infect();
             }
             catch (System.Exception e)
@@ -58,7 +58,7 @@ namespace LethalDiseases.Patches
 
                 if (__instance.isInShipRoom) { return; }
 
-                if (UnityEngine.Random.Range(0f, 1f) < scrapDiseaseChance.Value)
+                if (UnityEngine.Random.Range(0f, 1f) < ScrapDiseaseChance.Value)
                     __instance.NetworkObject.Infect();
             }
             catch (System.Exception e)
