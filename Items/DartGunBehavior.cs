@@ -24,22 +24,22 @@ internal class DartGunBehavior : PhysicsProp
 {
     public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGun] != null;
 
-    public Animator animator = null!;
-    public GameObject dartPrefab = null!;
-    public AudioSource audioSource = null!;
-    public AudioClip reloadSFX = null!;
-    public AudioClip fireSFX = null!;
-    public AudioClip clickSFX = null!;
-    public Transform ammoDropPosition = null!;
+    [SerializeField] GameObject dartPrefab = null!;
+    [SerializeField] AudioClip loadSFX = null!;
+    [SerializeField] AudioClip unloadSFX = null!;
+    [SerializeField] AudioClip fireSFX = null!;
+    [SerializeField] AudioClip clickSFX = null!;
 
-    public bool IsLoaded => !string.IsNullOrWhiteSpace(storedDisease);
+    AudioSource audioSource = null!;
+    Animator animator = null!;
+
+    public DartGunAmmo? loadedAmmo;
 
     int mask;
 
     bool hitSomething;
     RaycastHit hit;
 
-    public string storedDisease = "";
     public static float maxDistance = 500f;
 
     public void Awake()
@@ -47,7 +47,26 @@ internal class DartGunBehavior : PhysicsProp
         itemProperties.positionOffset = new Vector3(-0.04f, 0.26f, 0.07f);
         itemProperties.rotationOffset = new Vector3(10, -90, 90);
         itemProperties.floorYOffset = 0;
+
+        itemProperties.toolTips = ["Fire [LMB]", "Reload [E]", "Unload [Q]"];
         mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain", "Colliders");
+        animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if (loadedAmmo != null)
+        {
+            loadedAmmo.transform.position = transform.position;
+        }
+    }
+
+    public override void SetControlTipsForItem()
+    {
+        HUDManager.Instance.ChangeControlTipMultiple([$"Fire [LMB]{(loadedAmmo != null ? $"[{loadedAmmo.AmmoLeft} left]" : "")}", "Reload [E]", "Unload [Q]"], holdingItem: playerHeldBy != null && playerHeldBy == localPlayer && !isPocketed, itemProperties);
     }
 
     public override void EquipItem()
@@ -70,23 +89,14 @@ internal class DartGunBehavior : PhysicsProp
     {
         base.ItemActivate(used, buttonDown);
         if (!buttonDown) { return; }
-        Fire();
-    }
 
-    public override void ItemInteractLeftRight(bool right)
-    {
-        base.ItemInteractLeftRight(right);
-        if (!right) { return; }
-        Reload();
-    }
-
-    public void Fire()
-    {
-        if (!IsLoaded)
+        if (loadedAmmo == null || loadedAmmo.AmmoLeft <= 0)
         {
             audioSource.PlayOneShot(clickSFX);
             return;
         }
+
+        // TODO: Continue here
 
         GetEndPoint();
 
@@ -116,6 +126,36 @@ internal class DartGunBehavior : PhysicsProp
         }
     }
 
+    public override void ItemInteractLeftRight(bool right)
+    {
+        base.ItemInteractLeftRight(right);
+
+        if (right) // Reload [E]
+        {
+            if (loadedAmmo != null)
+            {
+                if (loadedAmmo.AmmoLeft > 0) { return; }
+
+                UnloadAmmoRpc();
+            }
+
+            int ammoSlot = FindAmmoInInventory();
+            if (ammoSlot == -1)
+            {
+                audioSource.PlayOneShot(clickSFX);
+                return;
+            }
+
+            var ammo = localPlayer.ItemSlots[ammoSlot];
+            localPlayer.DiscardItemInSlot(ammoSlot);
+            LoadAmmoRpc(ammo.NetworkObject);
+        }
+        else // Unload [Q]
+        {
+            UnloadAmmoRpc();
+        }
+    }
+
     void GetEndPoint()
     {
         hitSomething = false;
@@ -130,46 +170,59 @@ internal class DartGunBehavior : PhysicsProp
         hit.point = ray.GetPoint(maxDistance);
     }
 
-    public void Reload()
-    {
-        int ammoSlot = FindAmmoInInventory();
-        if (ammoSlot == -1)
-        {
-            audioSource.PlayOneShot(clickSFX);
-            return;
-        }
-
-        string diseaseId = ((SyringeBehavior)localPlayer.ItemSlots[ammoSlot]).storedDisease;
-        localPlayer.DestroyItemInSlotAndSync(ammoSlot);
-        ReloadRpc(diseaseId);
-    }
-
     private int FindAmmoInInventory()
     {
         for (int i = 0; i < playerHeldBy.ItemSlots.Length; i++)
         {
             if (!(playerHeldBy.ItemSlots[i] == null))
             {
-                SyringeBehavior? syringe = playerHeldBy.ItemSlots[i] as SyringeBehavior;
-                if (syringe != null && syringe.isFilled)
+                DartGunAmmo? ammo = playerHeldBy.ItemSlots[i] as DartGunAmmo;
+                if (ammo != null && ammo.IsFilled)
                 {
                     return i;
                 }
             }
         }
-        if (playerHeldBy.ItemOnlySlot != null)
-        {
-            SyringeBehavior? syringe = playerHeldBy.ItemOnlySlot as SyringeBehavior;
-            if (syringe != null && syringe.isFilled)
-            {
-                return 50;
-            }
-        }
         return -1;
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    private void UnloadAmmoRpc() // TODO: Test this
+    {
+        if (loadedAmmo == null) { return; }
+
+        loadedAmmo.transform.SetParent(null);
+        loadedAmmo.parentObject = null;
+        loadedAmmo.EnablePhysics(true);
+        loadedAmmo.EnableItemMeshes(true);
+        loadedAmmo.transform.position = transform.position;
+        loadedAmmo.FallToGround();
+
+        animator.SetTrigger("unload");
+        audioSource.PlayOneShot(unloadSFX);
+        loadedAmmo = null;
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    private void LoadAmmoRpc(NetworkObjectReference netRef) // TODO: Test this
+    {
+        if (loadedAmmo != null) { return; }
+        if (!netRef.TryGet(out NetworkObject netObj)) { logger.LogError("LoadAmmoRpc: Failed to get networkobject from networkobjectreference"); return; }
+        
+        loadedAmmo = netObj.GetComponent<DartGunAmmo>();
+
+        loadedAmmo.transform.position = transform.position;
+        loadedAmmo.transform.SetParent(transform);
+        loadedAmmo.parentObject = transform;
+        loadedAmmo.EnablePhysics(false);
+        loadedAmmo.EnableItemMeshes(false);
+
+        animator.SetTrigger("load");
+        audioSource.PlayOneShot(loadSFX);
     }
 }
 
-internal class DartGunAmmo : GunAmmo, IDawnSaveData
+internal class DartGunAmmo : PhysicsProp, IDawnSaveData
 {
     public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGunAmmo] != null;
 
@@ -183,9 +236,15 @@ internal class DartGunAmmo : GunAmmo, IDawnSaveData
     [HideInInspector]
     public string storedDisease = "";
 
-    public int ammoLeft = 0;
+    public int AmmoLeft { get; private set; } = 0;
+    public bool IsFilled => AmmoLeft > 0;
 
     public static int MaxDartsInAmmo => PluginInstance.Config.Bind("Dart Gun Ammo Options", "Dart Gun Ammo | Max Darts", 10, "The max amount of darts in a clip").Value;
+
+    public void Awake()
+    {
+        scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
+    }
 
     [StaticInit]
     public static void InitConfigs()
@@ -197,11 +256,9 @@ internal class DartGunAmmo : GunAmmo, IDawnSaveData
     {
         base.Start();
 
-        scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
-
         if (spawningStoredDiseases.Count > 0)
         {
-            ammoLeft = MaxDartsInAmmo;
+            AmmoLeft = MaxDartsInAmmo;
             SetDisease(spawningStoredDiseases.First());
             spawningStoredDiseases.RemoveAt(0);
         }
@@ -231,7 +288,7 @@ internal class DartGunAmmo : GunAmmo, IDawnSaveData
 
     public JToken GetDawnDataToSave()
     {
-        string data = $"{ammoLeft}/{storedDisease}";
+        string data = $"{AmmoLeft}/{storedDisease}";
         return JToken.FromObject(data);
     }
 
@@ -243,7 +300,7 @@ internal class DartGunAmmo : GunAmmo, IDawnSaveData
 
         string[] args = data.Split("/");
 
-        ammoLeft = int.Parse(args[0]);
+        AmmoLeft = int.Parse(args[0]);
         if (args.Length == 1) { return; } // TODO: Test this
 
         SetDisease(args[1]);
@@ -252,9 +309,14 @@ internal class DartGunAmmo : GunAmmo, IDawnSaveData
 
 internal class DartProjectile : MonoBehaviour
 {
-    public Rigidbody rigidbody = null!;
-
     float stickTime = 5f;
+
+    Rigidbody rigidbody = null!;
+
+    public void Awake()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
 
     public void Update()
     {
@@ -263,8 +325,8 @@ internal class DartProjectile : MonoBehaviour
 
         if (stickTime <= 0 && rigidbody.isKinematic)
         {
-            rigidbody.isKinematic = false;
             transform.SetParent(null);
+            rigidbody.isKinematic = false;
         }
     }
 }
