@@ -1,11 +1,15 @@
 ﻿using Dawn;
+using Dawn.Interfaces;
 using GameNetcodeStuff;
 using LethalDiseases;
 using LethalDiseases.Items;
+using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
+using SnowyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,14 +24,13 @@ internal class DartGunBehavior : PhysicsProp
 {
     public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGun] != null;
 
-    public static string nextSpawnedStoredDisease = "";
-
     public Animator animator = null!;
     public GameObject dartPrefab = null!;
     public AudioSource audioSource = null!;
     public AudioClip reloadSFX = null!;
     public AudioClip fireSFX = null!;
     public AudioClip clickSFX = null!;
+    public Transform ammoDropPosition = null!;
 
     public bool IsLoaded => !string.IsNullOrWhiteSpace(storedDisease);
 
@@ -129,8 +132,6 @@ internal class DartGunBehavior : PhysicsProp
 
     public void Reload()
     {
-
-
         int ammoSlot = FindAmmoInInventory();
         if (ammoSlot == -1)
         {
@@ -140,7 +141,7 @@ internal class DartGunBehavior : PhysicsProp
 
         string diseaseId = ((SyringeBehavior)localPlayer.ItemSlots[ammoSlot]).storedDisease;
         localPlayer.DestroyItemInSlotAndSync(ammoSlot);
-        //ReloadRpc(diseaseId);
+        ReloadRpc(diseaseId);
     }
 
     private int FindAmmoInInventory()
@@ -168,9 +169,85 @@ internal class DartGunBehavior : PhysicsProp
     }
 }
 
-internal class DartGunAmmo : GunAmmo
+internal class DartGunAmmo : GunAmmo, IDawnSaveData
 {
+    public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGunAmmo] != null;
+
+    public static List<string> spawningStoredDiseases = new List<string>();
+
     public MeshRenderer fluidRenderer = null!;
+
+
+    ScanNodeProperties scanNode = null!;
+
+    [HideInInspector]
+    public string storedDisease = "";
+
+    public int ammoLeft = 0;
+
+    public static int MaxDartsInAmmo => PluginInstance.Config.Bind("Dart Gun Ammo Options", "Dart Gun Ammo | Max Darts", 10, "The max amount of darts in a clip").Value;
+
+    [StaticInit]
+    public static void InitConfigs()
+    {
+        _ = MaxDartsInAmmo;
+    }
+
+    public override void Start()
+    {
+        base.Start();
+
+        scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
+
+        if (spawningStoredDiseases.Count > 0)
+        {
+            ammoLeft = MaxDartsInAmmo;
+            SetDisease(spawningStoredDiseases.First());
+            spawningStoredDiseases.RemoveAt(0);
+        }
+    }
+
+    public void SetFluidColor(ChemistryLiquidAppearance color)
+    {
+        fluidRenderer.material.color = color.liquidColor;
+        fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
+        fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
+    }
+
+    public void SetDisease(string diseaseId)
+    {
+        Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+        if (disease == null) { logger.LogError($"Failed to parse disease from string: {diseaseId}"); return; }
+
+        storedDisease = diseaseId;
+        SetFluidColor(disease.GetChemistryLiquidAppearance());
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void SetDiseaseRpc(string diseaseId)
+    {
+        SetDisease(diseaseId);
+    }
+
+    public JToken GetDawnDataToSave()
+    {
+        string data = $"{ammoLeft}/{storedDisease}";
+        return JToken.FromObject(data);
+    }
+
+    public void LoadDawnSaveData(JToken saveData)
+    {
+        string data = saveData.Value<string>()!;
+
+        if (string.IsNullOrWhiteSpace(data)) { return; }
+
+        string[] args = data.Split("/");
+
+        ammoLeft = int.Parse(args[0]);
+        if (args.Length == 1) { return; } // TODO: Test this
+
+        SetDisease(args[1]);
+    }
 }
 
 internal class DartProjectile : MonoBehaviour

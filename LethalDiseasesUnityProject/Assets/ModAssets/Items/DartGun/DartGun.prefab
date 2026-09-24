@@ -373,6 +373,7 @@ GameObject:
   - component: {fileID: 6358067068807831175}
   - component: {fileID: 3646617912142418666}
   - component: {fileID: 4262493504984794577}
+  - component: {fileID: 4056775501277137863}
   m_Layer: 6
   m_Name: DartGun
   m_TagString: PhysicsProp
@@ -581,7 +582,7 @@ MonoBehaviour:
   isBeingUsed: 0
   isInElevator: 0
   isInShipRoom: 0
-  isInFactory: 1
+  isInFactory: 0
   useCooldown: 0
   currentUseCooldown: 0
   itemProperties: {fileID: 11400000, guid: 0cbf414a69c0f054b85fe39975064345, type: 2}
@@ -601,10 +602,32 @@ MonoBehaviour:
   grabbableToEnemies: 1
   hasBeenHeld: 0
   rotateObject: 0
-  animator: {fileID: 0}
-  dartPrefab: {fileID: 0}
-  audioSource: {fileID: 0}
-  reloadSFX: {fileID: 0}
-  fireSFX: {fileID: 0}
-  clickSFX: {fileID: 0}
+  animator: {fileID: 4056775501277137863}
+  dartPrefab: {fileID: 7905952772285962674, guid: adf2313a2fe8e2042bb8e240377fdad5,
+    type: 3}
+  audioSource: {fileID: 4392564494409296147}
+  reloadSFX: {fileID: 8300000, guid: aba53443b71c17c48b052f3188d2f19c, type: 3}
+  fireSFX: {fileID: 8300000, guid: 2df4bb1b4ce6ffb4ebaa1142cbaa379b, type: 3}
+  clickSFX: {fileID: 8300000, guid: bafa680975dddc549b32aa1f2aaa00a5, type: 3}
   storedDisease: 
+--- !u!95 &4056775501277137863
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4036684726809354426}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9f92c4235c7f8724b81ee1779566198c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

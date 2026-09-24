@@ -1,7 +1,9 @@
 ﻿using Dawn;
+using LethalDiseases.Items;
 using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases
@@ -17,10 +19,11 @@ namespace LethalDiseases
         {
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dget", GetDisease, "Other", "DGET [diseaseName]", "Gets the analyzed information of a disease"));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("drename", RenameDisease, "Other", "DRENAME [diseaseName] [newDiseaseName]", "Renames a disease"));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize."));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize."));
-            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze."));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseases", GetDiseases, "Other", "DISEASES", "Gets all previously analyzed disease names as a list."));
+            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled && TestTubeBehavior.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize.")); }
+            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze.")); }
+            if (SyringeBehavior.IsEnabled && ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize.")); }
+            if (DartGunAmmo.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsyntha", SynthesizeDartGunAmmo, "Other", "DSYNTHA [diseaseName] [amount(optional)]", "Synthesizes and orders dart gun ammo containing the specified disease.")); }
         }
 
         private static string GetDiseases(string[] args)
@@ -99,7 +102,7 @@ namespace LethalDiseases
             return $"Analysis ready, please input sample in item port";
         }
 
-        private static string SynthesizeSyringe(string[] args) // TODO: Use syringebehavior.isenabled to check if it can spawn one
+        private static string SynthesizeSyringe(string[] args)
         {
             if (ApparatusPowerPort.Instance == null) { return "Synthesis failed, requires apparatus port module, which is not installed"; }
             if (SmallItemDispenser.Instance == null) { return "Synthesis failed, requires small item dispenser module, which is not installed"; }
@@ -119,13 +122,13 @@ namespace LethalDiseases
 
             NetworkHandler.Instance.SynthesizeDiseaseSyringeRpc(disease.ToString());
 
-            return $"Synthesis succeeded, dispensing {diseaseName}";
+            return "Synthesis starting, please insert Syringe";
         }
 
-        public static string SynthesizeDartGunAmmo(string[] args) // TODO // TODO: Use dartgunammobehavior.isenabled to check if it can spawn one
+        public static string SynthesizeDartGunAmmo(string[] args)
         {
             if (args.Length == 1) { return "Synthesis failed, no diseaseName specified\n\n"; }
-            if (args.Length > 2) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTHS [diseaseName] [amount(optional)])"; }
+            if (args.Length > 3) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTHA [diseaseName] [amount(optional)])"; }
 
             string diseaseName = args[1];
 
@@ -133,12 +136,21 @@ namespace LethalDiseases
             if (disease == null) { return $"Synthesis failed, could not find disease with name: {diseaseName}\n\n"; }
 
             var dawnItem = LethalContent.Items[LethalDiseasesKeys.DartGunAmmo];
+            if (dawnItem == null || dawnItem.ShopInfo == null) { return $"Synthesis failed, dart gun ammo is not available for purchase"; }
 
-            int newGroupCredits = Utils.terminal!.groupCredits - (int)(dawnItem.ShopInfo.DawnPurchaseInfo.Cost.Provide() * (dawnItem.ShopInfo.GetSalePercentage() / 100f));
+            int count = 1;
+            if (args.Length == 3 && int.TryParse(args[2], out int _count))
+                count = Mathf.Min(1, _count);
 
-            NetworkHandler.Instance.SynthesizeDiseaseSyringeRpc(disease.ToString());
+            int totalCost = count * (int)(dawnItem.ShopInfo.DawnPurchaseInfo.Cost.Provide() * (dawnItem.ShopInfo.GetSalePercentage() / 100f));
+            int newGroupCredits = Utils.terminal!.groupCredits - totalCost;
 
-            return $"Synthesis succeeded, dispensing {diseaseName}";
+            if (newGroupCredits < 0) { return $"Synthesis failed. You could not afford these items!\nYour balance is {Utils.terminal.groupCredits}. Total cost of these items is {totalCost}.\n\n"; }
+
+            Utils.BuyItem(LethalDiseasesKeys.DartGunAmmo, count, true, newGroupCredits);
+            NetworkHandler.Instance.SynthesizeDartGunAmmoRpc(disease.ToString(), count);
+
+            return $"Synthesis succeeded. Ordered {count} dart gun ammo. Your new balance is {newGroupCredits}.\n\nOur contractors enjoy fast, free shipping while on the job! Any purchased items will arrive hourly at your approximate location.\n\n";
         }
     }
 }

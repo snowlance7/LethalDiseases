@@ -266,6 +266,15 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SynthesizeDartGunAmmoRpc(string diseaseId, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                DartGunAmmo.spawningStoredDiseases.Add(diseaseId);
+            }
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void SynthesizeDiseaseRpc(string id)
         {
             SmallItemDispenser.Instance!.ItemDispenseOperation(LethalDiseasesTerminalAPI.testTubeDispensable, (item) => ((TestTubeBehavior)item).OnChemicalOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, specialInstructions: id)), 30f);

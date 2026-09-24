@@ -538,7 +538,7 @@ MonoBehaviour:
     type: 3}
   reloadSFX: {fileID: 8300000, guid: e363a9ec0700f1244835b2858ba1ccaf, type: 3}
   fireSFX: {fileID: 8300000, guid: bd19aedc16ae56c4cb5416cc92db664c, type: 3}
-  clickSFX: {fileID: 8300000, guid: 3a02bb048bc7a754e937042315d89d32, type: 3}
+  clickSFX: {fileID: 8300000, guid: bafa680975dddc549b32aa1f2aaa00a5, type: 3}
   storedDisease: 
 --- !u!95 &5063214126424838209
 Animator:
