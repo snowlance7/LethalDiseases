@@ -40,7 +40,15 @@ internal class DartGunBehavior : PhysicsProp
     bool hitSomething;
     RaycastHit hit;
 
-    public static float maxDistance = 500f;
+    public static float MaxRange => PluginInstance.Config.Bind("Dart Gun Options", "Dart Gun | Max Range", 500f, "The max distance the dart gun can shoot darts").Value;
+    public static float DartLifetime => PluginInstance.Config.Bind("Dart Gun Options", "Dart Gun | Dart Lifetime", 60f, "How long it takes for dart gun darts to despawn after being shot").Value;
+
+    [StaticInit]
+    public static void InitConfigs()
+    {
+        _ = MaxRange;
+        _ = DartLifetime;
+    }
 
     public void Awake()
     {
@@ -96,8 +104,6 @@ internal class DartGunBehavior : PhysicsProp
             return;
         }
 
-        // TODO: Continue here
-
         GetEndPoint();
 
         if (hitSomething)
@@ -108,21 +114,21 @@ internal class DartGunBehavior : PhysicsProp
             if (hit.collider.CompareTag("Player"))
             {
                 PlayerControllerB player = hit.collider.gameObject.GetComponent<PlayerControllerB>();
-                //SpawnSyringeProjectileRpc(player.actualClientId, position, rotation);
+                SpawnDartProjectileRpc(player.actualClientId, position, rotation);
             }
             else if (hit.collider.CompareTag("Enemy"))
             {
                 EnemyAI enemy = hit.collider.gameObject.GetComponent<EnemyAICollisionDetect>().mainScript;
-                //SpawnSyringeProjectileRpc(enemy.NetworkObject, position, rotation);
+                SpawnDartProjectileRpc(enemy.NetworkObject, position, rotation);
             }
             else
             {
-                //SpawnSyringeProjectileRpc(position, rotation);
+                SpawnDartProjectileRpc(position, rotation);
             }
         }
         else
         {
-            //SpawnSyringeRpc(hit.point);
+            FireDartEffectsRpc();
         }
     }
 
@@ -160,14 +166,14 @@ internal class DartGunBehavior : PhysicsProp
     {
         hitSomething = false;
         Ray ray = new Ray(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward);
-        if (Physics.Raycast(ray, out hit, maxDistance, mask))
+        if (Physics.Raycast(ray, out hit, MaxRange, mask))
         {
             hitSomething = true;
             return;
         }
 
         logger.LogDebug("Couldnt find hittable surface");
-        hit.point = ray.GetPoint(maxDistance);
+        hit.point = ray.GetPoint(MaxRange);
     }
 
     private int FindAmmoInInventory()
@@ -184,6 +190,13 @@ internal class DartGunBehavior : PhysicsProp
             }
         }
         return -1;
+    }
+
+    private void FireDartEffects()
+    {
+        loadedAmmo?.UseAmmo();
+        animator.SetTrigger("fire");
+        audioSource.PlayOneShot(fireSFX);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -219,6 +232,61 @@ internal class DartGunBehavior : PhysicsProp
 
         animator.SetTrigger("load");
         audioSource.PlayOneShot(loadSFX);
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void SpawnDartProjectileRpc(Vector3 position, Quaternion rotation)
+    {
+        FireDartEffects();
+
+        GameObject dartObj = Instantiate(dartPrefab, position, rotation);
+        Destroy(dartObj, DartLifetime);
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void SpawnDartProjectileRpc(ulong clientId, Vector3 position, Quaternion rotation)
+    {
+        FireDartEffects();
+
+        PlayerControllerB? player = PlayerFromId(clientId);
+        if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
+
+        if (IsServer)
+            player.Infect(loadedAmmo!.storedDisease);
+
+        if (localPlayer == player)
+        {
+            if (localPlayer.health != 1)
+            {
+                localPlayer.inSpecialInteractAnimation = true;
+                localPlayer.DamagePlayer(1, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
+                localPlayer.inSpecialInteractAnimation = false;
+            }
+        }
+
+        GameObject dartObj = Instantiate(dartPrefab, position, rotation, player.transform);
+        Destroy(dartObj, DartLifetime);
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void SpawnDartProjectileRpc(NetworkObjectReference enemyNetRef, Vector3 position, Quaternion rotation)
+    {
+        FireDartEffects();
+
+        if (!enemyNetRef.TryGet(out NetworkObject netObj)) { logger.LogError("Failed to get networkobject from networkobjectreference"); return; }
+        EnemyAI enemy = netObj.GetComponent<EnemyAI>();
+
+        if (IsServer)
+            enemy.Infect(loadedAmmo!.storedDisease);
+
+        GameObject dartObj = Instantiate(dartPrefab, position, rotation, enemy.transform); // TODO: Test this
+        Destroy(dartObj, DartLifetime);
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void FireDartEffectsRpc()
+    {
+        FireDartEffects();
     }
 }
 
@@ -269,6 +337,11 @@ internal class DartGunAmmo : PhysicsProp, IDawnSaveData
         fluidRenderer.material.color = color.liquidColor;
         fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
         fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
+    }
+
+    public void UseAmmo()
+    {
+        AmmoLeft--;
     }
 
     public void SetDisease(string diseaseId)

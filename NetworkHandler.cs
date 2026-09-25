@@ -266,6 +266,18 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void DeleteNamedDiseaseRpc(string id) // TODO: Test this
+        {
+            Disease? disease = Disease.GetDiseaseFromString(id);
+            if (disease == null) { logger.LogError($"Failed to delete disease with id: {id}, disease not found"); return; }
+
+            string diseaseName = disease.name;
+            Disease.namedDiseases.Remove(id);
+
+            Utils.LogChat($"Named Disease {diseaseName} has been deleted from disease database");
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void SynthesizeDartGunAmmoRpc(string diseaseId, int count)
         {
             for (int i = 0; i < count; i++)

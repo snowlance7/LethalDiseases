@@ -96,7 +96,6 @@
     </ItemGroup>
     <ItemGroup>
       <None Remove=".gitattributes" />
-      <None Remove=".gitignore" />
     </ItemGroup>
 
     <!-- Primary Package References -->

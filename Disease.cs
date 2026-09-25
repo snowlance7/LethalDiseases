@@ -409,7 +409,7 @@ namespace LethalDiseases
             }
         }
 
-        public static void LoadNamedDiseases()
+        public static void LoadNamedDiseases() // TODO: Should only have 1 reference to avoid save scumming
         {
             var contract = DawnLib.GetCurrentContract();
             if (contract == null) { logger.LogError("Failed to get named diseases, current contract does not exist"); return; }
@@ -428,7 +428,7 @@ namespace LethalDiseases
             logger.LogDebug($"LoadNamedDiseases completed, loaded {namedDiseases.Count} diseases");
         }
 
-        public static void SaveNamedDiseases()
+        public static void SaveNamedDiseases() // TODO: Should only have 1 reference to avoid save scumming
         {
             if (namedDiseases.Count == 0) { logger.LogDebug("No named diseases to save"); return; }
 

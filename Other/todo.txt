@@ -1,10 +1,8 @@
-syringe should be inputed to terminal to fill with disease, not just dispensed, make syringe buyable
 organize each disease holder
 interface for items to not be infectable, or config
-alembic color bug fixed
 vertical scroll for the disease analyzer
 delete named disease functionality
-syringe gun
 syringe gun and biosampler tooltips set up properly
 remove motion blur on items?
-set up emission for fluid rendering correctly
+
+test symptoms

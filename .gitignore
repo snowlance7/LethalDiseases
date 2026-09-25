@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /CopyToUnity.bat
+
+/LethalDiseasesUnityProject/Assets/LethalCompany
+/LethalDiseasesUnityProject/Assets/SharedPlugins

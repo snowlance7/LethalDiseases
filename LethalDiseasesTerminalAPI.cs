@@ -24,6 +24,7 @@ namespace LethalDiseases
             if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze.")); }
             if (SyringeBehavior.IsEnabled && ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize.")); }
             if (DartGunAmmo.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsyntha", SynthesizeDartGunAmmo, "Other", "DSYNTHA [diseaseName] [amount(optional)]", "Synthesizes and orders dart gun ammo containing the specified disease.")); }
+            TerminalAPI.RegisterTerminalCommand(new TerminalCommand("ddelete", DeleteDisease, "Other", "DDELETE [diseaseName]", "Deletes a named disease"));
         }
 
         private static string GetDiseases(string[] args)
@@ -58,9 +59,26 @@ namespace LethalDiseases
 
             Disease? disease = Disease.GetDiseaseFromName(diseaseName);
             if (disease == null) { return $"Rename failed, could not find disease with name: {diseaseName}\n\n"; }
+            
             if (Disease.GetDiseaseFromName(newDiseaseName) != null) { return $"Rename failed, there is already a disease with the name: {newDiseaseName}\n\n"; }
+            
             NetworkHandler.Instance.RenameDiseaseRpc(disease.ToString(), newDiseaseName);
+
             return $"Rename succeeded, changed {diseaseName} to {newDiseaseName}\n\n";
+        }
+
+        private static string DeleteDisease(string[] args)
+        {
+            if (args.Length == 1) { return "Delete failed, no diseaseName specified\n\n"; }
+
+            string diseaseName = args[1];
+
+            Disease? disease = Disease.GetDiseaseFromName(diseaseName);
+            if (disease == null) { return $"Delete failed, could not find disease with name: {diseaseName}\n\n"; }
+
+            NetworkHandler.Instance.DeleteNamedDiseaseRpc(disease.ToString());
+
+            return $"Deleting {diseaseName}...\n\n";
         }
 
         private static string SynthesizeDisease(string[] args)
