@@ -7,6 +7,8 @@
     "__type": "DawnItemInfo",
     "BioSampler": "lethal_diseases:biosampler",
     "CottonSwab": "lethal_diseases:cotton_swab",
+    "DartGunAmmo": "lethal_diseases:dart_gun_ammo",
+    "DartGun": "lethal_diseases:dart_gun",
     "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
     "DiseaseScanner": "lethal_diseases:disease_scanner",
     "Syringe": "lethal_diseases:syringe",

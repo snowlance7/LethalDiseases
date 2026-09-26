@@ -1,19 +1,8 @@
 ﻿using Dawn;
-using Dawn.Interfaces;
 using GameNetcodeStuff;
-using LethalDiseases;
-using LethalDiseases.Items;
-using Newtonsoft.Json.Linq;
-using SnowyCraftingCore;
 using SnowyLib;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 using static LethalDiseases.Plugin;
 
 // give darts rigidbody, if it hits against a wall richochet and land on the ground and destroy self in a minute, if hits player, stick into player for a few seconds and then fall out. magazines are main ammo you have to buy seperately.
@@ -29,6 +18,7 @@ internal class DartGunBehavior : PhysicsProp
     [SerializeField] AudioClip unloadSFX = null!;
     [SerializeField] AudioClip fireSFX = null!;
     [SerializeField] AudioClip clickSFX = null!;
+    [SerializeField] MeshRenderer clipRenderer = null!; // TODO: Set this and use for enableitemmeshes
 
     AudioSource audioSource = null!;
     Animator animator = null!;
@@ -52,7 +42,7 @@ internal class DartGunBehavior : PhysicsProp
 
     public void Awake()
     {
-        itemProperties.positionOffset = new Vector3(-0.04f, 0.26f, 0.07f);
+        itemProperties.positionOffset = new Vector3(0f, 0.3f, 0.05f);
         itemProperties.rotationOffset = new Vector3(10, -90, 90);
         itemProperties.floorYOffset = 0;
 
@@ -192,10 +182,16 @@ internal class DartGunBehavior : PhysicsProp
         return -1;
     }
 
-    private void FireDartEffects()
+    public override void EnableItemMeshes(bool enable)
+    {
+        base.EnableItemMeshes(enable);
+        clipRenderer.enabled = enable && loadedAmmo != null;
+    }
+
+    private void FireDart()
     {
         loadedAmmo?.UseAmmo();
-        animator.SetTrigger("fire");
+        //animator.SetTrigger("fire");
         audioSource.PlayOneShot(fireSFX);
     }
 
@@ -237,7 +233,7 @@ internal class DartGunBehavior : PhysicsProp
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void SpawnDartProjectileRpc(Vector3 position, Quaternion rotation)
     {
-        FireDartEffects();
+        FireDart();
 
         GameObject dartObj = Instantiate(dartPrefab, position, rotation);
         Destroy(dartObj, DartLifetime);
@@ -246,7 +242,7 @@ internal class DartGunBehavior : PhysicsProp
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void SpawnDartProjectileRpc(ulong clientId, Vector3 position, Quaternion rotation)
     {
-        FireDartEffects();
+        FireDart();
 
         PlayerControllerB? player = PlayerFromId(clientId);
         if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
@@ -271,7 +267,7 @@ internal class DartGunBehavior : PhysicsProp
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void SpawnDartProjectileRpc(NetworkObjectReference enemyNetRef, Vector3 position, Quaternion rotation)
     {
-        FireDartEffects();
+        FireDart();
 
         if (!enemyNetRef.TryGet(out NetworkObject netObj)) { logger.LogError("Failed to get networkobject from networkobjectreference"); return; }
         EnemyAI enemy = netObj.GetComponent<EnemyAI>();
@@ -286,97 +282,7 @@ internal class DartGunBehavior : PhysicsProp
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void FireDartEffectsRpc()
     {
-        FireDartEffects();
-    }
-}
-
-internal class DartGunAmmo : PhysicsProp, IDawnSaveData
-{
-    public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGunAmmo] != null;
-
-    public static List<string> spawningStoredDiseases = new List<string>();
-
-    public MeshRenderer fluidRenderer = null!;
-
-
-    ScanNodeProperties scanNode = null!;
-
-    [HideInInspector]
-    public string storedDisease = "";
-
-    public int AmmoLeft { get; private set; } = 0;
-    public bool IsFilled => AmmoLeft > 0;
-
-    public static int MaxDartsInAmmo => PluginInstance.Config.Bind("Dart Gun Ammo Options", "Dart Gun Ammo | Max Darts", 10, "The max amount of darts in a clip").Value;
-
-    public void Awake()
-    {
-        scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
-    }
-
-    [StaticInit]
-    public static void InitConfigs()
-    {
-        _ = MaxDartsInAmmo;
-    }
-
-    public override void Start()
-    {
-        base.Start();
-
-        if (spawningStoredDiseases.Count > 0)
-        {
-            AmmoLeft = MaxDartsInAmmo;
-            SetDisease(spawningStoredDiseases.First());
-            spawningStoredDiseases.RemoveAt(0);
-        }
-    }
-
-    public void SetFluidColor(ChemistryLiquidAppearance color)
-    {
-        fluidRenderer.material.color = color.liquidColor;
-        fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
-        fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
-    }
-
-    public void UseAmmo()
-    {
-        AmmoLeft--;
-    }
-
-    public void SetDisease(string diseaseId)
-    {
-        Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-        if (disease == null) { logger.LogError($"Failed to parse disease from string: {diseaseId}"); return; }
-
-        storedDisease = diseaseId;
-        SetFluidColor(disease.GetChemistryLiquidAppearance());
-    }
-
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void SetDiseaseRpc(string diseaseId)
-    {
-        SetDisease(diseaseId);
-    }
-
-    public JToken GetDawnDataToSave()
-    {
-        string data = $"{AmmoLeft}/{storedDisease}";
-        return JToken.FromObject(data);
-    }
-
-    public void LoadDawnSaveData(JToken saveData)
-    {
-        string data = saveData.Value<string>()!;
-
-        if (string.IsNullOrWhiteSpace(data)) { return; }
-
-        string[] args = data.Split("/");
-
-        AmmoLeft = int.Parse(args[0]);
-        if (args.Length == 1) { return; } // TODO: Test this
-
-        SetDisease(args[1]);
+        FireDart();
     }
 }
 

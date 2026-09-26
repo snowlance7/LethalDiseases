@@ -1,8 +1,10 @@
 organize each disease holder
 interface for items to not be infectable, or config
 vertical scroll for the disease analyzer
-delete named disease functionality
 syringe gun and biosampler tooltips set up properly
 remove motion blur on items?
+gas mask
+gloves
+ship vent that cleans everything in ship
 
 test symptoms

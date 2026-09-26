@@ -24,3 +24,12 @@ display ad when ping scanning
 you dont see scrap values
 you see wrong scrap values
 you see inversed scrap values (high scrap is cheaper, low scrap is higher)
+
+Photosynthesis: Standing outside slowly regenerates health
+Bloodhound: You can see trails left by creatures and players
+Echo location: Making noise briefly reveals nearby creatures
+Static: Your scanner occasionally reveals creatures outside of its normal range
+Adaptation: Repeatedly taking the same type of damage gradually reduces that damage.
+Guardian: Nearby players take reduced damage while you're close to them.
+Blood Donor: Give the damage taken as health shared to nearby players
+Momentum: Sprinting for longer continuously makes you progressively faster.

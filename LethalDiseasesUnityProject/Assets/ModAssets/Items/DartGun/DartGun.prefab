@@ -111,7 +111,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.5178909, y: 0.4814448, z: -0.4814448, w: 0.5178909}
   m_LocalPosition: {x: -0.029, y: 0.0254, z: 0.126}
-  m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
+  m_LocalScale: {x: 1.7500001, y: 1.7500001, z: 1.7500001}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5173907027110270163}
@@ -289,7 +289,7 @@ GameObject:
   - component: {fileID: 4220407903273227693}
   m_Layer: 0
   m_Name: clip
-  m_TagString: Untagged
+  m_TagString: DoNotSet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -324,7 +324,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3162464259286121904}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -562,7 +562,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4036684726809354426}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -321277265, guid: f9398408ad59237449ac0239f51cda84, type: 3}
+  m_Script: {fileID: -321277265, guid: 7abe6b050be256b438f73829ae763091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabbable: 1
@@ -602,14 +602,14 @@ MonoBehaviour:
   grabbableToEnemies: 1
   hasBeenHeld: 0
   rotateObject: 0
-  animator: {fileID: 4056775501277137863}
   dartPrefab: {fileID: 7905952772285962674, guid: adf2313a2fe8e2042bb8e240377fdad5,
     type: 3}
-  audioSource: {fileID: 4392564494409296147}
-  reloadSFX: {fileID: 8300000, guid: aba53443b71c17c48b052f3188d2f19c, type: 3}
+  loadSFX: {fileID: 8300000, guid: e363a9ec0700f1244835b2858ba1ccaf, type: 3}
+  unloadSFX: {fileID: 8300000, guid: e363a9ec0700f1244835b2858ba1ccaf, type: 3}
   fireSFX: {fileID: 8300000, guid: 2df4bb1b4ce6ffb4ebaa1142cbaa379b, type: 3}
-  clickSFX: {fileID: 8300000, guid: bafa680975dddc549b32aa1f2aaa00a5, type: 3}
-  storedDisease: 
+  clickSFX: {fileID: 8300000, guid: 7237be7f9f565e14699fc224c3495b6c, type: 3}
+  clipRenderer: {fileID: 4220407903273227693}
+  loadedAmmo: {fileID: 0}
 --- !u!95 &4056775501277137863
 Animator:
   serializedVersion: 5

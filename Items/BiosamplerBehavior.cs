@@ -23,7 +23,7 @@ namespace LethalDiseases.Items
 
         public string storedDisease = "";
 
-        public bool isFilled => !storedDisease.IsNullOrWhiteSpace();
+        public bool IsFilled => !storedDisease.IsNullOrWhiteSpace();
 
         public bool freezingLocalPlayer;
 
@@ -64,12 +64,12 @@ namespace LethalDiseases.Items
             {
                 if (LocalPlayerIsLookingDown)
                 {
-                    if (isFilled && mainControlTip != "Self Inject [LMB]")
+                    if (IsFilled && mainControlTip != "Self Inject [LMB]")
                     {
                         mainControlTip = "Self Inject [LMB]";
                         SetControlTipsForItem();
                     }
-                    else if (!isFilled && mainControlTip != "Self Extract [LMB]")
+                    else if (!IsFilled && mainControlTip != "Self Extract [LMB]")
                     {
                         mainControlTip = "Self Extract [LMB]";
                         SetControlTipsForItem();
@@ -104,6 +104,12 @@ namespace LethalDiseases.Items
             }
         }
 
+        public override void EnableItemMeshes(bool enable)
+        {
+            base.EnableItemMeshes(enable);
+            fluidRenderer.enabled = enable && IsFilled;
+        }
+
         public override void SetControlTipsForItem()
         {
             string[] toolTips = [mainControlTip, "Empty [Q]"];
@@ -122,13 +128,13 @@ namespace LethalDiseases.Items
         {
             base.EquipItem();
             playerHeldBy.equippedUsableItemQE = true;
-            fluidRenderer.enabled = isFilled;
+            fluidRenderer.enabled = IsFilled;
         }
 
         public override void DiscardItem()
         {
             playerHeldBy.equippedUsableItemQE = false;
-            fluidRenderer.enabled = isFilled;
+            fluidRenderer.enabled = IsFilled;
             base.DiscardItem();
         }
 
@@ -150,7 +156,7 @@ namespace LethalDiseases.Items
         public override void ItemInteractLeftRight(bool right)
         {
             base.ItemInteractLeftRight(right);
-            if (right || !isFilled) { return; }
+            if (right || !IsFilled) { return; }
 
             SetDiseaseRpc("", true);
         }
@@ -167,7 +173,7 @@ namespace LethalDiseases.Items
 
                 yield return new WaitForSeconds(11f / 60f);
 
-                if (isFilled)
+                if (IsFilled)
                 {
                     DiseaseHost? host = null;
 
@@ -395,7 +401,7 @@ namespace LethalDiseases.Items
 
         public bool ReceiveChemistryOutput(ChemistryIngredient ingredient)
         {
-            if (isFilled)
+            if (IsFilled)
             {
                 HUDManager.Instance.DisplayTip("Insert ingredient failed", "Container is already full", isWarning: true);
                 return false;

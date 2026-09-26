@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1868315162, guid: e268a971a26598d4bb5413bdeda54762, type: 3}
+  m_Script: {fileID: -1868315162, guid: 0428dcc2b6d6b1745b1da201524f31c6, type: 3}
   m_Name: AudioLibrary
   m_EditorClassIdentifier: 
   Groups:
-  - Id: sneeze
+  - Id: Sneeze
     Clips:
     - {fileID: 8300000, guid: fd00cea227a0526469e589a1d7ccae5f, type: 3}
     - {fileID: 8300000, guid: 9caeeb8ee13eb51469ab4b86abc9d1da, type: 3}
     - {fileID: 8300000, guid: 6f05930ac7183104c9ea3e2c54dd6a9f, type: 3}
     - {fileID: 8300000, guid: 2627ccbf9d613e54c9e5de15e182d238, type: 3}
-  - Id: cough
+  - Id: Cough
     Clips:
     - {fileID: 8300000, guid: f2528a3fd8c0f8f40b605cf66ec98324, type: 3}
     - {fileID: 8300000, guid: b1878223f3dad614ca8f64e3d427ca3f, type: 3}
@@ -28,10 +28,10 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 579f6a99730b0e04b91a0f673ab43e4a, type: 3}
     - {fileID: 8300000, guid: a5e2d81cc2c20ba41b5253c885d9439d, type: 3}
     - {fileID: 8300000, guid: cb7f0a4cb43f31b44bef399fc330ba8e, type: 3}
-  - Id: coughheavy
+  - Id: CoughHeavy
     Clips:
     - {fileID: 8300000, guid: b216f94bb6ff7fa4693fb68fc66514d1, type: 3}
-  - Id: paranoia
+  - Id: Paranoia
     Clips:
     - {fileID: 8300000, guid: 96a239e49b621c74fbb9205d81756b3a, type: 3}
     - {fileID: 8300000, guid: 2032ca4c4c867ed448149cb004709e45, type: 3}
@@ -148,7 +148,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: c87486402918a2a4d8401ca31ca3046b, type: 3}
     - {fileID: 8300000, guid: 782b13106218b6042b97d8f0fe90f298, type: 3}
     - {fileID: 8300000, guid: 503e18fff06d009449bf90bea02f1c73, type: 3}
-  - Id: duck
+  - Id: Duck
     Clips:
     - {fileID: 8300000, guid: 973ad6cd8e2ea214d907b08d274eadb9, type: 3}
     - {fileID: 8300000, guid: b8c09f1feda6ae8468cb24e9374394b5, type: 3}
@@ -159,7 +159,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 2f8fdca3c8a50ed4082d77c9a43638f0, type: 3}
     - {fileID: 8300000, guid: 2d26e86f28f66644f971baab9fa4eed9, type: 3}
     - {fileID: 8300000, guid: 747ee9e606e603c4a8a5f8e39b15435e, type: 3}
-  - Id: sponge
+  - Id: Sponge
     Clips:
     - {fileID: 8300000, guid: 878a6fb7136db2147861b43a72a17845, type: 3}
     - {fileID: 8300000, guid: 999c760d9fab7d34cbc32c9cc5343281, type: 3}

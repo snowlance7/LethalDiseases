@@ -20,6 +20,8 @@ namespace LethalDiseases.Items
 
         public string storedDisease = "";
 
+        public bool IsFilled => !string.IsNullOrWhiteSpace(storedDisease);
+
         public void Awake()
         {
             itemProperties.positionOffset = new Vector3(0.05f, 0.05f, 0.01f);
@@ -35,6 +37,12 @@ namespace LethalDiseases.Items
             fluidRenderer.material.color = color.liquidColor;
             fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
             fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
+        }
+
+        public override void EnableItemMeshes(bool enable)
+        {
+            base.EnableItemMeshes(enable);
+            fluidRenderer.enabled = IsFilled && enable;
         }
 
         ChemistryIngredient IChemistryIngredient.GetIngredient()

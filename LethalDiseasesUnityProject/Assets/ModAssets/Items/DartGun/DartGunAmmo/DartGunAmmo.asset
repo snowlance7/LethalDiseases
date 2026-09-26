@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
-  m_Name: DartGun
+  m_Name: DartGunAmmo
   m_EditorClassIdentifier: 
   itemId: 0
-  itemName: Dart Gun
+  itemName: Dart Gun Ammo
   spawnPositionTypes: []
   twoHanded: 0
   twoHandedAnimation: 0
   disableHandsOnWall: 0
-  canBeGrabbedBeforeGameStart: 1
-  disallowUtilitySlot: 0
+  canBeGrabbedBeforeGameStart: 0
+  disallowUtilitySlot: 1
   weight: 1
   itemIsTrigger: 0
   holdButtonUse: 0
   itemSpawnsOnGround: 1
   isConductiveMetal: 0
   isScrap: 0
-  creditsWorth: 100
+  creditsWorth: 0
   lockedInDemo: 0
   highestSalePercentage: 80
   maxValue: 0
   minValue: 0
-  spawnPrefab: {fileID: 4036684726809354426, guid: 9c57f677765ff1046adca91991779e42,
+  spawnPrefab: {fileID: 439405786628263432, guid: 050b4869a4aceed4a9abbaeb14546879,
     type: 3}
   requiresBattery: 0
   batteryUsage: 0
@@ -42,16 +42,16 @@ MonoBehaviour:
   pocketAnim: 
   throwAnim: 
   grabAnimationTime: 0
-  grabSFX: {fileID: 8300000, guid: 944fca2e8a072f34b939c64bea33c1e5, type: 3}
-  dropSFX: {fileID: 8300000, guid: 8c9c9845f8615ca4dbef22cec41599df, type: 3}
-  pocketSFX: {fileID: 8300000, guid: 944fca2e8a072f34b939c64bea33c1e5, type: 3}
+  grabSFX: {fileID: 8300000, guid: 11264dcb664099743bf5b298ea53e58b, type: 3}
+  dropSFX: {fileID: 8300000, guid: c9c718b89f6ccd14f971ecc63797cf3c, type: 3}
+  pocketSFX: {fileID: 8300000, guid: 11264dcb664099743bf5b298ea53e58b, type: 3}
   throwSFX: {fileID: 0}
   syncGrabFunction: 0
   syncUseFunction: 0
   syncDiscardFunction: 0
   syncInteractLRFunction: 0
-  saveItemVariable: 0
-  isDefensiveWeapon: 1
+  saveItemVariable: 1
+  isDefensiveWeapon: 0
   toolTips: []
   verticalOffset: 0
   floorYOffset: 0

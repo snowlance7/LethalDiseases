@@ -37,3 +37,4 @@ void IShockableWithGun.ShockWithGun(PlayerControllerB shockedByPlayer)
 		SetSwitchesOff();
 		RoundManager.Instance.FlickerLights();
 	}
+

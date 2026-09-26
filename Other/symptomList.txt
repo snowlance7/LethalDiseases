@@ -71,4 +71,3 @@ Tesla Coil: Zap other players holding metal items
 Trigger Finger: Randomly use whatever youre holding (left mouse click)
 Vampirism: Leech health from other living things
 Weakness: Your carry weight is doubled
-

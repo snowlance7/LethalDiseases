@@ -1,0 +1,39 @@
+Anarchist: Randomly summon landmines in front of you
+Anitidaephobia: You hallucinate duck sounds
+Aquaphobia: You fear water
+BodyOdor: Enemies prioritize targetting you first
+Bountiful: Turn into a cadaver bloom on death
+Brainstorm: You are only targeted by lightning strikes
+Broken Legs: You are always limping
+Burnt Lungs: 1.5x stamina usage
+Buttery Fingers: Periodically drop what you're holding
+Claustrophobia: You fear being inside
+Clumsiness: Randomly trip
+Congested: Your voice is muffled
+Cursed: Spawns a ghost girl that targets you
+Dementia: Randomly teleport to a location periodically
+ElectrolyteProficiency: You charge items you hold instead of depleting them
+Green Needle: You are never targeted by lightning strikes
+Haunted: If a ghost girl spawns, it targets you. If multiple people have this, chooses a random player
+IBS: You explode on death
+Infested: Periodically spawn hoarderbugs around you
+Insanity: Sets insanity to max
+ItFollows: ???
+Klepto: Randomly and periodically take items from nearby players
+Lightheaded: Get dizzy when running too much
+MAD: You kill the nearest living thing on death
+Malfunction: Your scanner doesnt work
+Mucus Filled: Periodically spit mucus on other player, which can spread the disease
+Narcissism: Everyone is invisible to you
+Nausea: Get the TZP effect periodically and throw up if moving too much during it
+Necrosis: Randomly take damage until death
+Paranoia: You hear things you shouldnt
+Rage: Double damage but you cant see health
+Scaly: Lizards follow you
+Shopaholic: 25% chance to buy a random item when using the terminal
+Smoker Lungs: You cough randomly, making noise
+Split Personality: Randomly swap positions with a random player periodically
+SpongeLegs: You make an annoying sound when you walk
+TerminalRally: On death, get 10 seconds of rage and die
+Trigger Finger: Randomly use whatever youre holding (left mouse click)
+Weakness: Your carry weight is doubled

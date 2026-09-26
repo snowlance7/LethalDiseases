@@ -51,7 +51,6 @@
     </ItemGroup>
     <ItemGroup>
       <Compile Remove="Symptoms\Unfinished\Alarm.cs" />
-      <Compile Remove="Symptoms\Unfinished\Arachnophobia.cs" />
       <Compile Remove="Symptoms\Unfinished\Attractive.cs" />
       <Compile Remove="Symptoms\Unfinished\Baculovirus.cs" />
       <Compile Remove="Symptoms\Unfinished\BadGas.cs" />
@@ -68,13 +67,11 @@
       <Compile Remove="Symptoms\Unfinished\EggFace.cs" />
       <Compile Remove="Symptoms\Unfinished\Empyema.cs" />
       <Compile Remove="Symptoms\Unfinished\FreshScent.cs" />
-      <Compile Remove="Symptoms\Unfinished\Glowing.cs" />
       <Compile Remove="Symptoms\Unfinished\Green.cs" />
       <Compile Remove="Symptoms\Unfinished\Heartworm.cs" />
       <Compile Remove="Symptoms\Unfinished\Ionizing.cs" />
       <Compile Remove="Symptoms\Unfinished\KneeWater.cs" />
       <Compile Remove="Symptoms\Unfinished\LactoseIntolerant.cs" />
-      <Compile Remove="Symptoms\Unfinished\LastStand.cs" />
       <Compile Remove="Symptoms\Unfinished\Mitosis.cs" />
       <Compile Remove="Symptoms\Unfinished\MoodSwings.cs" />
       <Compile Remove="Symptoms\Unfinished\Mute.cs" />
@@ -86,11 +83,8 @@
       <Compile Remove="Symptoms\Unfinished\Repulsive.cs" />
       <Compile Remove="Symptoms\Unfinished\Scopophobia.cs" />
       <Compile Remove="Symptoms\Unfinished\SelectiveHearing.cs" />
-      <Compile Remove="Symptoms\Unfinished\Shroombiosis.cs" />
       <Compile Remove="Symptoms\Unfinished\Sproodling.cs" />
-      <Compile Remove="Symptoms\Unfinished\Sterile.cs" />
       <Compile Remove="Symptoms\Unfinished\StressEating.cs" />
-      <Compile Remove="Symptoms\Unfinished\Tactician.cs" />
       <Compile Remove="Symptoms\Unfinished\TeslaCoil.cs" />
       <Compile Remove="Symptoms\Unfinished\Vampirism.cs" />
     </ItemGroup>
@@ -131,7 +125,6 @@
 
     <ItemGroup>
       <Folder Include="Assets\" />
-      <Folder Include="Symptoms\Unfinished\" />
       <Folder Include="ThunderStore\plugins\Assets\" />
     </ItemGroup>
 
