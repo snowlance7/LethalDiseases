@@ -11,16 +11,17 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class DiseaseAnalyzerBehavior : PhysicsProp // TODO: add scan self behavior (use overheat player animation for it?)
+    internal class DiseaseAnalyzer : PhysicsProp // TODO: add scan self behavior (use overheat player animation for it?)
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DiseaseAnalyzer] != null;
 
-        public Animator animator = null!;
-        public AudioSource audioSource = null!;
         public MeshRenderer screenRenderer = null!;
         public RectTransform contentRect = null!;
         public ScrollRect scrollRect = null!;
         public GameObject diseaseContentPrefab = null!;
+
+        Animator animator = null!;
+        AudioSource audioSource = null!;
 
         PlayerControllerB previousPlayerHeldBy = null!;
 
@@ -48,6 +49,9 @@ namespace LethalDiseases.Items
             itemProperties.syncDiscardFunction = true;
             itemProperties.syncUseFunction = true;
             grabbableToEnemies = false;
+
+            animator = GetComponent<Animator>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         public override void Update()

@@ -19,5 +19,6 @@ namespace LethalDiseases
         public static readonly NamespacedKey<DawnItemInfo> SyringeGun = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "syringe_gun");
         public static readonly NamespacedKey<DawnItemInfo> DartGun = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "dart_gun");
         public static readonly NamespacedKey<DawnItemInfo> DartGunAmmo = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "dart_gun_ammo");
+        public static readonly NamespacedKey<DawnItemInfo> GreenMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "green_mushroom");
     }
 }

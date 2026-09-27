@@ -962,7 +962,7 @@ GameObject:
   - component: {fileID: 1559885079114600794}
   - component: {fileID: 5385036129249615622}
   - component: {fileID: 3593624503330934304}
-  - component: {fileID: 2960556008899580536}
+  - component: {fileID: 3247011151788302056}
   m_Layer: 6
   m_Name: BioSampler
   m_TagString: PhysicsProp
@@ -1147,7 +1147,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2960556008899580536
+--- !u!114 &3247011151788302056
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1156,7 +1156,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6572819129475953353}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1348846179, guid: 7abe6b050be256b438f73829ae763091, type: 3}
+  m_Script: {fileID: -709347500, guid: 7abe6b050be256b438f73829ae763091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabbable: 1
@@ -1196,7 +1196,6 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
-  animator: {fileID: 3593624503330934304}
   fluidRenderer: {fileID: 6091451328217629084}
   storedDisease: 
   freezingLocalPlayer: 0

@@ -9,12 +9,12 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class DiseaseScannerBehavior : PhysicsProp // TODO: add scan self behavior
+    internal class DiseaseScanner : PhysicsProp // TODO: add scan self behavior
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DiseaseScanner] != null;
 
-        public Animator animator = null!;
-        public AudioSource audioSource = null!;
+        Animator animator = null!;
+        AudioSource audioSource = null!;
 
         PlayerControllerB previousPlayerHeldBy = null!;
 
@@ -33,6 +33,9 @@ namespace LethalDiseases.Items
             itemProperties.syncUseFunction = true;
             //itemProperties.grabAnim = "HoldPatcherTool";
             grabbableToEnemies = false;
+
+            animator = GetComponent<Animator>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         public override void OnDestroy()

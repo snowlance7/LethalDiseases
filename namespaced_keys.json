@@ -11,6 +11,7 @@
     "DartGun": "lethal_diseases:dart_gun",
     "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
     "DiseaseScanner": "lethal_diseases:disease_scanner",
+    "HealingMushrooom": "lethal_diseases:healing_mushrooom",
     "Syringe": "lethal_diseases:syringe",
     "SyringeGun": "lethal_diseases:syringe_gun",
     "TestTube": "lethal_diseases:test_tube"

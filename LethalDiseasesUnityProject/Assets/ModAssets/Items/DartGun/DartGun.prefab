@@ -372,8 +372,8 @@ GameObject:
   - component: {fileID: 4392564494409296147}
   - component: {fileID: 6358067068807831175}
   - component: {fileID: 3646617912142418666}
-  - component: {fileID: 4262493504984794577}
   - component: {fileID: 4056775501277137863}
+  - component: {fileID: 3804119460053410210}
   m_Layer: 6
   m_Name: DartGun
   m_TagString: PhysicsProp
@@ -553,7 +553,28 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
---- !u!114 &4262493504984794577
+--- !u!95 &4056775501277137863
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4036684726809354426}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9f92c4235c7f8724b81ee1779566198c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3804119460053410210
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -562,7 +583,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4036684726809354426}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -321277265, guid: 7abe6b050be256b438f73829ae763091, type: 3}
+  m_Script: {fileID: 2091434449, guid: 7abe6b050be256b438f73829ae763091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabbable: 1
@@ -599,7 +620,7 @@ MonoBehaviour:
   heldByPlayerOnServer: 0
   radarIcon: {fileID: 0}
   reachedFloorTarget: 0
-  grabbableToEnemies: 1
+  grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
   dartPrefab: {fileID: 7905952772285962674, guid: adf2313a2fe8e2042bb8e240377fdad5,
@@ -610,24 +631,3 @@ MonoBehaviour:
   clickSFX: {fileID: 8300000, guid: 7237be7f9f565e14699fc224c3495b6c, type: 3}
   clipRenderer: {fileID: 4220407903273227693}
   loadedAmmo: {fileID: 0}
---- !u!95 &4056775501277137863
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4036684726809354426}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9f92c4235c7f8724b81ee1779566198c, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0

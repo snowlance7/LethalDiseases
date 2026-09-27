@@ -10,7 +10,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class CottonSwabBehavior : PhysicsProp, IDistillableIngredient, IDawnSaveData
+    internal class CottonSwab : PhysicsProp, IDistillableIngredient, IDawnSaveData
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.CottonSwab] != null;
 

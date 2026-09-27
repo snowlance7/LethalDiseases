@@ -9,17 +9,18 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class SyringeGunBehavior : PhysicsProp
+    internal class SyringeGun : PhysicsProp
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.SyringeGun] != null;
 
-        public Animator animator = null!;
-        public AudioSource audioSource = null!;
         public SkinnedMeshRenderer syringeFluidRenderer = null!;
         public GameObject syringeProjectilePrefab = null!;
         public AudioClip reloadSFX = null!;
         public AudioClip fireSFX = null!;
         public AudioClip clickSFX = null!;
+
+        Animator animator = null!;
+        AudioSource audioSource = null!;
 
         public bool IsLoaded => !string.IsNullOrWhiteSpace(storedDisease);
 
@@ -37,6 +38,8 @@ namespace LethalDiseases.Items
             itemProperties.rotationOffset = new Vector3(10, -90, 90);
             itemProperties.floorYOffset = 0;
             mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain", "Colliders");
+            animator = GetComponent<Animator>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
@@ -138,7 +141,7 @@ namespace LethalDiseases.Items
                 return;
             }
 
-            string diseaseId = ((SyringeBehavior)localPlayer.ItemSlots[ammoSlot]).storedDisease;
+            string diseaseId = ((Syringe)localPlayer.ItemSlots[ammoSlot]).storedDisease;
             localPlayer.DestroyItemInSlotAndSync(ammoSlot);
             ReloadRpc(diseaseId);
         }
@@ -149,7 +152,7 @@ namespace LethalDiseases.Items
             {
                 if (!(playerHeldBy.ItemSlots[i] == null))
                 {
-                    SyringeBehavior? syringe = playerHeldBy.ItemSlots[i] as SyringeBehavior;
+                    Syringe? syringe = playerHeldBy.ItemSlots[i] as Syringe;
                     if (syringe != null && syringe.isFilled)
                     {
                         return i;
@@ -158,7 +161,7 @@ namespace LethalDiseases.Items
             }
             if (playerHeldBy.ItemOnlySlot != null)
             {
-                SyringeBehavior? syringe = playerHeldBy.ItemOnlySlot as SyringeBehavior;
+                Syringe? syringe = playerHeldBy.ItemOnlySlot as Syringe;
                 if (syringe != null && syringe.isFilled)
                 {
                     return 50;
@@ -190,7 +193,7 @@ namespace LethalDiseases.Items
             storedDisease = "";
 
             if (!IsServer) { return; }
-            SyringeBehavior? syringe = Utils.SpawnItem(LethalDiseasesKeys.Syringe, position) as SyringeBehavior;
+            Syringe? syringe = Utils.SpawnItem(LethalDiseasesKeys.Syringe, position) as Syringe;
             if (syringe == null) { logger.LogError($"Failed to spawn syringe at {position}"); return; }
 
             IEnumerator setDiseaseAfterNetworkSpawn()
@@ -281,7 +284,7 @@ namespace LethalDiseases.Items
         }
     }
 
-    public class SyringeProjectile : NetworkBehaviour
+    public class SyringeProjectile : NetworkBehaviour // TODO: Test this on player
     {
         public void OnTriggerInteract() // InteractTrigger
         {

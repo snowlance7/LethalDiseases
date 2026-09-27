@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 823813762405510332}
   - component: {fileID: 1806178453531409669}
   - component: {fileID: 2167845458782606151}
-  - component: {fileID: 2093315816263166229}
+  - component: {fileID: 4587684022067927274}
   m_Layer: 6
   m_Name: DiseaseAnalyzer
   m_TagString: PhysicsProp
@@ -446,7 +446,7 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
---- !u!114 &2093315816263166229
+--- !u!114 &4587684022067927274
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 879794388877942344}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 664994585, guid: 7abe6b050be256b438f73829ae763091, type: 3}
+  m_Script: {fileID: 1738901577, guid: 7abe6b050be256b438f73829ae763091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabbable: 1
@@ -481,7 +481,7 @@ MonoBehaviour:
   itemProperties: {fileID: 11400000, guid: 2ddcf030f49618c43b1d4b4f6750ae26, type: 2}
   insertedBattery:
     empty: 0
-    charge: 1
+    charge: 0
   customGrabTooltip: 
   propBody: {fileID: 0}
   propColliders: []
@@ -495,14 +495,11 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
-  animator: {fileID: 1806178453531409669}
-  audioSource: {fileID: 823813762405510332}
   screenRenderer: {fileID: 3992273794866946509}
   contentRect: {fileID: 1849522990592722631}
   scrollRect: {fileID: 1565672985581924792}
   diseaseContentPrefab: {fileID: 3567077860273359721, guid: 025480ce7fc93c844b8300076e7959b7,
     type: 3}
-  screenOnSFX: {fileID: 0}
 --- !u!1 &3038373582732178550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,7 +1350,7 @@ GameObject:
   - component: {fileID: 1849522990592722631}
   - component: {fileID: 3360088155624947049}
   - component: {fileID: 5619012693008588160}
-  - component: {fileID: 8773579258606429878}
+  - component: {fileID: 3073749954839534841}
   m_Layer: 6
   m_Name: Content
   m_TagString: Untagged
@@ -1420,7 +1417,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
---- !u!114 &8773579258606429878
+--- !u!114 &3073749954839534841
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1429,7 +1426,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8466816664984110723}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -274322535, guid: e268a971a26598d4bb5413bdeda54762, type: 3}
+  m_Script: {fileID: -274322535, guid: 0428dcc2b6d6b1745b1da201524f31c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _stoppedTime: 1

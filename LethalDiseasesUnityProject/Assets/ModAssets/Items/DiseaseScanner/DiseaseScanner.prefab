@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6007683226436985551}
   - component: {fileID: 8978607744949981776}
   - component: {fileID: 5501982234060047662}
-  - component: {fileID: 4941185960229038447}
+  - component: {fileID: 7643457617651335126}
   m_Layer: 6
   m_Name: DiseaseScanner
   m_TagString: PhysicsProp
@@ -201,7 +201,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4941185960229038447
+--- !u!114 &7643457617651335126
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 145084428542316456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -2001338528, guid: 7abe6b050be256b438f73829ae763091, type: 3}
+  m_Script: {fileID: -1150600929, guid: 7abe6b050be256b438f73829ae763091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabbable: 1
@@ -236,7 +236,7 @@ MonoBehaviour:
   itemProperties: {fileID: 11400000, guid: 54c465b66d395fa4dbea6f807a374c1f, type: 2}
   insertedBattery:
     empty: 0
-    charge: 1
+    charge: 0
   customGrabTooltip: 
   propBody: {fileID: 0}
   propColliders: []
@@ -250,9 +250,6 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
-  animator: {fileID: 5501982234060047662}
-  audioSource: {fileID: 6007683226436985551}
-  screenObj: {fileID: 1156614797507908513}
 --- !u!1 &1074664148746028166
 GameObject:
   m_ObjectHideFlags: 0

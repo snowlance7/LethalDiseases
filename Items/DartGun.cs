@@ -9,7 +9,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items;
 
-internal class DartGunBehavior : PhysicsProp
+internal class DartGun : PhysicsProp
 {
     public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGun] != null;
 
@@ -143,7 +143,7 @@ internal class DartGunBehavior : PhysicsProp
             }
 
             var ammo = localPlayer.ItemSlots[ammoSlot];
-            localPlayer.DiscardItemInSlot(ammoSlot);
+            localPlayer.DiscardItemInSlotAndSync(ammoSlot);
             LoadAmmoRpc(ammo.NetworkObject);
         }
         else // Unload [Q]
@@ -200,11 +200,15 @@ internal class DartGunBehavior : PhysicsProp
     {
         if (loadedAmmo == null) { return; }
 
-        loadedAmmo.transform.SetParent(null);
+        //loadedAmmo.transform.SetParent(null);
         loadedAmmo.parentObject = null;
         loadedAmmo.EnablePhysics(true);
         loadedAmmo.EnableItemMeshes(true);
         loadedAmmo.transform.position = transform.position;
+        loadedAmmo.fallTime = 0f;
+        loadedAmmo.startFallingPosition = loadedAmmo.transform.parent.InverseTransformPoint(loadedAmmo.transform.position);
+        loadedAmmo.targetFloorPosition = loadedAmmo.transform.parent.InverseTransformPoint(loadedAmmo.GetItemFloorPosition(loadedAmmo.startFallingPosition));
+        loadedAmmo.hasHitGround = false;
         loadedAmmo.FallToGround();
 
         animator.SetTrigger("unload");
@@ -221,7 +225,7 @@ internal class DartGunBehavior : PhysicsProp
         loadedAmmo = netObj.GetComponent<DartGunAmmo>();
 
         loadedAmmo.transform.position = transform.position;
-        loadedAmmo.transform.SetParent(transform);
+        //loadedAmmo.transform.SetParent(transform);
         loadedAmmo.parentObject = transform;
         loadedAmmo.EnablePhysics(false);
         loadedAmmo.EnableItemMeshes(false);

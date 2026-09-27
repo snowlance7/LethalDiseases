@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 531647887301521326}
   - component: {fileID: 5322542387132905174}
   - component: {fileID: 9056994842333451120}
-  - component: {fileID: 8265482965947028203}
+  - component: {fileID: 8497298360156137887}
   m_Layer: 6
   m_Name: Syringe
   m_TagString: PhysicsProp
@@ -465,7 +465,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8265482965947028203
+--- !u!114 &8497298360156137887
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -474,7 +474,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3751734603611355514}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -372200630, guid: 7abe6b050be256b438f73829ae763091, type: 3}
+  m_Script: {fileID: -2002603340, guid: 7abe6b050be256b438f73829ae763091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabbable: 1
@@ -515,7 +515,6 @@ MonoBehaviour:
   hasBeenHeld: 0
   rotateObject: 0
   fluidRenderer: {fileID: 4872128383870050272}
-  animator: {fileID: 9056994842333451120}
   storedDisease: 
   freezingLocalPlayer: 0
 --- !u!1 &4777163979673032808

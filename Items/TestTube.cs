@@ -10,13 +10,13 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class TestTubeBehavior : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData
+    internal class TestTube : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.TestTube] != null;
 
         public MeshRenderer fluidRenderer = null!;
 
-        public ScanNodeProperties scanNode = null!;
+        ScanNodeProperties scanNode = null!;
 
         public string storedDisease = "";
 

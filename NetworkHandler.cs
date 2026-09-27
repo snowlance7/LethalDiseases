@@ -289,13 +289,13 @@ namespace LethalDiseases
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void SynthesizeDiseaseRpc(string id)
         {
-            SmallItemDispenser.Instance!.ItemDispenseOperation(LethalDiseasesTerminalAPI.testTubeDispensable, (item) => ((TestTubeBehavior)item).OnChemicalOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, specialInstructions: id)), 30f);
+            SmallItemDispenser.Instance!.ItemDispenseOperation(LethalDiseasesTerminalAPI.testTubeDispensable, (item) => ((TestTube)item).OnChemicalOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, specialInstructions: id)), 30f);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void SynthesizeDiseaseSyringeRpc(string id)
         {
-            SmallItemDispenser.Instance!.ItemModificationOperation(LethalDiseasesTerminalAPI.syringeDispensable, (item) => ((SyringeBehavior)item).SetDiseaseRpc(id, false), 30f, 10f, 30f, "Requires syringe");
+            SmallItemDispenser.Instance!.ItemModificationOperation(LethalDiseasesTerminalAPI.syringeDispensable, (item) => ((Syringe)item).SetDiseaseRpc(id, false), 30f, 10f, 30f, "Requires syringe");
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -305,11 +305,11 @@ namespace LethalDiseases
             {
                 Disease? disease = null;
 
-                if (inputItem is CottonSwabBehavior cottonSwab)
+                if (inputItem is CottonSwab cottonSwab)
                 {
                     disease = Disease.GetDiseaseFromString(cottonSwab.storedDisease);
                 }
-                else if (inputItem is TestTubeBehavior testTube)
+                else if (inputItem is TestTube testTube)
                 {
                     disease = Disease.GetDiseaseFromString(testTube.storedDisease);
                 }

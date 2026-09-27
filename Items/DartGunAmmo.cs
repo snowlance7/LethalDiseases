@@ -117,6 +117,13 @@ namespace LethalDiseases.Items
             SetDisease(diseaseId);
         }
 
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SetDiseaseRpc(string diseaseId, int ammoAmount)
+        {
+            SetDisease(diseaseId);
+            SetAmmo(ammoAmount);
+        }
+
         public JToken GetDawnDataToSave()
         {
             string data = $"{AmmoLeft}/{storedDisease}";

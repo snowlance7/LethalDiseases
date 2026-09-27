@@ -202,12 +202,14 @@ namespace LethalDiseases
                     disease = Disease.CreateRandomDisease();
                     if (now) { disease.latency = 0; }
 
-                    if (localPlayer.currentlyHeldObjectServer is CottonSwabBehavior cottonSwab)
+                    if (localPlayer.currentlyHeldObjectServer is CottonSwab cottonSwab)
                         cottonSwab.SetDiseaseRpc(disease.ToString());
-                    else if (localPlayer.currentlyHeldObjectServer is SyringeBehavior syringe)
+                    else if (localPlayer.currentlyHeldObjectServer is Syringe syringe)
                         syringe.SetDiseaseRpc(disease.ToString(), true);
-                    else if (localPlayer.currentlyHeldObjectServer is TestTubeBehavior testTube)
+                    else if (localPlayer.currentlyHeldObjectServer is TestTube testTube)
                         testTube.SetDiseaseRpc(disease.ToString());
+                    else if (localPlayer.currentlyHeldObjectServer is DartGunAmmo ammo)
+                        ammo.SetDiseaseRpc(disease.ToString(), DartGunAmmo.MaxDartsInAmmo);
                     else
                         localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
 

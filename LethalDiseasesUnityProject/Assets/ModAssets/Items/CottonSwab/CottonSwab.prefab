@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 8282058296226636046}
   - component: {fileID: 188589665849507323}
   - component: {fileID: 2079094324409593907}
-  - component: {fileID: 5211956001263467595}
+  - component: {fileID: 8667924949642652939}
   m_Layer: 6
   m_Name: CottonSwab
   m_TagString: PhysicsProp
@@ -350,7 +350,7 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
---- !u!114 &5211956001263467595
+--- !u!114 &8667924949642652939
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -359,7 +359,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4877351213927527403}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -509076209, guid: 7abe6b050be256b438f73829ae763091, type: 3}
+  m_Script: {fileID: -80599023, guid: 7abe6b050be256b438f73829ae763091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabbable: 1
