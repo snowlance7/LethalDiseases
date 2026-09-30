@@ -33,3 +33,12 @@ Adaptation: Repeatedly taking the same type of damage gradually reduces that dam
 Guardian: Nearby players take reduced damage while you're close to them.
 Blood Donor: Give the damage taken as health shared to nearby players
 Momentum: Sprinting for longer continuously makes you progressively faster.
+leeches: leeches are more attracted to you, you have a higher chance of getting a leech while in water
+leech repellant: you have a lower chance of getting a leech while in water
+
+Leeching Mushrooms: Green mushrooms grow on you randomly and slowly leech health, can only be removed with a shower or players pulling them off (mixing with a disease adds a bad symptom?)
+
+Power Leeching: You can leech power from surrounding power sources to heal, this can turn off lights, drain items, and even aparatus power
+Aparatus Leeching: You can leech lots of power from an aparatus for healing
+
+power interference: you cause nearby lights and flashlights to flicker occassionally

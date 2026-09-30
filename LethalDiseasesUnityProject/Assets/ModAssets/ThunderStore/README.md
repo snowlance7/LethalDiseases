@@ -18,3 +18,4 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Syringe Gun - Dirty](https://skfb.ly/o6ZJS) by Coozy
 - [Assorted Bottle - Chemical Lab](https://skfb.ly/oST6v) by kane_sk06
 - [Syringe Dart Launcher](https://skfb.ly/6qCJG) by Rectus
+- [Leech](https://skfb.ly/URQ6) by Kihkztand

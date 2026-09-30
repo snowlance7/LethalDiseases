@@ -65,7 +65,7 @@ namespace LethalDiseases
                     var array1 = disease1.symptoms;
                     var array2 = disease2.symptoms;
 
-                    var result = array1.Except(array2).Concat(array2.Except(array1)).ToArray();
+                    var result = array1.Except(array2).Concat(array2.Except(array1)).ToList();
                     Disease disease3 = Disease.MergeDiseases(disease1, disease2);
                     disease3.symptoms = result;
                     return new ChemistryIngredient(LethalDiseasesKeys.TestTube, disease3.GetChemistryLiquidAppearance(), disease3.ToString());
@@ -331,6 +331,41 @@ namespace LethalDiseases
                     }
                 }
             }, 30f, 20f, 30f, "Requires sample");
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void AddSymptomToDiseaseRpc(NetworkObjectReference netRef, string diseaseId, int symptomIndex)
+        {
+            if (!netRef.TryGet(out NetworkObject netObj)) { return; }
+            Disease? disease = netObj.GetDiseases().FirstOrDefault(x => x.ToString() == diseaseId);
+            if (disease == null) { logger.LogError("AddSymptomToDiseaseRpc: Failed to get disease from diseaseId: " + diseaseId); return; }
+            disease.AddSymptom(symptomIndex);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void RemoveSymptomToDiseaseRpc(NetworkObjectReference netRef, string diseaseId, int symptomIndex)
+        {
+            if (!netRef.TryGet(out NetworkObject netObj)) { return; }
+            Disease? disease = netObj.GetDiseases().FirstOrDefault(x => x.ToString() == diseaseId);
+            if (disease == null) { logger.LogError("RemoveSymptomToDiseaseRpc: Failed to get disease from diseaseId: " + diseaseId); return; }
+            disease.RemoveSymptom(symptomIndex);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void RemoveDiseaseRpc(NetworkObjectReference netRef, string diseaseId)
+        {
+            if (!netRef.TryGet(out NetworkObject netObj)) { return; }
+            Disease? disease = netObj.GetDiseases().FirstOrDefault(x => x.ToString() == diseaseId);
+            if (disease == null) { logger.LogError("RemoveSymptomToDiseaseRpc: Failed to get disease from diseaseId: " + diseaseId); return; }
+            netObj.RemoveDisease(disease);
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void SpawnLeechRpc(ulong clientId)
+        {
+            PlayerControllerB? player = PlayerFromId(clientId);
+            if (player == null) { return; }
+            AttachableObjectManager.TrySpawnItemOnPlayer(LethalDiseasesKeys.Leech, player);
         }
     }
 

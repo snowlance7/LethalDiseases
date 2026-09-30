@@ -1,5 +1,6 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
+using LethalDiseases.Symptoms;
 using SnowyCraftingCore;
 using SnowyLib;
 using System;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 using static LethalDiseases.Configs;
 using static LethalDiseases.Plugin;
 using static SnowyLib.Utils;
@@ -69,7 +71,7 @@ namespace LethalDiseases
 
         public bool hasActor => host != null && host.hasActor;
 
-        public int[] symptoms = [];
+        public List<int> symptoms = [];
 
         public bool isActive { get; private set; }
 
@@ -109,7 +111,7 @@ namespace LethalDiseases
             disease.symptoms = Enumerable.Range(0, Symptom.symptomList.Count)
                 .OrderBy(_ => randomLocal.Next())
                 .Take(symptomCount)
-                .ToArray();
+                .ToList();
 
             return disease;
         }
@@ -168,8 +170,7 @@ namespace LethalDiseases
                 transmissibility = RandomPercent(),
                 stability = RandomPercent(),
                 latency = RandomPercent(),
-                transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(
-                    new int[] { AirborneTypeWeight.Value, ContactTypeWeight.Value, BloodTypeWeight.Value, FoodborneTypeWeight.Value })
+                transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(new int[] { AirborneTypeWeight.Value, ContactTypeWeight.Value, BloodTypeWeight.Value, FoodborneTypeWeight.Value })
             };
 
             disease.symptoms = [symptomIndex];
@@ -213,9 +214,7 @@ namespace LethalDiseases
                 stability = ParseFloat(parts[2]),
                 latency = ParseFloat(parts[3]),
                 transmissionType = (TransmissionType)int.Parse(parts[4]),
-                symptoms = string.IsNullOrEmpty(parts[5])
-                    ? new int[0]
-                    : parts[5].Split(',').Select(int.Parse).ToArray()
+                symptoms = string.IsNullOrEmpty(parts[5]) ? new List<int>() : parts[5].Split(',').Select(int.Parse).ToList()
             };
 
             return disease;
@@ -273,33 +272,14 @@ namespace LethalDiseases
             }
 
             // Activation handling
-            if (host.hasActor && !isActive)
+            if (!isActive && elapsedTime > latencyTime)
             {
-                if (elapsedTime > latencyTime)
-                {
-                    elapsedTime = 0;
-                    isActive = true;
+                elapsedTime = 0;
+                isActive = true;
 
-                    if (host.player != null)
-                    {
-                        if (localPlayer == host.player)
-                        {
-                            foreach (var symptomIndex in symptoms)
-                            {
-                                logger?.LogDebug($"Activating symptom at index {symptomIndex}");
-                                var effect = Symptom.symptomList[symptomIndex].effect(this);
-                                host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
-                            }
-                        }
-                    }
-                    else if (IsServerOrHost)
-                    {
-                        for (int i = 0; i < symptoms.Length; i++)
-                        {
-                            var effect = Symptom.symptomList[symptoms[i]].effect(this);
-                            host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
-                        }
-                    }
+                foreach (var symptomIndex in symptoms)
+                {
+                    ActivateSymptom(symptomIndex);
                 }
             }
 
@@ -354,7 +334,7 @@ namespace LethalDiseases
             mergedDisease.stability = diseases.Max(d => d.stability);
             mergedDisease.latency = diseases.Max(d => d.latency);
 
-            mergedDisease.symptoms = diseases.SelectMany(disease => disease.symptoms).Distinct().ToArray();
+            mergedDisease.symptoms = diseases.SelectMany(disease => disease.symptoms).Distinct().ToList();
             mergedDisease.transmissionType = diseases.Select(disease => disease.transmissionType).Aggregate(TransmissionType.None, (combined, type) => combined | type);
 
             return mergedDisease;
@@ -438,6 +418,96 @@ namespace LethalDiseases
             string saveString = string.Join("/", namedDiseases.Select(x => x.Value + ":" + x.Key));
             contract.Set(LethalDiseasesKeys.NamedDiseasesKey, saveString);
             logger.LogDebug($"SaveNamedDiseases completed: {saveString}");
+        }
+
+        public void ActivateSymptom(int symptomIndex)
+        {
+            if (host == null || !host.hasActor) { return; }
+
+            if (host.player != null)
+            {
+                if (localPlayer == host.player)
+                {
+                    logger?.LogDebug($"Activating symptom at index {symptomIndex}");
+                    var effect = Symptom.symptomList[symptomIndex].effect(this);
+                    host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
+                }
+            }
+            else if (IsServerOrHost)
+            {
+                var effect = Symptom.symptomList[symptomIndex].effect(this);
+                host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
+            }
+        }
+
+        public void DeactivateSymptom(int symptomIndex)
+        {
+            if (host == null || !host.hasActor) { return; }
+
+            if (host.player != null)
+            {
+                if (localPlayer == host.player)
+                {
+                    logger?.LogDebug($"Activating symptom at index {symptomIndex}");
+                    var effect = Symptom.symptomList[symptomIndex].effect(this);
+                    host.networkObject.gameObject.StatusEffectController().RemoveEffect(effect);
+                }
+            }
+            else if (IsServerOrHost)
+            {
+                var effect = Symptom.symptomList[symptomIndex].effect(this);
+                host.networkObject.gameObject.StatusEffectController().RemoveEffect(effect);
+            }
+        }
+
+        public void AddSymptomAndSync(Symptom symptom)
+        {
+            AddSymptomAndSync(Symptom.symptomList.IndexOf(symptom));
+        }
+
+        public void AddSymptomAndSync(int symptomIndex)
+        {
+            NetworkHandler.Instance.AddSymptomToDiseaseRpc(networkObject, ToString(), symptomIndex);
+        }
+
+        public void AddSymptom(Symptom symptom)
+        {
+            AddSymptom(Symptom.symptomList.IndexOf(symptom));
+        }
+
+        public void AddSymptom(int symptomIndex)
+        {
+            symptoms.Add(symptomIndex);
+
+            if (elapsedTime > latencyTime)
+            {
+                ActivateSymptom(symptomIndex);
+            }
+        }
+
+        public void RemoveSymptomAndSync(Symptom symptom)
+        {
+            RemoveSymptomAndSync(Symptom.symptomList.IndexOf(symptom));
+        }
+
+        public void RemoveSymptomAndSync(int symptomIndex)
+        {
+            NetworkHandler.Instance.RemoveSymptomToDiseaseRpc(networkObject, ToString(), symptomIndex);
+        }
+
+        public void RemoveSymptom(Symptom symptom)
+        {
+            RemoveSymptom(Symptom.symptomList.IndexOf(symptom));
+        }
+
+        public void RemoveSymptom(int symptomIndex)
+        {
+            symptoms.Remove(symptomIndex);
+
+            if (elapsedTime > latencyTime)
+            {
+                DeactivateSymptom(symptomIndex);
+            }
         }
     }
 }

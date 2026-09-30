@@ -13,7 +13,7 @@
 - Chemsprayer that disinfects players
 - Hand washing station
 - Shower has chance of curing disease
-- walk in unit for ship that cures all infection in a player
+- walk in unit for ship that cures all infection in a player (USES APARATUS POWER?)
 - way to make vaccines against any symptom, so if a disease has that symptom, itll be taken off
 
 CADAVAR BLOOM SPREADS DISEASES
@@ -42,3 +42,10 @@ void IShockableWithGun.ShockWithGun(PlayerControllerB shockedByPlayer)
 	gloves arent shown visually, just a wearable item
 	
 	https://discord.com/channels/741451942563152013/1367720979362615358/1554683027903217675
+
+	leaches! they appear on a players using attachableobjects and you can use them to take off a random disease/symptom
+
+	healing mushroom -> tonic with a small chance of adding a random healing symptom
+	green mushroom -> bad tonic that adds a negative symptom to a disease
+	tonic that has a chance to add a positive symptom to a disease, higher chance the more bad symptoms are on it
+	tonic that randomizes all the symptoms on a disease
