@@ -6,5 +6,6 @@ remove motion blur on items?
 gas mask
 gloves
 ship vent that cleans everything in ship
+make biosampler, syringe use line of sight to position angle?
 
 test symptoms

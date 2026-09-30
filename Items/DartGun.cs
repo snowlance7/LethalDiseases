@@ -1,6 +1,9 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
+using HarmonyLib;
 using SnowyLib;
+using System;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
@@ -18,11 +21,12 @@ internal class DartGun : PhysicsProp
     [SerializeField] AudioClip unloadSFX = null!;
     [SerializeField] AudioClip fireSFX = null!;
     [SerializeField] AudioClip clickSFX = null!;
-    [SerializeField] MeshRenderer clipRenderer = null!; // TODO: Set this and use for enableitemmeshes
+    [SerializeField] MeshRenderer clipRenderer = null!;
 
     AudioSource audioSource = null!;
     Animator animator = null!;
 
+    [HideInInspector]
     public DartGunAmmo? loadedAmmo;
 
     int mask;
@@ -46,7 +50,6 @@ internal class DartGun : PhysicsProp
         itemProperties.rotationOffset = new Vector3(10, -90, 90);
         itemProperties.floorYOffset = 0;
 
-        itemProperties.toolTips = ["Fire [LMB]", "Reload [E]", "Unload [Q]"];
         mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain", "Colliders");
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
@@ -69,8 +72,8 @@ internal class DartGun : PhysicsProp
 
     public override void EquipItem()
     {
-        base.EquipItem();
         playerHeldBy.equippedUsableItemQE = true;
+        base.EquipItem();
     }
     public override void DiscardItem()
     {
@@ -120,11 +123,13 @@ internal class DartGun : PhysicsProp
         {
             FireDartEffectsRpc();
         }
+
+        SetControlTipsForItem();
     }
 
     public override void ItemInteractLeftRight(bool right)
     {
-        base.ItemInteractLeftRight(right);
+        //base.ItemInteractLeftRight(right);
 
         if (right) // Reload [E]
         {
@@ -133,6 +138,7 @@ internal class DartGun : PhysicsProp
                 if (loadedAmmo.AmmoLeft > 0) { return; }
 
                 UnloadAmmoRpc();
+                SetControlTipsForItem();
             }
 
             int ammoSlot = FindAmmoInInventory();
@@ -145,6 +151,7 @@ internal class DartGun : PhysicsProp
             var ammo = localPlayer.ItemSlots[ammoSlot];
             localPlayer.DiscardItemInSlotAndSync(ammoSlot);
             LoadAmmoRpc(ammo.NetworkObject);
+            SetControlTipsForItem();
         }
         else // Unload [Q]
         {
@@ -310,6 +317,48 @@ internal class DartProjectile : MonoBehaviour
         {
             transform.SetParent(null);
             rigidbody.isKinematic = false;
+        }
+    }
+}
+
+
+[HarmonyPatch]
+internal static class DartGunPatches
+{
+    [HarmonyPrefix, HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.UseItemOnClient))]
+    static bool GrabbableObject_UseItemOnClient_PreFix(GrabbableObject __instance, bool buttonDown)
+    {
+        try
+        {
+            if (__instance is not DartGun) { return true; }
+            __instance.ItemActivate(__instance.isBeingUsed, buttonDown);
+            return false;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e);
+            return true;
+        }
+    }
+
+    [HarmonyPrefix, HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.ItemInteractLeftRightOnClient))]
+    static bool GrabbableObject_ItemInteractLeftRightOnClient_PreFix(GrabbableObject __instance, bool right)
+    {
+        try
+        {
+            if (__instance is not DartGun) { return true; }
+            if (!__instance.IsOwner)
+            {
+                return true;
+            }
+
+            __instance.ItemInteractLeftRight(right);
+            return false;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e);
+            return true;
         }
     }
 }

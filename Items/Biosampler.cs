@@ -184,13 +184,14 @@ namespace LethalDiseases.Items
                     }
                     else
                     {
-                        if (Physics.Raycast(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward, out RaycastHit hitInfo, maxDistance, PluginInstance.playerEnemiesPropsMask))
-                        {
-                            if (hitInfo.collider.gameObject.TryGetComponentInChildren(out NetworkObject? netObj) && netObj != null)
-                            {
-                                host = netObj.GetHost();
-                            }
-                        }
+                        //if (Physics.Raycast(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward, out RaycastHit hitInfo, maxDistance, PluginInstance.playerEnemiesPropsMask))
+                        //{
+                        //    if (hitInfo.collider.gameObject.TryGetComponentInChildren(out NetworkObject? netObj) && netObj != null)
+                        //    {
+                        //        host = netObj.GetHost();
+                        //    }
+                        //}
+                        host = GetClosestDiseaseHost(); // TODO: Test this
                     }
 
                     if (host == null)
@@ -317,6 +318,24 @@ namespace LethalDiseases.Items
             if (routine != null) { return; }
             localPlayer.activatingItem = true;
             routine = StartCoroutine(doStabAnimation());
+        }
+
+        private DiseaseHost? GetClosestDiseaseHost()
+        {
+            DiseaseHost? closest = null;
+            float closestAngle = 361;
+
+            foreach (var host in DiseaseHost.Instances)
+            {
+                if (!host.hasActor) { continue; }
+                var position = host.player != null ? host.player.bodyParts[5].position : host.enemy!.eye.position;
+                float angle = localPlayer.LineOfSightToPositionAngle(position, (int)maxDistance);
+                if (angle == -361f || angle > closestAngle) { continue; }
+                closest = host;
+                closestAngle = angle;
+            }
+
+            return closest;
         }
 
         private void CancelStabAnimation()

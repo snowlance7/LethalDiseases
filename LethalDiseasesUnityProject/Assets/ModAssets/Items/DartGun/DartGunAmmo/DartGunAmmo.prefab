@@ -661,7 +661,7 @@ MonoBehaviour:
   maxRange: 13
   minRange: 1
   requiresLineOfSight: 1
-  headerText: Dart Gun
+  headerText: Dart Gun Ammo
   subText: 
   scrapValue: 0
   creatureScanID: -1
