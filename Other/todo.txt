@@ -8,4 +8,5 @@ gloves
 ship vent that cleans everything in ship
 make biosampler, syringe use line of sight to position angle?
 
-test symptoms
+test symptoms.
+tonics!
