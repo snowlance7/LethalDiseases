@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
-  m_Name: Leech
+  m_Name: Sanitizer
   m_EditorClassIdentifier: 
   itemId: 0
-  itemName: Leech
+  itemName: Sanitizer
   spawnPositionTypes: []
   twoHanded: 0
   twoHandedAnimation: 0
@@ -23,15 +23,15 @@ MonoBehaviour:
   weight: 1
   itemIsTrigger: 0
   holdButtonUse: 0
-  itemSpawnsOnGround: 0
+  itemSpawnsOnGround: 1
   isConductiveMetal: 0
-  isScrap: 1
-  creditsWorth: 0
+  isScrap: 0
+  creditsWorth: 10
   lockedInDemo: 0
   highestSalePercentage: 80
-  maxValue: 5
-  minValue: 1
-  spawnPrefab: {fileID: 2838281205882025759, guid: 0933f9081d9215c43bd976b9692772d8,
+  maxValue: 0
+  minValue: 0
+  spawnPrefab: {fileID: 8519004826009445423, guid: 4215507e7232a02418a5b826d15920a5,
     type: 3}
   requiresBattery: 0
   batteryUsage: 0
@@ -42,23 +42,23 @@ MonoBehaviour:
   pocketAnim: 
   throwAnim: 
   grabAnimationTime: 0
-  grabSFX: {fileID: 8300000, guid: e8b6aebec172a7343bc69cc808d1e372, type: 3}
-  dropSFX: {fileID: 8300000, guid: f65b67a5bc580f849bfb7cba35f9e57a, type: 3}
-  pocketSFX: {fileID: 8300000, guid: e8b6aebec172a7343bc69cc808d1e372, type: 3}
+  grabSFX: {fileID: 8300000, guid: a066a1ebe2ff400479654800b66d5ef2, type: 3}
+  dropSFX: {fileID: 8300000, guid: e44ee57a61e43cf40893ce571bcbd4f2, type: 3}
+  pocketSFX: {fileID: 8300000, guid: a066a1ebe2ff400479654800b66d5ef2, type: 3}
   throwSFX: {fileID: 0}
   syncGrabFunction: 0
   syncUseFunction: 0
   syncDiscardFunction: 0
   syncInteractLRFunction: 0
-  saveItemVariable: 0
+  saveItemVariable: 1
   isDefensiveWeapon: 0
   toolTips: []
   verticalOffset: 0
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1
   restingRotation: {x: 0, y: 0, z: 0}
-  rotationOffset: {x: 0, y: 90, z: 0}
-  positionOffset: {x: 0.1, y: 0.08, z: 0.01}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  positionOffset: {x: 0, y: 0, z: 0}
   meshOffset: 1
   meshVariants: []
   materialVariants: []

@@ -25,7 +25,7 @@ namespace LethalDiseases
         public static void Infect(this NetworkObject netObj, string diseaseId)
         {
             if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
-            NetworkHandler.Instance.InfectRpc(netObj, diseaseId);
+            netObj.GetHost().InfectRpc(diseaseId);
         }
         // TODO: Make more helper methods like these
         public static void Infect(this PlayerControllerB player) => player.NetworkObject.Infect();
@@ -88,6 +88,16 @@ namespace LethalDiseases
             }
 
             return host;
+        }
+
+        internal static DiseaseHost GetHost(this PlayerControllerB player)
+        {
+            return player.NetworkObject.GetHost();
+        }
+
+        internal static DiseaseHost GetHost(this EnemyAI enemy)
+        {
+            return enemy.NetworkObject.GetHost();
         }
 
         public static void AddDisease(this NetworkObject networkObject, Disease disease)

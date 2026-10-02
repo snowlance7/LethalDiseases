@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalDiseases.Items;
 using SnowyLib;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,12 @@ namespace LethalDiseases
 
         public bool hasDisease => Diseases.Count > 0;
 
+        public float sanitizedTimeLeft;
+        public bool IsSanitized => sanitizedTimeLeft > 0;
+
+        public float airFilterQuality = 1f;
+        public bool IsAirFilterFunctional => airFilterQuality > 0f;
+
         void Start()
         {
             Instances.Add(this);
@@ -48,6 +55,11 @@ namespace LethalDiseases
 
         void Update()
         {
+            if (IsSanitized)
+            {
+                sanitizedTimeLeft -= Time.deltaTime;
+            }
+
             foreach (var disease in Diseases.ToList())
             {
                 disease.Update(Time.deltaTime);
@@ -102,6 +114,33 @@ namespace LethalDiseases
                 return networkObject.name;
 
             return "";
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SanitizeRpc(float sanitizeTime)
+        {
+            sanitizedTimeLeft = Mathf.Max(sanitizedTimeLeft, sanitizeTime);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void ReplaceAirFilterRpc()
+        {
+            airFilterQuality = 1f;
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void UseAirFilterRpc(float multiplier = 1f)
+        {
+            airFilterQuality -= AirFilter.Usage * multiplier;
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void InfectRpc(string diseaseId) // Should only have 1 reference
+        {
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            if (disease == null) { return; }
+            logger?.LogDebug($"Infecting {gameObject.name} with disease ID: {diseaseId}");
+            AddDisease(disease);
         }
     }
 }

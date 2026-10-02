@@ -1,6 +1,7 @@
 ﻿using Dawn.Utils;
 using SnowyLib;
 using UnityEngine;
+using UnityEngine.UI;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
@@ -19,7 +20,11 @@ namespace LethalDiseases.Items
         [StaticInit]
         public static void Init()
         {
+            _ = SpawnChancePerSecond;
             _ = RemoveDiseaseChance;
+            _ = LeechHealthInterval;
+            _ = LeechDamage;
+            _ = UseDamage;
         }
 
         [StaticUpdate]
@@ -38,6 +43,12 @@ namespace LethalDiseases.Items
                     NetworkHandler.Instance.SpawnLeechRpc(localPlayer.actualClientId);
                 }
             }
+        }
+
+        public void Awake()
+        {
+            itemProperties.positionOffset = new Vector3(0.1f, 0.08f, 0.01f);
+            itemProperties.rotationOffset = new Vector3(0, 90, 0);
         }
 
         public override void Start()

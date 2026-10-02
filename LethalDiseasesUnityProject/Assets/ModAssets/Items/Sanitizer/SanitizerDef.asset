@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 466683445, guid: b9fa88e95e15d9348a8d0583367ab6d6, type: 3}
-  m_Name: LeechDef
+  m_Name: SanitizerDef
   m_EditorClassIdentifier: 
   _configEntries: []
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: leech
-  <Item>k__BackingField: {fileID: 11400000, guid: d132cf74ec66ab647998dd94d15be0d9,
+    _key: sanitizer
+  <Item>k__BackingField: {fileID: 11400000, guid: 170325c2f1e4ede4095ec0542bec9b3c,
     type: 2}
   <ShopItemPreset>k__BackingField:
     <OrderRequestNode>k__BackingField: {fileID: 0}
@@ -30,13 +30,13 @@ MonoBehaviour:
   <WeatherSpawnWeightsConfig>k__BackingField: []
   <RouteSpawnWeightsConfig>k__BackingField: []
   <GenerateSpawnWeightsConfig>k__BackingField: 0
-  <IsScrap>k__BackingField: 1
-  <GenerateScrapConfig>k__BackingField: 1
-  <IsShopItem>k__BackingField: 0
-  <GenerateShopItemConfig>k__BackingField: 0
-  <Cost>k__BackingField: 0
+  <IsScrap>k__BackingField: 0
+  <GenerateScrapConfig>k__BackingField: 0
+  <IsShopItem>k__BackingField: 1
+  <GenerateShopItemConfig>k__BackingField: 1
+  <Cost>k__BackingField: 10
   <GenerateDisableUnlockConfig>k__BackingField: 1
-  <GenerateDisablePricingStrategyConfig>k__BackingField: 0
+  <GenerateDisablePricingStrategyConfig>k__BackingField: 1
   <MoonSpawnWeights>k__BackingField: 
   <InteriorSpawnWeights>k__BackingField: 
   <WeatherSpawnWeights>k__BackingField: 

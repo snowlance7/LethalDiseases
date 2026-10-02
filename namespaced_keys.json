@@ -5,6 +5,7 @@
   },
   "LethalDiseasesItemKeys": {
     "__type": "DawnItemInfo",
+    "AirFilter": "lethal_diseases:air_filter",
     "BioSampler": "lethal_diseases:biosampler",
     "CottonSwab": "lethal_diseases:cotton_swab",
     "DartGunAmmo": "lethal_diseases:dart_gun_ammo",
@@ -13,6 +14,7 @@
     "DiseaseScanner": "lethal_diseases:disease_scanner",
     "HealingMushrooom": "lethal_diseases:healing_mushrooom",
     "Leech": "lethal_diseases:leech",
+    "Sanitizer": "lethal_diseases:sanitizer",
     "Syringe": "lethal_diseases:syringe",
     "SyringeGun": "lethal_diseases:syringe_gun",
     "TestTube": "lethal_diseases:test_tube"

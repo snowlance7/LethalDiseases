@@ -46,6 +46,15 @@ namespace LethalDiseases
         public class DartGunAssets(DuskMod mod, string filePath) : AssetBundleLoader<DartGunAssets>(mod, filePath) { }
         public DartGunAssets? DartGun;
 
+        public class SanitizerAssets(DuskMod mod, string filePath) : AssetBundleLoader<SanitizerAssets>(mod, filePath) { }
+        public SanitizerAssets? Sanitizer;
+
+        public class LeechAssets(DuskMod mod, string filePath) : AssetBundleLoader<LeechAssets>(mod, filePath) { }
+        public LeechAssets? Leech;
+
+        public class AirFilterAssets(DuskMod mod, string filePath) : AssetBundleLoader<AirFilterAssets>(mod, filePath) { }
+        public AirFilterAssets? AirFilter;
+
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
             RegisterContent("biosampler", out BioSampler);
@@ -56,6 +65,9 @@ namespace LethalDiseases
             RegisterContent("syringe", out Syringe);
             RegisterContent("syringe_gun", out SyringeGun);
             RegisterContent("dart_gun", out DartGun);
+            RegisterContent("sanitizer", out Sanitizer);
+            RegisterContent("leech", out Leech);
+            RegisterContent("air_filter", out AirFilter);
         }
     }
 }

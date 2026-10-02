@@ -57,6 +57,9 @@ namespace LethalDiseases
 
                 switch (args[0])
                 {
+                    case "/spawnLeech":
+                        NetworkHandler.Instance.SpawnLeechRpc(localPlayer.actualClientId);
+                        break;
                     case "/infect":
                         Debug_Infect(args);
                         break;

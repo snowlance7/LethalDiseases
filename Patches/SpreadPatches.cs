@@ -16,7 +16,7 @@ namespace LethalDiseases.Patches
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.OnCollideWithPlayer))]
-        static void EnemyAI_OnCollideWithPlayer_Prefix(EnemyAI __instance, Collider other)
+        static void EnemyAI_OnCollideWithPlayer_Prefix(EnemyAI __instance, Collider other) // TODO: Test this
         {
             try
             {
@@ -35,7 +35,7 @@ namespace LethalDiseases.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DamagePlayerServerRpc))]
-        static void PlayerControllerB_DamagePlayerServerRpc_Postfix(PlayerControllerB __instance)
+        static void PlayerControllerB_DamagePlayerServerRpc_Postfix(PlayerControllerB __instance) // TODO: Test this
         {
             try
             {
@@ -54,7 +54,7 @@ namespace LethalDiseases.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.OnCollideWithPlayer))]
-        static void EnemyAI_OnCollideWithPlayer_Postfix(EnemyAI __instance, Collider other)
+        static void EnemyAI_OnCollideWithPlayer_Postfix(EnemyAI __instance, Collider other) // TODO: Test this
         {
             try
             {
@@ -84,7 +84,7 @@ namespace LethalDiseases.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.OnCollideWithEnemy))]
-        static void EnemyAI_OnCollideWithEnemy_Postfix(EnemyAI __instance, Collider other, EnemyAI collidedEnemy)
+        static void EnemyAI_OnCollideWithEnemy_Postfix(EnemyAI __instance, Collider other, EnemyAI collidedEnemy) // TODO: Test this
         {
             try
             {
@@ -104,7 +104,7 @@ namespace LethalDiseases.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.HitEnemy))]
-        static void EnemyAI_HitEnemy_Postfix(EnemyAI __instance, PlayerControllerB? playerWhoHit)
+        static void EnemyAI_HitEnemy_Postfix(EnemyAI __instance, PlayerControllerB? playerWhoHit) // TODO: Test this
         {
             try
             {
@@ -121,7 +121,7 @@ namespace LethalDiseases.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DamagePlayerFromOtherClientServerRpc))]
-        static void PlayerControllerB_DamagePlayerFromOtherClientServerRpc_Postfix(PlayerControllerB __instance, int playerWhoHit)
+        static void PlayerControllerB_DamagePlayerFromOtherClientServerRpc_Postfix(PlayerControllerB __instance, int playerWhoHit) // TODO: Test this
         {
             try
             {
@@ -141,7 +141,7 @@ namespace LethalDiseases.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.GrabItemOnClient))]
-        static void GrabbableObject_GrabItemOnClient_Postfix(GrabbableObject __instance)
+        static void GrabbableObject_GrabItemOnClient_Postfix(GrabbableObject __instance) // TODO: Test this
         {
             try
             {

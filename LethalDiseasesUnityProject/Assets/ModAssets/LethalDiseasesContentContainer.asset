@@ -29,3 +29,9 @@ MonoBehaviour:
     configName: Syringe Gun
   - assetBundleName: dart_gun
     configName: Dart Gun
+  - assetBundleName: sanitizer
+    configName: Sanitizer
+  - assetBundleName: leech
+    configName: Leech
+  - assetBundleName: air_filter
+    configName: Air Filter

@@ -1,5 +1,6 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
+using LethalDiseases.Items;
 using LethalDiseases.Symptoms;
 using SnowyCraftingCore;
 using SnowyLib;
@@ -225,30 +226,64 @@ namespace LethalDiseases
             return symptoms.Select(x => Symptom.symptomList[x]).ToList();
         }
 
-        internal void TrySpread(NetworkObject _networkObject, TransmissionType spreadTransmissionType)
+        internal void TrySpread(NetworkObject _networkObject, TransmissionType spreadTransmissionType, float multiplier = 1f)
         {
             if (transmissionType.HasFlag(TransmissionType.Airborne) && spreadTransmissionType.HasFlag(TransmissionType.Airborne))
             {
                 if (host != null && host.hasActor)
                 {
-                    if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
+                    var otherHost = _networkObject.GetHost();
+
+                    if (otherHost.IsAirFilterFunctional)
+                    {
+                        multiplier += AirFilter.Multiplier;
+                        otherHost.UseAirFilterRpc(multiplier);
+                    }
+
+                    if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
+                    {
                         _networkObject.Infect(this);
+                    }
                 }
             }
             if (transmissionType.HasFlag(TransmissionType.Contact) && spreadTransmissionType.HasFlag(TransmissionType.Contact))
             {
-                if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
+                var otherHost = _networkObject.GetHost();
+
+                if (otherHost.IsSanitized)
+                {
+                    multiplier += Sanitizer.Multiplier;
+                }
+
+                if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
                     _networkObject.Infect(this);
             }
             if (transmissionType.HasFlag(TransmissionType.Blood) && spreadTransmissionType.HasFlag(TransmissionType.Blood))
             {
-                if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
+                if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
                     _networkObject.Infect(this);
             }
             if (transmissionType.HasFlag(TransmissionType.Foodborne) && spreadTransmissionType.HasFlag(TransmissionType.Foodborne))
             {
-                if (UnityEngine.Random.Range(0f, 1f) < transmissibility)
+                if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
                     _networkObject.Infect(this);
+            }
+        }
+
+        internal void TrySpreadAirborne(Vector3 origin, float radius = default, float multiplier = 1)
+        {
+            if (host == null || !host.hasActor) { return; }
+
+            radius = radius == default ? AirborneSpreadRange.Value : radius;
+
+            Physics.OverlapSphereNonAlloc(origin, radius, airborneColliders);
+
+            foreach (var col in airborneColliders)
+            {
+                if (col.gameObject.TryGetComponent(out PlayerControllerB p))
+                    TrySpread(p.NetworkObject, TransmissionType.Airborne, multiplier);
+                else if (col.gameObject.TryGetComponent(out EnemyAI e))
+                    TrySpread(e.NetworkObject, TransmissionType.Airborne, multiplier);
             }
         }
 
@@ -296,26 +331,8 @@ namespace LethalDiseases
 
                     float radius = host.hasActor ? AirborneSpreadRange.Value : 10f;
 
-                    TrySpreadAirborne(origin, radius, 0.5f);
+                    TrySpreadAirborne(origin, radius, 0.1f);
                 }
-            }
-        }
-
-        internal void TrySpreadAirborne(Vector3 origin, float radius = default, float multiplier = 1)
-        {
-            if (host == null || !host.hasActor) { return; }
-
-            radius = radius == default ? AirborneSpreadRange.Value : radius;
-
-            Physics.OverlapSphereNonAlloc(origin, radius, airborneColliders);
-
-            foreach (var col in airborneColliders)
-            {
-                if (UnityEngine.Random.Range(0f, 1f) > transmissibility * multiplier) { continue; }
-                if (col.gameObject.TryGetComponent(out PlayerControllerB p))
-                    p.NetworkObject.Infect(this);
-                else if (col.gameObject.TryGetComponent(out EnemyAI e))
-                    e.NetworkObject.Infect(this);
             }
         }
 

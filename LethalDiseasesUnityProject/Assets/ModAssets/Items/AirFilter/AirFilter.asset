@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
-  m_Name: Leech
+  m_Name: AirFilter
   m_EditorClassIdentifier: 
   itemId: 0
-  itemName: Leech
+  itemName: Air Filter
   spawnPositionTypes: []
   twoHanded: 0
   twoHandedAnimation: 0
   disableHandsOnWall: 0
   canBeGrabbedBeforeGameStart: 1
   disallowUtilitySlot: 1
-  weight: 1
+  weight: 1.1
   itemIsTrigger: 0
   holdButtonUse: 0
-  itemSpawnsOnGround: 0
+  itemSpawnsOnGround: 1
   isConductiveMetal: 0
-  isScrap: 1
-  creditsWorth: 0
+  isScrap: 0
+  creditsWorth: 20
   lockedInDemo: 0
   highestSalePercentage: 80
-  maxValue: 5
-  minValue: 1
-  spawnPrefab: {fileID: 2838281205882025759, guid: 0933f9081d9215c43bd976b9692772d8,
+  maxValue: 0
+  minValue: 0
+  spawnPrefab: {fileID: 7696651932526285202, guid: 1551f0f9e90c5c5449ae036894d92e13,
     type: 3}
   requiresBattery: 0
   batteryUsage: 0
@@ -42,9 +42,9 @@ MonoBehaviour:
   pocketAnim: 
   throwAnim: 
   grabAnimationTime: 0
-  grabSFX: {fileID: 8300000, guid: e8b6aebec172a7343bc69cc808d1e372, type: 3}
-  dropSFX: {fileID: 8300000, guid: f65b67a5bc580f849bfb7cba35f9e57a, type: 3}
-  pocketSFX: {fileID: 8300000, guid: e8b6aebec172a7343bc69cc808d1e372, type: 3}
+  grabSFX: {fileID: 8300000, guid: a066a1ebe2ff400479654800b66d5ef2, type: 3}
+  dropSFX: {fileID: 8300000, guid: 9a2c2d2d0e4f8ca4b9c5f4220dd5caf7, type: 3}
+  pocketSFX: {fileID: 8300000, guid: 944fca2e8a072f34b939c64bea33c1e5, type: 3}
   throwSFX: {fileID: 0}
   syncGrabFunction: 0
   syncUseFunction: 0
@@ -52,13 +52,14 @@ MonoBehaviour:
   syncInteractLRFunction: 0
   saveItemVariable: 0
   isDefensiveWeapon: 0
-  toolTips: []
+  toolTips:
+  - Use [LMB]
   verticalOffset: 0
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1
   restingRotation: {x: 0, y: 0, z: 0}
-  rotationOffset: {x: 0, y: 90, z: 0}
-  positionOffset: {x: 0.1, y: 0.08, z: 0.01}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  positionOffset: {x: 0, y: 0, z: 0}
   meshOffset: 1
   meshVariants: []
   materialVariants: []

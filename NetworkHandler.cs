@@ -94,15 +94,6 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void InfectRpc(NetworkObjectReference netRef, string diseaseId) // Should only have 1 reference
-        {
-            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null || !netRef.TryGet(out NetworkObject netObj) || netObj == null) { return; }
-            logger?.LogDebug($"Infecting {netObj.gameObject.name} with disease ID: {diseaseId}");
-            netObj.AddDisease(disease);
-        }
-
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void PlaySoundAtPositionRpc(ulong clientId, SoundEffect soundEffect, int bodyPartIndex = 0, float volume = 1f, float min3DDistance = 1f, float max3DDistance = 10f, float cutoffFrequency = 22000, int audibleNoiseID = 0)
         {
             PlayerControllerB? player = PlayerFromId(clientId);
