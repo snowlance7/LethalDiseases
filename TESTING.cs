@@ -54,67 +54,86 @@ namespace LethalDiseases
                 if (!Utils.testing) { return; }
                 string msg = __instance.chatTextField.text;
                 string[] args = msg.Split(" ");
-
-                switch (args[0])
-                {
-                    case "/spawnLeech":
-                        NetworkHandler.Instance.SpawnLeechRpc(localPlayer.actualClientId);
-                        break;
-                    case "/infect":
-                        Debug_Infect(args);
-                        break;
-                    case "/infectnow":
-                        Debug_Infect(args, true);
-                        break;
-                    case "/symptoms":
-                        HUDManager.Instance.DisplayTip("Server", "Logging symptoms");
-                        foreach (var symptom in Symptom.symptomList)
-                        {
-                            logger?.LogDebug($"{symptom.name}: {symptom.description}");
-                        }
-                        break;
-                    case "/next":
-                        goToNextSymptomInTest = true;
-                        break;
-                    case "/symptomstest": // TODO: Use this for testing
-
-                        RunSymptomsTest();
-                        
-                        break;
-                    case "/symptomstestall": // TODO: Use this for testing
-
-                        RunSymptomsTestAll();
-
-                        break;
-                    case "/diseases":
-                        if (args.Length == 1)
-                        {
-                            HUDManager.Instance.DisplayTip("Server", "Logging diseases");
-                            DiseaseAPI.LogSpawnedDiseases();
-                            return;
-                        }
-
-                        switch (args[1])
-                        {
-                            case "spawning":
-                                disableDiseaseSpawning = !disableDiseaseSpawning;
-                                HUDManager.Instance.DisplayTip("Server", "disableDiseaseSpawning = " + disableDiseaseSpawning);
-                                break;
-                            case "clear":
-                                HUDManager.Instance.DisplayTip("Server", "Clearing diseases on local player");
-                                localPlayer.NetworkObject.ClearDiseases(clearImmune: true);
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                TryChatCommand(args);
             }
             catch
             {
                 return;
+            }
+        }
+
+        public static void TryChatCommand(string[] args)
+        {
+            switch ($"/{args[0]}")
+            {
+                case "spawnLeech":
+                    NetworkHandler.Instance.SpawnLeechRpc(localPlayer.actualClientId);
+                    break;
+                case "infect":
+                    Debug_Infect(args);
+                    break;
+                case "infectnow":
+                    Debug_Infect(args, true);
+                    break;
+                case "symptoms":
+
+                    if (args.Length > 1)
+                    {
+                        switch (args[1])
+                        {
+                            case "remove":
+                                // TODO
+                                if (args.Length == 2) { HUDManager.Instance.DisplayTip("Error", "No symptom name ")}
+
+                                return;
+                            default:
+                                break;
+                        }
+                    }
+
+                    HUDManager.Instance.DisplayTip("Server", "Logging symptoms");
+                    foreach (var symptom in Symptom.symptomList)
+                    {
+                        logger?.LogDebug($"{symptom.name}: {symptom.description}");
+                    }
+                    break;
+                case "next":
+                    goToNextSymptomInTest = true;
+                    break;
+                case "symptomstest": // TODO: Use this for testing
+
+                    RunSymptomsTest();
+
+                    break;
+                case "symptomstestall": // TODO: Use this for testing
+
+                    RunSymptomsTestAll();
+
+                    break;
+                case "diseases":
+                    if (args.Length == 1)
+                    {
+                        HUDManager.Instance.DisplayTip("Server", "Logging diseases");
+                        DiseaseAPI.LogSpawnedDiseases();
+                        return;
+                    }
+
+                    switch (args[1])
+                    {
+                        case "spawning":
+                            disableDiseaseSpawning = !disableDiseaseSpawning;
+                            HUDManager.Instance.DisplayTip("Server", "disableDiseaseSpawning = " + disableDiseaseSpawning);
+                            break;
+                        case "clear":
+                            HUDManager.Instance.DisplayTip("Server", "Clearing diseases on local player");
+                            localPlayer.NetworkObject.ClearDiseases(clearImmune: true);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 

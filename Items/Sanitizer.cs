@@ -27,8 +27,8 @@ namespace LethalDiseases.Items
 
         public void Awake()
         {
-            itemProperties.positionOffset = new Vector3(0, 0, 0);
-            itemProperties.rotationOffset = new Vector3(0, 0, 0);
+            itemProperties.positionOffset = new Vector3(-0.1f, 0.14f, -0.01f);
+            itemProperties.rotationOffset = new Vector3(90, 100, 0);
             animator = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
         }

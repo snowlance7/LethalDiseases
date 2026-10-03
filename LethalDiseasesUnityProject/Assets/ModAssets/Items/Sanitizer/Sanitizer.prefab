@@ -197,7 +197,7 @@ Transform:
   m_GameObject: {fileID: 2331479041686831218}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0.0146, y: 0.2655, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -336,7 +336,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.075, y: 0.075, z: 0.075}
+  m_LocalScale: {x: 0.065, y: 0.065, z: 0.065}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7389838930601866849}
@@ -560,8 +560,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.17684123, y: 0.23503642, z: 0.18135026}
-  m_Center: {x: 0.00036859512, y: 0.11947588, z: -0.0011848658}
+  m_Size: {x: 0.16082944, y: 0.21448344, z: 0.16582829}
+  m_Center: {x: 0.0002727136, y: 0.10919939, z: -0.0048152655}
 --- !u!82 &1149253952205869700
 AudioSource:
   m_ObjectHideFlags: 0
@@ -746,7 +746,7 @@ MonoBehaviour:
   hasBeenHeld: 0
   rotateObject: 0
   fluidRenderer: {fileID: 3840507691538899505}
-  animator: {fileID: 0}
+  fluidLeft: 1
 --- !u!95 &2152608397149401679
 Animator:
   serializedVersion: 5

@@ -5,6 +5,7 @@ using Dusk;
 using GameNetcodeStuff;
 using HarmonyLib;
 using SnowyLib;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;

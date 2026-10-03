@@ -10,3 +10,6 @@ make biosampler, syringe use line of sight to position angle?
 
 test symptoms.
 tonics!
+foodborne transmission
+extra symptoms chances in configs
+dev command to remove a symptom from all players in the lobby and remove it from the pool of available symptoms

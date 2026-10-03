@@ -35,23 +35,23 @@ namespace LethalDiseases
         public static void Infect(this EnemyAI enemy, Disease disease) => enemy.NetworkObject.Infect(disease);
         public static void Infect(this EnemyAI enemy, string diseaseId) => enemy.NetworkObject.Infect(diseaseId);
 
-        public static void TrySpread(this NetworkObject source, NetworkObject netObj, TransmissionType transmissionType)
+        public static void TrySpread(this NetworkObject source, NetworkObject netObj, TransmissionType transmissionType, float multiplier = 1f)
         {
             foreach (Disease disease in source.GetDiseases())
             {
-                disease.TrySpread(netObj, transmissionType);
+                disease.TrySpread(netObj, transmissionType, multiplier);
             }
         }
 
-        public static void TrySpreadBetween(NetworkObject netObj1, NetworkObject netObj2, TransmissionType transmissionType)
+        public static void TrySpreadBetween(NetworkObject netObj1, NetworkObject netObj2, TransmissionType transmissionType, float multiplier = 1f)
         {
             foreach (Disease disease in netObj1.GetDiseases())
             {
-                disease.TrySpread(netObj2, transmissionType);
+                disease.TrySpread(netObj2, transmissionType, multiplier);
             }
             foreach (Disease disease in netObj2.GetDiseases())
             {
-                disease.TrySpread(netObj1, transmissionType);
+                disease.TrySpread(netObj1, transmissionType, multiplier);
             }
         }
 

@@ -58,6 +58,9 @@ namespace LethalDiseases
             if (IsSanitized)
             {
                 sanitizedTimeLeft -= Time.deltaTime;
+
+                if (sanitizedTimeLeft <= 0)
+                    Utils.DisplayStatusEffect("Hands are no longer sanitized");
             }
 
             foreach (var disease in Diseases.ToList())
@@ -82,7 +85,7 @@ namespace LethalDiseases
 
         void CreateDiseaseScanNode()
         {
-            logger.LogDebug("Creating disease scannode");
+            //logger.LogDebug("Creating disease scannode");
 
             Collider? collider = null;
 
@@ -95,8 +98,7 @@ namespace LethalDiseases
                 collider = networkObject.gameObject.GetComponent<Collider>();
             }
             //if (collider == null) { logger.LogError($"Couldn't create disease scan node, no collider found on {networkObject.name}"); return; }
-            if (collider != null)
-                logger.LogDebug($"Got Collider {collider.name}");
+            //if (collider != null) { logger.LogDebug($"Got Collider {collider.name}"); }
 
             GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider != null ? collider.transform : networkObject.transform);
             diseaseScanNode = scanNodeObj.GetComponent<DiseaseScanNode>();
@@ -126,12 +128,18 @@ namespace LethalDiseases
         public void ReplaceAirFilterRpc()
         {
             airFilterQuality = 1f;
+
+            if (player != null && localPlayer == player)
+                Utils.DisplayStatusEffect($"Air Filter replaced. Filter quality: {airFilterQuality * 100}%");
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void UseAirFilterRpc(float multiplier = 1f)
         {
             airFilterQuality -= AirFilter.Usage * multiplier;
+
+            if (player != null && localPlayer == player)
+                Utils.DisplayStatusEffect($"Airborne diseases detected! Filter quality: {airFilterQuality * 100}%");
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
