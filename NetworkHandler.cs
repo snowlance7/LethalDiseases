@@ -334,7 +334,7 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void RemoveSymptomToDiseaseRpc(NetworkObjectReference netRef, string diseaseId, int symptomIndex)
+        public void RemoveSymptomFromDiseaseRpc(NetworkObjectReference netRef, string diseaseId, int symptomIndex)
         {
             if (!netRef.TryGet(out NetworkObject netObj)) { return; }
             Disease? disease = netObj.GetDiseases().FirstOrDefault(x => x.ToString() == diseaseId);
@@ -349,6 +349,12 @@ namespace LethalDiseases
             Disease? disease = netObj.GetDiseases().FirstOrDefault(x => x.ToString() == diseaseId);
             if (disease == null) { logger.LogError("RemoveSymptomToDiseaseRpc: Failed to get disease from diseaseId: " + diseaseId); return; }
             netObj.RemoveDisease(disease);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void UnregisterSymptomRpc(int symptomIndex)
+        {
+            Symptom.UnregisterSymptom(Symptom.RegisteredSymptoms[symptomIndex]);
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]

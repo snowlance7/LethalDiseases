@@ -41,15 +41,15 @@ namespace LethalDiseases
 
         // How long it lasts
         public float strength { get; internal set; }
-        public float strengthTime => Mathf.Lerp(StrengthRange.Value.Min, StrengthRange.Value.Max, strength);
+        public float strengthTime => Mathf.Lerp(StrengthRange.Min, StrengthRange.Max, strength);
 
         // How long it lasts outside the player
         public float stability { get; internal set; }
-        public float stabilityTime => Mathf.Lerp(StabilityRange.Value.Min, StabilityRange.Value.Max, stability);
+        public float stabilityTime => Mathf.Lerp(StabilityRange.Min, StabilityRange.Max, stability);
 
         // How long it takes for the symptoms to show up
         public float latency { get; internal set; }
-        public float latencyTime => Mathf.Lerp(LatencyRange.Value.Min, LatencyRange.Value.Max, latency);
+        public float latencyTime => Mathf.Lerp(LatencyRange.Min, LatencyRange.Max, latency);
 
         // Likelyhood it will transmit based on transmission type
         public float transmissibility { get; internal set; }
@@ -103,13 +103,13 @@ namespace LethalDiseases
                 transmissionType = CreateRandomTransmissionType()
             };
 
-            int min = Mathf.Clamp(Mathf.Min(MinSymptoms.Value, MaxSymptoms.Value), 0, Symptom.symptomList.Count);
-            int max = Mathf.Clamp(Mathf.Max(MinSymptoms.Value, MaxSymptoms.Value), 0, Symptom.symptomList.Count);
+            int min = Mathf.Clamp(Mathf.Min(MinSymptoms, MaxSymptoms), 0, Symptom.RegisteredSymptoms.Count);
+            int max = Mathf.Clamp(Mathf.Max(MinSymptoms, MaxSymptoms), 0, Symptom.RegisteredSymptoms.Count);
 
             int symptomCount = UnityEngine.Random.Range(min, max + 1);
 
             // Shuffle indices and take first N (no duplicates, no loops)
-            disease.symptoms = Enumerable.Range(0, Symptom.symptomList.Count)
+            disease.symptoms = Enumerable.Range(0, Symptom.RegisteredSymptoms.Count)
                 .OrderBy(_ => randomLocal.Next())
                 .Take(symptomCount)
                 .ToList();
@@ -121,10 +121,10 @@ namespace LethalDiseases
         {
             List<(TransmissionType Type, int Weight)> transmissionTypes = new()
             {
-                (TransmissionType.Airborne, AirborneTypeWeight.Value),
-                (TransmissionType.Contact, ContactTypeWeight.Value),
-                (TransmissionType.Blood, BloodTypeWeight.Value),
-                (TransmissionType.Foodborne, FoodborneTypeWeight.Value)
+                (TransmissionType.Airborne, AirborneTypeWeight),
+                (TransmissionType.Contact, ContactTypeWeight),
+                (TransmissionType.Blood, BloodTypeWeight),
+                (TransmissionType.Foodborne, FoodborneTypeWeight)
             };
 
             int index = RoundManager.Instance.GetRandomWeightedIndexList(transmissionTypes.Select(x => x.Weight).ToList());
@@ -132,7 +132,7 @@ namespace LethalDiseases
             TransmissionType transmissionType = transmissionTypes[index].Type;
             transmissionTypes.RemoveAt(index);
 
-            string[] extraTypeChances = Configs.ExtraTransmissionTypeChances.Value
+            string[] extraTypeChances = Configs.ExtraTransmissionTypeChances
                 .Replace(" ", "")
                 .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
@@ -171,7 +171,7 @@ namespace LethalDiseases
                 transmissibility = RandomPercent(),
                 stability = RandomPercent(),
                 latency = RandomPercent(),
-                transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(new int[] { AirborneTypeWeight.Value, ContactTypeWeight.Value, BloodTypeWeight.Value, FoodborneTypeWeight.Value })
+                transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(new int[] { AirborneTypeWeight, ContactTypeWeight, BloodTypeWeight, FoodborneTypeWeight })
             };
 
             disease.symptoms = [symptomIndex];
@@ -223,7 +223,7 @@ namespace LethalDiseases
 
         public List<Symptom> GetSymptoms()
         {
-            return symptoms.Select(x => Symptom.symptomList[x]).ToList();
+            return symptoms.Select(x => Symptom.RegisteredSymptoms[x]).ToList();
         }
 
         internal void TrySpread(NetworkObject _networkObject, TransmissionType spreadTransmissionType, float multiplier = 1f)
@@ -274,7 +274,7 @@ namespace LethalDiseases
         {
             if (host == null || !host.hasActor) { return; }
 
-            radius = radius == default ? AirborneSpreadRange.Value : radius;
+            radius = radius == default ? AirborneSpreadRange : radius;
 
             Physics.OverlapSphereNonAlloc(origin, radius, airborneColliders);
 
@@ -329,7 +329,7 @@ namespace LethalDiseases
 
                     if (origin == Vector3.zero) { return; }
 
-                    float radius = host.hasActor ? AirborneSpreadRange.Value : 10f;
+                    float radius = host.hasActor ? AirborneSpreadRange : 10f;
 
                     TrySpreadAirborne(origin, radius, 0.1f);
                 }
@@ -383,7 +383,7 @@ namespace LethalDiseases
 
             foreach (var symptomIndex in symptoms)
             {
-                var symptom = Symptom.symptomList[symptomIndex];
+                var symptom = Symptom.RegisteredSymptoms[symptomIndex];
                 text += $"\n- {symptom.DisplayName}: {symptom.description}";
             }
 
@@ -446,13 +446,13 @@ namespace LethalDiseases
                 if (localPlayer == host.player)
                 {
                     logger?.LogDebug($"Activating symptom at index {symptomIndex}");
-                    var effect = Symptom.symptomList[symptomIndex].effect(this);
+                    var effect = Symptom.RegisteredSymptoms[symptomIndex].effect(this);
                     host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
                 }
             }
             else if (IsServerOrHost)
             {
-                var effect = Symptom.symptomList[symptomIndex].effect(this);
+                var effect = Symptom.RegisteredSymptoms[symptomIndex].effect(this);
                 host.networkObject.gameObject.StatusEffectController().ApplyEffect(effect);
             }
         }
@@ -466,20 +466,20 @@ namespace LethalDiseases
                 if (localPlayer == host.player)
                 {
                     logger?.LogDebug($"Activating symptom at index {symptomIndex}");
-                    var effect = Symptom.symptomList[symptomIndex].effect(this);
+                    var effect = Symptom.RegisteredSymptoms[symptomIndex].effect(this);
                     host.networkObject.gameObject.StatusEffectController().RemoveEffect(effect);
                 }
             }
             else if (IsServerOrHost)
             {
-                var effect = Symptom.symptomList[symptomIndex].effect(this);
+                var effect = Symptom.RegisteredSymptoms[symptomIndex].effect(this);
                 host.networkObject.gameObject.StatusEffectController().RemoveEffect(effect);
             }
         }
 
         public void AddSymptomAndSync(Symptom symptom)
         {
-            AddSymptomAndSync(Symptom.symptomList.IndexOf(symptom));
+            AddSymptomAndSync(Symptom.RegisteredSymptoms.IndexOf(symptom));
         }
 
         public void AddSymptomAndSync(int symptomIndex)
@@ -489,7 +489,7 @@ namespace LethalDiseases
 
         public void AddSymptom(Symptom symptom)
         {
-            AddSymptom(Symptom.symptomList.IndexOf(symptom));
+            AddSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
         }
 
         public void AddSymptom(int symptomIndex)
@@ -504,21 +504,18 @@ namespace LethalDiseases
 
         public void RemoveSymptomAndSync(Symptom symptom)
         {
-            RemoveSymptomAndSync(Symptom.symptomList.IndexOf(symptom));
+            RemoveSymptomAndSync(Symptom.RegisteredSymptoms.IndexOf(symptom));
         }
 
         public void RemoveSymptomAndSync(int symptomIndex)
         {
-            NetworkHandler.Instance.RemoveSymptomToDiseaseRpc(networkObject, ToString(), symptomIndex);
-        }
-
-        public void RemoveSymptom(Symptom symptom)
-        {
-            RemoveSymptom(Symptom.symptomList.IndexOf(symptom));
+            NetworkHandler.Instance.RemoveSymptomFromDiseaseRpc(networkObject, ToString(), symptomIndex);
         }
 
         public void RemoveSymptom(int symptomIndex)
         {
+            if (!symptoms.Contains(symptomIndex)) { return; }
+
             symptoms.Remove(symptomIndex);
 
             if (elapsedTime > latencyTime)

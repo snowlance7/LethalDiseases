@@ -82,8 +82,12 @@ namespace LethalDiseases
                         switch (args[1])
                         {
                             case "remove":
-                                // TODO
-                                if (args.Length == 2) { HUDManager.Instance.DisplayTip("Error", "No symptom name ")}
+                                if (args.Length == 2) { HUDManager.Instance.DisplayTip("Error", "No symptom name provided", true); return; }
+                                Symptom? symptom = Symptom.GetSymptomByName(args[2]);
+                                if (symptom == null) { HUDManager.Instance.DisplayTip("Error", "Could not find symptom with that name", true); return; }
+
+                                Symptom.UnregisterSymptomAndSync(symptom);
+                                HUDManager.Instance.DisplayTip("Server", "Removed symptom from registry");
 
                                 return;
                             default:
@@ -92,7 +96,7 @@ namespace LethalDiseases
                     }
 
                     HUDManager.Instance.DisplayTip("Server", "Logging symptoms");
-                    foreach (var symptom in Symptom.symptomList)
+                    foreach (var symptom in Symptom.RegisteredSymptoms)
                     {
                         logger?.LogDebug($"{symptom.name}: {symptom.description}");
                     }
@@ -150,11 +154,11 @@ namespace LethalDiseases
 
                 yield return new WaitForSeconds(5f);
 
-                foreach (var symptom in Symptom.symptomList.ToList())
+                foreach (var symptom in Symptom.RegisteredSymptoms.ToList())
                 {
                     localPlayer.NetworkObject.ClearDiseases();
                     HUDManager.Instance.DisplayTip(symptom.name, symptom.description);
-                    Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.symptomList.IndexOf(symptom));
+                    Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
                     disease.latency = 0;
                     localPlayer.Infect(disease);
                     yield return new WaitUntil(() => goToNextSymptomInTest);
@@ -179,9 +183,9 @@ namespace LethalDiseases
 
                 yield return new WaitForSeconds(5f);
 
-                foreach (var symptom in Symptom.symptomList)
+                foreach (var symptom in Symptom.RegisteredSymptoms)
                 {
-                    Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.symptomList.IndexOf(symptom));
+                    Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
                     disease.latency = 0;
                     disease.strength = 1;
                     disease.stability = 1;

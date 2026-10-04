@@ -112,17 +112,11 @@
       <Reference Include="com.github.teamxiaolan.dawnlib.interfaces">
         <HintPath>..\..\..\..\AppData\Roaming\com.kesomannen.gale\lethal-company\profiles\Testing\BepInEx\plugins\TeamXiaolan-DawnLib\DawnLib\com.github.teamxiaolan.dawnlib.interfaces.dll</HintPath>
       </Reference>
-      <Reference Include="MonkeyInjectionLibrary">
-        <HintPath>..\..\..\..\AppData\Roaming\com.kesomannen.gale\lethal-company\profiles\Testing\BepInEx\patchers\mattymatty-MonkeyInjectionLibrary\MonkeyInjectionLibrary.dll</HintPath>
-      </Reference>
       <Reference Include="Snowlance.SnowyCraftingCore">
         <HintPath>..\SnowyCraftingCore\bin\Debug\netstandard2.1\Snowlance.SnowyCraftingCore.dll</HintPath>
       </Reference>
       <Reference Include="Snowlance.SnowyLib">
         <HintPath>..\..\..\..\AppData\Roaming\com.kesomannen.gale\lethal-company\profiles\Testing\BepInEx\plugins\Snowlance-SnowyLib\Snowlance.SnowyLib.dll</HintPath>
-      </Reference>
-      <Reference Include="Snowlance.WearableItemsAPI">
-        <HintPath>..\WearableItemsAPI\bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI.dll</HintPath>
       </Reference>
     </ItemGroup>
 

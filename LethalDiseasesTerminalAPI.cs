@@ -97,7 +97,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Synthesis failed, not enough power available for synthesis, alternative power source required"; }
 
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizePowerUsage.Value)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
+            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizePowerUsage)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
             NetworkHandler.Instance.SynthesizeDiseaseRpc(disease.ToString());
 
@@ -113,7 +113,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Analysis failed, not enough power available for analysis, alternative power source required"; }
 
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.AnalyzeDiseasePowerUsage.Value)) { return "Analysis failed, not enough power available for analysis, new alternative power source required"; }
+            if (!ApparatusPowerPort.Instance.UsePower(Configs.AnalyzeDiseasePowerUsage)) { return "Analysis failed, not enough power available for analysis, new alternative power source required"; }
 
             NetworkHandler.Instance.AnalyzeDiseaseRpc(localPlayer.actualClientId);
 
@@ -136,7 +136,7 @@ namespace LethalDiseases
 
             if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Synthesis failed, not enough power available for synthesis, alternative power source required"; }
 
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizeSyringePowerUsage.Value)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
+            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizeSyringePowerUsage)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
 
             NetworkHandler.Instance.SynthesizeDiseaseSyringeRpc(disease.ToString());
 

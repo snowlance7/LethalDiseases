@@ -1,7 +1,9 @@
 {
   "LethalDiseasesUnlockableItemKeys": {
     "__type": "DawnUnlockableItemInfo",
-    "CottonSwabs": "lethal_diseases:cotton_swabs"
+    "AdvancedShipSanitizationUpgrade": "lethal_diseases:advanced_ship_sanitization_upgrade",
+    "CottonSwabs": "lethal_diseases:cotton_swabs",
+    "ShipSanitizationUpgrade": "lethal_diseases:ship_sanitization_upgrade"
   },
   "LethalDiseasesItemKeys": {
     "__type": "DawnItemInfo",

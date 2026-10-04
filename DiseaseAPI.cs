@@ -159,7 +159,7 @@ namespace LethalDiseases
                     logger?.LogInfo("- " + diseaseName);
                     foreach (var symptom in disease.symptoms)
                     {
-                        logger?.LogInfo($"-- {Symptom.symptomList[symptom].name}");
+                        logger?.LogInfo($"-- {Symptom.RegisteredSymptoms[symptom].name}");
                     }
                 }
                 Utils.Ping(diseaseHost.diseaseScanNode.scanNode.transform.position, diseaseHost.gameObject.name, string.Join("|", diseaseNames), destroyTime: 30f);

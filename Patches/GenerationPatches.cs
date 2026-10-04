@@ -1,9 +1,6 @@
-﻿using GameNetcodeStuff;
+﻿using Dawn;
 using HarmonyLib;
-using System.Collections.Generic;
 using System.Linq;
-using Unity.Netcode;
-using UnityEngine;
 using static LethalDiseases.Configs;
 using static LethalDiseases.Plugin;
 
@@ -18,9 +15,9 @@ namespace LethalDiseases.Patches
         {
             try
             {
-                if (!__instance.IsServer || TESTING.disableDiseaseSpawning) { return; }
+                if (!__instance.IsServer || TESTING.disableDiseaseSpawning || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
-                if (UnityEngine.Random.Range(0f, 1f) < MonsterDiseaseChance.Value)
+                if (UnityEngine.Random.Range(0f, 1f) < MonsterDiseaseChance)
                     __instance.NetworkObject.Infect();
             }
             catch (System.Exception e)
@@ -38,7 +35,7 @@ namespace LethalDiseases.Patches
             {
                 if (!__instance.fixInteract.IsServer || TESTING.disableDiseaseSpawning) { return; }
 
-                if (UnityEngine.Random.Range(0f, 1f) < SteamDiseaseChance.Value)
+                if (UnityEngine.Random.Range(0f, 1f) < SteamDiseaseChance)
                     __instance.fixInteract.NetworkObject.Infect();
             }
             catch (System.Exception e)
@@ -54,11 +51,9 @@ namespace LethalDiseases.Patches
         {
             try
             {
-                if (!__instance.IsServer || TESTING.disableDiseaseSpawning) { return; }
+                if (!__instance.IsServer || TESTING.disableDiseaseSpawning || __instance.isInShipRoom || Configs.UninfectableItems.Contains(__instance.itemProperties.GetDawnInfo().TypedKey.ToString())) { return; }
 
-                if (__instance.isInShipRoom) { return; }
-
-                if (UnityEngine.Random.Range(0f, 1f) < ScrapDiseaseChance.Value)
+                if (UnityEngine.Random.Range(0f, 1f) < ScrapDiseaseChance)
                     __instance.NetworkObject.Infect();
             }
             catch (System.Exception e)

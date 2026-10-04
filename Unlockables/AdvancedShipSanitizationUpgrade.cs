@@ -1,0 +1,10 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace LethalDiseases.Unlockables
+{
+    internal class AdvancedShipSanitizationUpgrade
+    {
+    }
+}

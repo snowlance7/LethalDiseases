@@ -1,7 +1,6 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
 using HarmonyLib;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -22,7 +21,7 @@ internal static class SpreadPatches
     {
         try
         {
-            if (!__instance.IsServer) { return; }
+            if (!__instance.IsServer || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
             if (!other.gameObject.TryGetComponent(out PlayerControllerB player)) { return; }
             collidedWith = player;
@@ -60,7 +59,7 @@ internal static class SpreadPatches
     {
         try
         {
-            if (!__instance.IsServer) { return; }
+            if (!__instance.IsServer || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
             collidedWith = null;
             enemyColliding = null;
@@ -90,7 +89,7 @@ internal static class SpreadPatches
     {
         try
         {
-            if (!__instance.IsServer) { return; }
+            if (!__instance.IsServer || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
             if (collidedEnemy != null)
                 TrySpreadBetween(__instance.NetworkObject, collidedEnemy.NetworkObject, Disease.TransmissionType.Contact);
@@ -110,7 +109,7 @@ internal static class SpreadPatches
     {
         try
         {
-            if (!__instance.IsServer || playerWhoHit == null) { return; }
+            if (!__instance.IsServer || playerWhoHit == null || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
             playerWhoHit.NetworkObject.TrySpread(__instance.NetworkObject, Disease.TransmissionType.Blood | Disease.TransmissionType.Contact);
         }
@@ -147,7 +146,7 @@ internal static class SpreadPatches
     {
         try
         {
-            if (!__instance.IsServer) { return; }
+            if (!__instance.IsServer || Configs.UninfectableItems.Contains(__instance.itemProperties.GetDawnInfo().TypedKey.ToString())) { return; }
 
             PlayerControllerB? playerWhoGrabbed = __instance.playerHeldBy;
             if (playerWhoGrabbed == null) { return; }

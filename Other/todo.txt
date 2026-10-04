@@ -1,15 +1,10 @@
 organize each disease holder
-interface for items to not be infectable, or config
 vertical scroll for the disease analyzer
 syringe gun and biosampler tooltips set up properly
 remove motion blur on items?
-gas mask
-gloves
 ship vent that cleans everything in ship
-make biosampler, syringe use line of sight to position angle?
 
 test symptoms.
 tonics!
-foodborne transmission
 extra symptoms chances in configs
-dev command to remove a symptom from all players in the lobby and remove it from the pool of available symptoms
+healing mushroom offsets
