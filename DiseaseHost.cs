@@ -83,6 +83,23 @@ namespace LethalDiseases
             logger?.LogDebug($"Infected {GetInfectedName()} with disease {disease.name}:{disease.ToString()}");
         }
 
+        public void RemoveDisease(Disease disease, bool removeImmune = false)
+        {
+            foreach (var symptomIndex in disease.symptoms) networkObject.gameObject.StatusEffectController().RemoveEffect(e => e.source == disease.ToString());
+
+            Diseases.Remove(disease);
+            DiseaseIds.Remove(disease.ToString());
+
+            if (!removeImmune) { return; }
+            ImmuneDiseases.Remove(disease);
+            ImmuneDiseaseIds.Remove(disease.ToString());
+        }
+
+        public void ClearDiseases(bool clearImmune = false)
+        {
+            foreach (var disease in Diseases.ToList()) RemoveDisease(disease, clearImmune);
+        }
+
         void CreateDiseaseScanNode()
         {
             //logger.LogDebug("Creating disease scannode");

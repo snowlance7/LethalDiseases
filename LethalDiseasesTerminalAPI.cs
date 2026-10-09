@@ -1,5 +1,6 @@
 ﻿using Dawn;
 using LethalDiseases.Items;
+using LethalDiseases.Unlockables;
 using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
 using UnityEngine;
@@ -20,11 +21,13 @@ namespace LethalDiseases
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dget", GetDisease, "Other", "DGET [diseaseName]", "Gets the analyzed information of a disease"));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("drename", RenameDisease, "Other", "DRENAME [diseaseName] [newDiseaseName]", "Renames a disease"));
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("diseases", GetDiseases, "Other", "DISEASES", "Gets all previously analyzed disease names as a list."));
-            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled && TestTube.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", "Synthesizes and dispenses a test tube sample of a disease. Requires 10% apparatus power to synthesize.")); }
-            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", "Analyzes a test tube or cotton swab sample. Requires 5% apparatus power to analyze.")); }
-            if (Syringe.IsEnabled && ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName]", "Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe and 10% apparatus power to synthesize.")); }
+            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled && TestTube.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", $"Synthesizes and dispenses a test tube sample of a disease.{(Configs.SynthesizePowerUsage > 0f ? $" Requires {Configs.SynthesizePowerUsage * 100}% apparatus power to synthesize." : "")}")); }
+            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", $"Analyzes a test tube or cotton swab sample.{(Configs.AnalyzeDiseasePowerUsage > 0f ? $" Requires {Configs.AnalyzeDiseasePowerUsage * 100}% apparatus power to synthesize." : "")}")); }
+            if (Syringe.IsEnabled && ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName]", $"Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe{(Configs.SynthesizeSyringePowerUsage > 0f ? $" and {Configs.SynthesizeSyringePowerUsage * 100}% apparatus power to synthesize" : "")}.")); }
             if (DartGunAmmo.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsyntha", SynthesizeDartGunAmmo, "Other", "DSYNTHA [diseaseName] [amount(optional)]", "Synthesizes and orders dart gun ammo containing the specified disease.")); }
             TerminalAPI.RegisterTerminalCommand(new TerminalCommand("ddelete", DeleteDisease, "Other", "DDELETE [diseaseName]", "Deletes a named disease"));
+            if (ShipSanitizationUpgrade.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsanitize", Sanitize, "Other", "DSANITIZE", $"Sanitizes the ship of all diseases. Experimental. Requires the Ship Sanitization Upgrade to be installed{(ShipSanitizationUpgrade.PowerUsage > 0f ? $" and {ShipSanitizationUpgrade.PowerUsage * 100}% apparatus power" : "")}.")); }
+            if (AdvancedShipSanitizationUpgrade.IsEnabled) { TerminalAPI.RegisterTerminalCommand(new TerminalCommand("dsafesanitize", SafeSanitize, "Other", "DSAFESANITIZE", $"Safetly sanitizes the ship of all diseases. Requires the Advanced Ship Sanitization Upgrade to be installed{(AdvancedShipSanitizationUpgrade.PowerUsage > 0f ? $" and {AdvancedShipSanitizationUpgrade.PowerUsage * 100}% apparatus power" : "")}.")); }
         }
 
         private static string GetDiseases(string[] args)
@@ -169,6 +172,27 @@ namespace LethalDiseases
             NetworkHandler.Instance.SynthesizeDartGunAmmoRpc(disease.ToString(), count);
 
             return $"Synthesis succeeded. Ordered {count} dart gun ammo. Your new balance is {newGroupCredits}.\n\nOur contractors enjoy fast, free shipping while on the job! Any purchased items will arrive hourly at your approximate location.\n\n";
+        }
+
+        public static string Sanitize(string[] args)
+        {
+            if (ShipSanitizationUpgrade.Instance == null) { return "Sanitization failed, Ship Sanitization Upgrade is not installed"; }
+            if (ShipSanitizationUpgrade.Instance.sanitizing || (AdvancedShipSanitizationUpgrade.Instance != null && AdvancedShipSanitizationUpgrade.Instance.sanitizing)) { return "Sanitization failed, sanitization cycle is already in progress"; }
+            if (ShipSanitizationUpgrade.Instance.cooldown > 0) { return $"Sanitization failed, Ship Sanitization Upgrade is on cooldown ({ShipSanitizationUpgrade.Instance.cooldown} seconds left)"; }
+            if (ShipSanitizationUpgrade.)
+
+            ShipSanitizationUpgrade.Instance.SanitizeRpc();
+            return "Sanitization starting in 10 seconds";
+        }
+
+        public static string SafeSanitize(string[] args)
+        {
+            if (AdvancedShipSanitizationUpgrade.Instance == null) { return "Sanitization failed, Advanced Ship Sanitization Upgrade is not installed"; }
+            if (AdvancedShipSanitizationUpgrade.Instance.sanitizing || (ShipSanitizationUpgrade.Instance != null && ShipSanitizationUpgrade.Instance.sanitizing)) { return "Sanitization failed, sanitization cycle is already in progress"; }
+            if (AdvancedShipSanitizationUpgrade.Instance.cooldown > 0) { return $"Sanitization failed, Advanced Ship Sanitization Upgrade is on cooldown ({AdvancedShipSanitizationUpgrade.Instance.cooldown} seconds left)"; }
+
+            AdvancedShipSanitizationUpgrade.Instance.SanitizeRpc();
+            return "Sanitization starting in 10 seconds";
         }
     }
 }

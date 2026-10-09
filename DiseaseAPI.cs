@@ -102,10 +102,7 @@ namespace LethalDiseases
 
         public static void AddDisease(this NetworkObject networkObject, Disease disease)
         {
-            logger?.LogDebug($"Trying to add disease to networkObject with id {networkObject.GetInstanceID()} with disease {disease.name}:{disease.ToString()}");
-
-            DiseaseHost host = networkObject.GetHost();
-            host.AddDisease(disease);
+            networkObject.GetHost().AddDisease(disease);
         }
 
         public static void AddDisease(this NetworkObject networkObject, string diseaseId)
@@ -117,12 +114,7 @@ namespace LethalDiseases
 
         public static void RemoveDisease(this NetworkObject networkObject, Disease disease)
         {
-            foreach (var symptomIndex in disease.symptoms)
-            {
-                networkObject.gameObject.StatusEffectController().RemoveEffect(e => e.source == disease.ToString());
-            }
-            networkObject.GetDiseases().Remove(disease);
-            networkObject.GetDiseaseIds().Remove(disease.ToString());
+            networkObject.GetHost().RemoveDisease(disease);
         }
 
         public static void RemoveDisease(this NetworkObject networkObject, string diseaseId)
@@ -134,15 +126,7 @@ namespace LethalDiseases
 
         public static void ClearDiseases(this NetworkObject networkObject, bool clearImmune = false)
         {
-            foreach (var disease in networkObject.GetDiseases().ToList()) // TODO: Make sure this is correct when im not high
-                networkObject.RemoveDisease(disease);
-            //networkObject.GetDiseases().Clear();
-            networkObject.GetDiseaseIds().Clear();
-
-            if (!clearImmune) { return; }
-
-            networkObject.GetImmuneDiseases().Clear();
-            networkObject.GetImmuneDiseaseIds().Clear();
+            networkObject.GetHost().ClearDiseases(clearImmune);
         }
 
         public static void LogSpawnedDiseases()

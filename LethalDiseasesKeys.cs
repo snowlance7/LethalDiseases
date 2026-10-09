@@ -9,6 +9,8 @@ namespace LethalDiseases
         public static readonly NamespacedKey<DawnEnemyInfo> ItFollowsEntity = NamespacedKey<DawnEnemyInfo>.From("lethal_diseases", "it_follows_entity");
 
         public static readonly NamespacedKey<DawnUnlockableItemInfo> CottonSwabs = NamespacedKey<DawnUnlockableItemInfo>.From("lethal_diseases", "cotton_swabs");
+        public static readonly NamespacedKey<DawnUnlockableItemInfo> ShipSanitizationUpgrade = NamespacedKey<DawnUnlockableItemInfo>.From("lethal_diseases", "ship_sanitization_upgrade");
+        public static readonly NamespacedKey<DawnUnlockableItemInfo> AdvancedShipSanitizationUpgrade = NamespacedKey<DawnUnlockableItemInfo>.From("lethal_diseases", "advanced_ship_sanitization_upgrade");
 
         public static readonly NamespacedKey<DawnItemInfo> Biosampler = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "biosampler");
         public static readonly NamespacedKey<DawnItemInfo> CottonSwab = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "cotton_swab");

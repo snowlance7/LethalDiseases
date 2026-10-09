@@ -102,6 +102,7 @@ namespace LethalDiseases
                     }
                     break;
                 case "next":
+                    if (!symptomsTestRunning) { return; }
                     goToNextSymptomInTest = true;
                     break;
                 case "symptomstest": // TODO: Use this for testing
