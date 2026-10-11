@@ -48,24 +48,5 @@ internal static class CraftingRegistration
                 return null; // TODO
             }
         }));
-
-        ChemistryIngredient tonicIngredient = new ChemistryIngredient(LethalDiseasesKeys.Tonic);
-        CraftingAPI.RegisterIngredient(tonicIngredient);
-
-        CraftingAPI.RegisterRecipe(new ChemistryRecipe(testTubeIngredient, tonicIngredient, (ingredientA, ingredientB) =>
-        {
-            Disease? disease = Disease.GetDiseaseFromIngredient(ingredientA);
-            if (disease == null) { disease = Disease.GetDiseaseFromIngredient(ingredientB); }
-            if (disease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
-
-            int tonicDefIndex;
-            if (!int.TryParse(ingredientA.specialInstructions, out tonicDefIndex)) { tonicDefIndex = int.Parse(ingredientB.specialInstructions); }
-            var tonicDef = TonicDefinition.RegisteredTonicDefinitions[tonicDefIndex];
-
-            Disease? newDisease = tonicDef.diseaseModification.Invoke(disease);
-            if (newDisease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
-
-            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
-        }));
     }
 }

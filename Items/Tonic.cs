@@ -1,7 +1,9 @@
-﻿using SnowyCraftingCore;
+﻿using Dawn.Utils;
+using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Items.Tonic;
@@ -69,7 +71,7 @@ internal class Tonic : PhysicsProp, IMixableIngredient
     }
 }
 
-internal class TonicDefinition(string name, string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification)
+internal class TonicDefinition(string name, string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification) : IEquatable<TonicDefinition>
 {
     public static List<TonicDefinition> RegisteredTonicDefinitions = new List<TonicDefinition>();
 
@@ -91,12 +93,6 @@ internal class TonicDefinition(string name, string description, TonicAction toni
         Symptoms,
         Stats,
         TransmissionTypes
-    }
-
-    [StaticInit]
-    public static void Init()
-    {
-        // TODO
     }
 
     public Color GetColor()
@@ -123,5 +119,46 @@ internal class TonicDefinition(string name, string description, TonicAction toni
     public ChemistryLiquidAppearance GetChemistryLiquidAppearance()
     {
         return new ChemistryLiquidAppearance(GetColor(), 5f);
+    }
+
+    public bool Equals(TonicDefinition other)
+    {
+        return name == other.name;
+    }
+
+    public static void RegisterTonicDefinition(TonicDefinition tonicDefinition)
+    {
+        if (RegisteredTonicDefinitions.Contains(tonicDefinition)) { logger.LogError($"Failed to register tonic definition: {tonicDefinition.ToString()}. Tonic definition already exists."); return; }
+        RegisteredTonicDefinitions.Add(tonicDefinition);
+    }
+
+    [StaticInit]
+    public static void Init()
+    {
+        // TODO
+        ChemistryIngredient tonicIngredient = new ChemistryIngredient(LethalDiseasesKeys.Tonic);
+        CraftingAPI.RegisterIngredient(tonicIngredient);
+
+        CraftingAPI.RegisterRecipe(new ChemistryRecipe(new ChemistryIngredient(LethalDiseasesKeys.TestTube), tonicIngredient, (ingredientA, ingredientB) =>
+        {
+            Disease? disease = Disease.GetDiseaseFromIngredient(ingredientA);
+            if (disease == null) { disease = Disease.GetDiseaseFromIngredient(ingredientB); }
+            if (disease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
+
+            int tonicDefIndex;
+            if (!int.TryParse(ingredientA.specialInstructions, out tonicDefIndex)) { tonicDefIndex = int.Parse(ingredientB.specialInstructions); }
+            var tonicDef = TonicDefinition.RegisteredTonicDefinitions[tonicDefIndex];
+
+            Disease? newDisease = tonicDef.diseaseModification.Invoke(disease);
+            if (newDisease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
+
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
+        }));
+
+        RegisterTonicDefinition(new TonicDefinition("Vitality", "Adds a random good symptom", TonicAction.Adding, TonicType.Symptoms, (disease) => disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Good).GetRandom()!)));
+        RegisterTonicDefinition(new TonicDefinition("Fortunate", "50% chance to add a good symptom", TonicAction.Adding, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Good).GetRandom()!) : disease));
+        RegisterTonicDefinition(new TonicDefinition("Fortunate", "50% chance to add a good symptom, otherwise adds a neutral symptom", TonicAction.Adding, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Good).GetRandom()!) : disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Neutral).GetRandom()!)));
+
+        RegisterTonicDefinition(new TonicDefinition("Toxic", "Adds a random negative effect", TonicAction.Adding, TonicType.Symptoms, (disease) => disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Bad).GetRandom()!)));
     }
 }

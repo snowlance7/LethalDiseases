@@ -488,9 +488,10 @@ namespace LethalDiseases
             NetworkHandler.Instance.AddSymptomToDiseaseRpc(networkObject, ToString(), symptomIndex);
         }
 
-        public void AddSymptom(Symptom symptom)
+        public Disease AddSymptom(Symptom symptom)
         {
             AddSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
+            return this;
         }
 
         public void AddSymptom(int symptomIndex)

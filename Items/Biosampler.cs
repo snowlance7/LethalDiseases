@@ -394,7 +394,7 @@ namespace LethalDiseases.Items
 
         public ChemistryIngredient GetIngredient()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.Biosampler, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
         }
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
