@@ -179,7 +179,7 @@ namespace LethalDiseases
             if (ShipSanitizationUpgrade.Instance == null) { return "Sanitization failed, Ship Sanitization Upgrade is not installed"; }
             if (ShipSanitizationUpgrade.Instance.sanitizing || (AdvancedShipSanitizationUpgrade.Instance != null && AdvancedShipSanitizationUpgrade.Instance.sanitizing)) { return "Sanitization failed, sanitization cycle is already in progress"; }
             if (ShipSanitizationUpgrade.Instance.cooldown > 0) { return $"Sanitization failed, Ship Sanitization Upgrade is on cooldown ({ShipSanitizationUpgrade.Instance.cooldown} seconds left)"; }
-            if (ShipSanitizationUpgrade.)
+            if (ShipSanitizationUpgrade.PowerUsage > 0f && ApparatusPowerPort.IsEnabled && ApparatusPowerPort.Instance != null && !ApparatusPowerPort.Instance.UsePower(ShipSanitizationUpgrade.PowerUsage)) { return "Sanitization failed, not enough power available, alternative power source required"; }
 
             ShipSanitizationUpgrade.Instance.SanitizeRpc();
             return "Sanitization starting in 10 seconds";
@@ -190,6 +190,7 @@ namespace LethalDiseases
             if (AdvancedShipSanitizationUpgrade.Instance == null) { return "Sanitization failed, Advanced Ship Sanitization Upgrade is not installed"; }
             if (AdvancedShipSanitizationUpgrade.Instance.sanitizing || (ShipSanitizationUpgrade.Instance != null && ShipSanitizationUpgrade.Instance.sanitizing)) { return "Sanitization failed, sanitization cycle is already in progress"; }
             if (AdvancedShipSanitizationUpgrade.Instance.cooldown > 0) { return $"Sanitization failed, Advanced Ship Sanitization Upgrade is on cooldown ({AdvancedShipSanitizationUpgrade.Instance.cooldown} seconds left)"; }
+            if (AdvancedShipSanitizationUpgrade.PowerUsage > 0f && ApparatusPowerPort.IsEnabled && ApparatusPowerPort.Instance != null && !ApparatusPowerPort.Instance.UsePower(AdvancedShipSanitizationUpgrade.PowerUsage)) { return "Sanitization failed, not enough power available, alternative power source required"; }
 
             AdvancedShipSanitizationUpgrade.Instance.SanitizeRpc();
             return "Sanitization starting in 10 seconds";

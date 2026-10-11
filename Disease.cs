@@ -7,6 +7,7 @@ using SnowyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
@@ -522,6 +523,11 @@ namespace LethalDiseases
             {
                 DeactivateSymptom(symptomIndex);
             }
+        }
+
+        public static Disease? GetDiseaseFromIngredient(ChemistryIngredient ingredient)
+        {
+            return GetDiseaseFromString(ingredient.specialInstructions);
         }
     }
 }

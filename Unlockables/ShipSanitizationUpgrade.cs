@@ -29,7 +29,7 @@ namespace LethalDiseases.Unlockables
 
         public static float SanitizeTime => PluginInstance.Config.Bind("Ship Sanitization Upgrade Options", "Ship Sanitization Upgrade | Sanitize Time", 10f, "How long it takes for the ship to be sanitized").Value;
         public static float Cooldown => PluginInstance.Config.Bind("Ship Sanitization Upgrade Options", "Ship Sanitization Upgrade | Cooldown", 120f, "Cooldown in seconds for how long it takes for the upgrade to become usable again after use").Value;
-        public static float PowerUsage => PluginInstance.Config.Bind("Ship Sanitization Upgrade Options", "Ship Sanitization Upgrade | Power Usage", 0.1f, "").Value; // TODO
+        public static float PowerUsage => PluginInstance.Config.Bind("Ship Sanitization Upgrade Options", "Ship Sanitization Upgrade | Power Usage", 0f, "How much apparatus power should be required to run this upgrade").Value; // TODO
 
         [StaticInit]
         public static void Init()

@@ -33,7 +33,7 @@ MonoBehaviour:
   shipUnlockableID: -1
   buyUnlockable: 0
   returnFromStorage: 0
-  itemCost: 15
+  itemCost: 300
   creatureFileID: -1
   creatureName: Ship Sanitization Upgrade
   storyLogFileID: -1

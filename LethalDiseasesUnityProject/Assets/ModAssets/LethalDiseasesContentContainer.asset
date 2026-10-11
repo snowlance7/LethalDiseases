@@ -35,3 +35,9 @@ MonoBehaviour:
     configName: Leech
   - assetBundleName: air_filter
     configName: Air Filter
+  - assetBundleName: ship_sanitization_upgrade
+    configName: Ship Sanitization Upgrade
+  - assetBundleName: advanced_ship_sanitization_upgrade
+    configName: Advanced Ship Sanitization Upgrade
+  - assetBundleName: tonic
+    configName: Tonic

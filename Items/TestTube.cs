@@ -18,7 +18,7 @@ namespace LethalDiseases.Items
 
         ScanNodeProperties scanNode = null!;
 
-        public string storedDisease = "";
+        public string? storedDisease = "";
 
         public bool IsFilled => !string.IsNullOrWhiteSpace(storedDisease);
 
@@ -83,17 +83,24 @@ namespace LethalDiseases.Items
         {
             logger.LogDebug($"Setting stored disease to disease with id: {diseaseId}");
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null) { logger.LogError($"Unable to parse disease from id ({diseaseId})"); return; }
+            if (disease == null)
+            {
+                logger.LogDebug($"Unable to parse disease from id ({diseaseId})");
+                SetFluidColor(new ChemistryLiquidAppearance(Color.black, 1f));
+                scanNode.subText = "Toxic Sludge";
+                return;
+            }
 
             storedDisease = diseaseId;
             scanNode.subText = disease.name;
 
             SetFluidColor(disease.GetChemistryLiquidAppearance());
+            return;
         }
 
         public JToken GetDawnDataToSave()
         {
-            return JToken.FromObject(storedDisease);
+            return JToken.FromObject(storedDisease != null ? storedDisease : "");
         }
 
         public void LoadDawnSaveData(JToken saveData)

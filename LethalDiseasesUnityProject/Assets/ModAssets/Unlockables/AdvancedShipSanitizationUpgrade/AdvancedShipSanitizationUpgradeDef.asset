@@ -19,7 +19,8 @@ MonoBehaviour:
     _key: advanced_ship_sanitization_upgrade
   <UnlockableItem>k__BackingField:
     unlockableName: Advanced Ship Sanitization Upgrade
-    prefabObject: {fileID: 0}
+    prefabObject: {fileID: 7857150268491802882, guid: c7f289b8b436c3b44a738817e7c3b346,
+      type: 3}
     unlockableType: 0
     shopSelectionNode: {fileID: 11400000, guid: 8abb6a0de88c76f4bb54884c65e50494,
       type: 2}
@@ -38,7 +39,7 @@ MonoBehaviour:
     lowerTorsoCostumeObject: {fileID: 0}
     alreadyUnlocked: 0
     unlockedInChallengeFile: 0
-    spawnPrefab: 0
+    spawnPrefab: 1
     jumpAudio: {fileID: 0}
   <InfoNodeText>k__BackingField: 
   <TerminalPredicate>k__BackingField: {fileID: 0}

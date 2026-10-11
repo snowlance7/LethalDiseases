@@ -19,6 +19,7 @@
     "Sanitizer": "lethal_diseases:sanitizer",
     "Syringe": "lethal_diseases:syringe",
     "SyringeGun": "lethal_diseases:syringe_gun",
-    "TestTube": "lethal_diseases:test_tube"
+    "TestTube": "lethal_diseases:test_tube",
+    "Tonic": "lethal_diseases:tonic"
   }
 }

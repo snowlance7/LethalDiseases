@@ -31,8 +31,9 @@ namespace LethalDiseases.Unlockables
         Coroutine? sanitizeRoutine;
         public bool sanitizing => sanitizeRoutine != null;
 
-        public static float SanitizeTime => PluginInstance.Config.Bind("Advanced Ship Sanitization Upgrade Options", "Advanced Ship Sanitization Upgrade | Sanitize Time", 10f, "How long it takes for the ship to be sanitized").Value;
+        public static float SanitizeTime => PluginInstance.Config.Bind("Advanced Ship Sanitization Upgrade Options", "Advanced Ship Sanitization Upgrade | Sanitize Time", 5f, "How long it takes for the ship to be sanitized").Value;
         public static float Cooldown => PluginInstance.Config.Bind("Advanced Ship Sanitization Upgrade Options", "Advanced Ship Sanitization Upgrade | Cooldown", 360f, "Cooldown in seconds for how long it takes for the upgrade to become usable again after use").Value;
+        public static float PowerUsage => PluginInstance.Config.Bind("Advanced Ship Sanitization Upgrade Options", "Advanced Ship Sanitization Upgrade | Power Usage", 0.1f, "How much apparatus power should be required to run this upgrade").Value;
 
 
         [StaticInit]
@@ -40,6 +41,7 @@ namespace LethalDiseases.Unlockables
         {
             _ = SanitizeTime;
             _ = Cooldown;
+            _ = PowerUsage;
         }
 
         public void Awake()
