@@ -72,6 +72,11 @@ internal class Tonic : PhysicsProp, IMixableIngredient
     }
 }
 
+internal class TonicRecipe
+{
+
+}
+
 internal class TonicDefinition(string name, string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification) : IEquatable<TonicDefinition>
 {
     public static List<TonicDefinition> RegisteredTonicDefinitions = new List<TonicDefinition>();
@@ -138,10 +143,18 @@ internal class TonicDefinition(string name, string description, TonicAction toni
         RegisteredTonicDefinitions.Add(tonicDefinition);
     }
 
+    public static int GetTonicIndexFromName(string name)
+    {
+        var definition = RegisteredTonicDefinitions.FirstOrDefault(x => x.name == name);
+        if (definition == null) { return -1; }
+        return RegisteredTonicDefinitions.IndexOf(definition);
+    }
+
     [StaticInit]
     public static void Init()
     {
         // TODO
+
         ChemistryIngredient tonicIngredient = new ChemistryIngredient(LethalDiseasesKeys.Tonic);
         CraftingAPI.RegisterIngredient(tonicIngredient);
 
@@ -192,7 +205,18 @@ internal class TonicDefinition(string name, string description, TonicAction toni
         Register("???", "Removes a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom());
 
         // Replace
-        //Register("???", "Replaces a random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => utils)
-        // TODO: Find a way to procedurally generate these with rulesets? maybe they can be 
+        Register("???", "50% chance to replace a random good symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad) : disease);
+        Register("???", "50% chance to replace a random good symptom with a random bad or neutral symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad) : disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Neutral));
+        Register("???", "Replaces a random good symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad));
+
+        Register("???", "50% chance to replace a random bad symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good) : disease);
+        Register("???", "50% chance to replace a random bad symptom with a random good or neutral symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good) : disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Neutral));
+        Register("???", "Replaces a random bad symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good));
+
+        Register("???", "Replaces a random neutral symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Good));
+        Register("???", "Replaces a random neutral symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Bad));
+
+        Register("???", "50% chance to replace a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom() : disease);
+        Register("???", "Replaces a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom());
     }
 }

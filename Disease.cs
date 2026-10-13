@@ -532,21 +532,21 @@ namespace LethalDiseases
 
         public Disease RemoveRandomSymptom()
         {
-            return RemoveSymptom(symptoms.GetRandom(Utils.randomGlobal));
+            return RemoveSymptom(symptoms.GetRandom(randomGlobal));
         }
 
         public Disease RemoveRandomSymptom(Symptom.SymptomType symptomType)
         {
             var filteredSymptoms = symptoms.Where(x => Symptom.RegisteredSymptoms[x].symptomType == symptomType);
             if (filteredSymptoms == null || filteredSymptoms.Count() == 0) { return this; }
-            return RemoveSymptom(filteredSymptoms.GetRandom(Utils.randomGlobal));
+            return RemoveSymptom(filteredSymptoms.GetRandom(randomGlobal));
         }
 
         public Disease AddRandomSymptom()
         {
             var availableSymptoms = Symptom.RegisteredSymptoms.Where(x => !symptoms.Contains(Symptom.RegisteredSymptoms.IndexOf(x)));
             if (availableSymptoms == null || availableSymptoms.Count() == 0) { return this; }
-            var symptomToRemove = availableSymptoms.GetRandom(Utils.randomGlobal);
+            var symptomToRemove = availableSymptoms.GetRandom(randomGlobal);
             if (symptomToRemove == null) { return this; }
             return AddSymptom(symptomToRemove);
         }
@@ -555,15 +555,55 @@ namespace LethalDiseases
         {
             var availableSymptoms = Symptom.RegisteredSymptoms.Where(x => x.symptomType == symptomType && !symptoms.Contains(Symptom.RegisteredSymptoms.IndexOf(x)));
             if (availableSymptoms == null || availableSymptoms.Count() == 0) { return this; }
-            var symptomToRemove = availableSymptoms.GetRandom(Utils.randomGlobal);
+            var symptomToRemove = availableSymptoms.GetRandom(randomGlobal);
             if (symptomToRemove == null) { return this; }
             return AddSymptom(symptomToRemove);
         }
 
-        //public Disease ReplaceRandomSymptom()
-        //{
-        //    var availableSymptoms = Symptom.RegisteredSymptoms.Where(x => !symptoms.Contains(Symptom.RegisteredSymptoms.IndexOf(x)));
-            
-        //}
+        public Disease ReplaceRandomSymptom()
+        {
+            if (symptoms.Count == 0)
+                return this;
+
+            var availableSymptomsToAdd = Enumerable.Range(0, Symptom.RegisteredSymptoms.Count).Where(index => !symptoms.Contains(index));
+
+            if (!availableSymptomsToAdd.Any())
+                return this;
+
+            var symptomToRemove = symptoms.GetRandom(randomGlobal);
+            var symptomToAdd = availableSymptomsToAdd.GetRandom(randomGlobal);
+
+            RemoveSymptom(symptomToRemove);
+            AddSymptom(symptomToAdd);
+
+            return this;
+        }
+
+        public Disease ReplaceRandomSymptom(Symptom.SymptomType removing, Symptom.SymptomType adding)
+        {
+            if (symptoms.Count == 0) { return this; }
+
+            var availableSymptomsToAdd = Symptom.RegisteredSymptoms
+                .Select((symptom, index) => (symptom, index))
+                .Where(x => x.symptom.symptomType == adding && !symptoms.Contains(x.index))
+                .Select(x => x.index)
+                .ToList();
+
+            if (availableSymptomsToAdd.Count == 0) { return this; }
+
+            var availableSymptomsToRemove = symptoms
+                .Where(x => Symptom.RegisteredSymptoms[x].symptomType == removing)
+                .ToList();
+
+            if (availableSymptomsToRemove.Count == 0) { return this; }
+
+            var symptomToRemove = availableSymptomsToRemove.GetRandom(randomGlobal);
+            var symptomToAdd = availableSymptomsToAdd.GetRandom(randomGlobal);
+
+            RemoveSymptom(symptomToRemove);
+            AddSymptom(symptomToAdd);
+
+            return this;
+        }
     }
 }
