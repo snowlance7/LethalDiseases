@@ -1,8 +1,6 @@
-using Dawn;
 using HarmonyLib;
 using LethalDiseases.Items;
 using SnowyLib;
-using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -65,7 +63,7 @@ namespace LethalDiseases
 
         public static void TryChatCommand(string[] args)
         {
-            switch ($"/{args[0]}")
+            switch (args[0].Replace("/", ""))
             {
                 case "spawnLeech":
                     NetworkHandler.Instance.SpawnLeechRpc(localPlayer.actualClientId);

@@ -22,6 +22,12 @@ namespace LethalDiseases.Items
 
         readonly float maxDistance = 5f;
 
+        [StaticInit]
+        public static void Init()
+        {
+            CraftingAPI.RegisterIngredient(new ChemistryIngredient(LethalDiseasesKeys.CottonSwab));
+        }
+
         public void Awake()
         {
             itemProperties.positionOffset = new Vector3(0.1f, 0.08f, 0.02f);

@@ -6,6 +6,7 @@ using SnowyCraftingCore;
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using SnowyLib;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
@@ -21,6 +22,12 @@ namespace LethalDiseases.Items
         public string? storedDisease = "";
 
         public bool IsFilled => !string.IsNullOrWhiteSpace(storedDisease);
+
+        [StaticInit]
+        public static void Init()
+        {
+            CraftingAPI.RegisterIngredient(new ChemistryIngredient(LethalDiseasesKeys.TestTube));
+        }
 
         public void Awake()
         {

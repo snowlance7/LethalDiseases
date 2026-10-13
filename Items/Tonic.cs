@@ -9,6 +9,7 @@ using UnityEngine;
 using static LethalDiseases.Items.Tonic;
 using static LethalDiseases.Items.TonicDefinition;
 using static LethalDiseases.Plugin;
+using static LethalDiseases.Symptom;
 
 namespace LethalDiseases.Items;
 
@@ -83,9 +84,9 @@ internal class TonicDefinition(string name, string description, TonicAction toni
 
     public enum TonicAction
     {
-        Adding,
-        Removing,
-        Replacing
+        Add,
+        Remove,
+        Replace
     }
 
     public enum TonicType
@@ -99,9 +100,9 @@ internal class TonicDefinition(string name, string description, TonicAction toni
     {
         Color actionColor = tonicAction switch
         {
-            TonicAction.Adding => Color.green,
-            TonicAction.Removing => Color.red,
-            TonicAction.Replacing => Color.magenta,
+            TonicAction.Add => Color.green,
+            TonicAction.Remove => Color.red,
+            TonicAction.Replace => Color.magenta,
             _ => Color.white
         };
 
@@ -123,10 +124,15 @@ internal class TonicDefinition(string name, string description, TonicAction toni
 
     public bool Equals(TonicDefinition other)
     {
-        return name == other.name;
+        return name == other.name && description == other.description;
     }
 
-    public static void RegisterTonicDefinition(TonicDefinition tonicDefinition)
+    public static void Register(string name, string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification)
+    {
+        Register(new TonicDefinition(name, description, tonicAction, tonicType, diseaseModification));
+    }
+
+    public static void Register(TonicDefinition tonicDefinition)
     {
         if (RegisteredTonicDefinitions.Contains(tonicDefinition)) { logger.LogError($"Failed to register tonic definition: {tonicDefinition.ToString()}. Tonic definition already exists."); return; }
         RegisteredTonicDefinitions.Add(tonicDefinition);
@@ -147,7 +153,7 @@ internal class TonicDefinition(string name, string description, TonicAction toni
 
             int tonicDefIndex;
             if (!int.TryParse(ingredientA.specialInstructions, out tonicDefIndex)) { tonicDefIndex = int.Parse(ingredientB.specialInstructions); }
-            var tonicDef = TonicDefinition.RegisteredTonicDefinitions[tonicDefIndex];
+            var tonicDef = RegisteredTonicDefinitions[tonicDefIndex];
 
             Disease? newDisease = tonicDef.diseaseModification.Invoke(disease);
             if (newDisease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
@@ -155,10 +161,38 @@ internal class TonicDefinition(string name, string description, TonicAction toni
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
         }));
 
-        RegisterTonicDefinition(new TonicDefinition("Vitality", "Adds a random good symptom", TonicAction.Adding, TonicType.Symptoms, (disease) => disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Good).GetRandom()!)));
-        RegisterTonicDefinition(new TonicDefinition("Fortunate", "50% chance to add a good symptom", TonicAction.Adding, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Good).GetRandom()!) : disease));
-        RegisterTonicDefinition(new TonicDefinition("Fortunate", "50% chance to add a good symptom, otherwise adds a neutral symptom", TonicAction.Adding, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Good).GetRandom()!) : disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Neutral).GetRandom()!)));
+        //// Symptoms
 
-        RegisterTonicDefinition(new TonicDefinition("Toxic", "Adds a random negative effect", TonicAction.Adding, TonicType.Symptoms, (disease) => disease.AddSymptom(Symptom.RegisteredSymptoms.Where(x => x.symptomType == Symptom.SymptomType.Bad).GetRandom()!)));
+        // Add
+        Register("???", "50% chance to add a good symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Good) : disease);
+        Register("???", "50% chance to add a good or neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Good) : disease.AddRandomSymptom(SymptomType.Neutral));
+        Register("???", "Adds a random good symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Good));
+
+        Register("???", "50% chance to add a bad symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Bad) : disease);
+        Register("???", "50% chance to add a bad or neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Bad) : disease.AddRandomSymptom(SymptomType.Neutral));
+        Register("???", "Adds a random bad symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Bad));
+
+        Register("???", "Adds a random neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Neutral));
+
+        Register("???", "50% chance to add a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom() : disease);
+        Register("???", "Adds a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom());
+
+        // Remove
+        Register("???", "50% chance to remove a good symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease);
+        Register("???", "50% chance to remove a good or neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease.RemoveRandomSymptom(SymptomType.Neutral));
+        Register("???", "Removes a random good symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Good));
+
+        Register("???", "50% chance to remove a bad symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Bad) : disease);
+        Register("???", "50% chance to remove a bad or neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Bad) : disease.RemoveRandomSymptom(SymptomType.Neutral));
+        Register("???", "Removes a random bad symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Bad));
+
+        Register("???", "Removes a random neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Neutral));
+
+        Register("???", "50% chance to remove a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom() : disease);
+        Register("???", "Removes a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom());
+
+        // Replace
+        //Register("???", "Replaces a random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => utils)
+        // TODO: Find a way to procedurally generate these with rulesets? maybe they can be 
     }
 }

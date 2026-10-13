@@ -1,4 +1,5 @@
 ﻿using SnowyLib;
+using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
@@ -11,6 +12,13 @@ namespace LethalDiseases.Items
         public static void Init()
         {
             _ = HealingAmount;
+        }
+
+        public void Awake()
+        {
+            itemProperties.positionOffset = new Vector3(0, 0, 0); // TODO: Set these
+            itemProperties.rotationOffset = new Vector3(0, 0, 0);
+            itemProperties.floorYOffset = 0;
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)

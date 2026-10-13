@@ -1,17 +1,13 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
 using LethalDiseases.Items;
-using LethalDiseases.Symptoms;
 using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.ProBuilder;
 using static LethalDiseases.Configs;
 using static LethalDiseases.Plugin;
 using static SnowyLib.Utils;
@@ -73,7 +69,7 @@ namespace LethalDiseases
 
         public bool hasActor => host != null && host.hasActor;
 
-        public List<int> symptoms = [];
+        public HashSet<int> symptoms = [];
 
         public bool isActive { get; private set; }
 
@@ -113,7 +109,7 @@ namespace LethalDiseases
             disease.symptoms = Enumerable.Range(0, Symptom.RegisteredSymptoms.Count)
                 .OrderBy(_ => randomLocal.Next())
                 .Take(symptomCount)
-                .ToList();
+                .ToHashSet();
 
             return disease;
         }
@@ -216,7 +212,7 @@ namespace LethalDiseases
                 stability = ParseFloat(parts[2]),
                 latency = ParseFloat(parts[3]),
                 transmissionType = (TransmissionType)int.Parse(parts[4]),
-                symptoms = string.IsNullOrEmpty(parts[5]) ? new List<int>() : parts[5].Split(',').Select(int.Parse).ToList()
+                symptoms = string.IsNullOrEmpty(parts[5]) ? new HashSet<int>() : parts[5].Split(',').Select(int.Parse).ToHashSet()
             };
 
             return disease;
@@ -352,7 +348,7 @@ namespace LethalDiseases
             mergedDisease.stability = diseases.Max(d => d.stability);
             mergedDisease.latency = diseases.Max(d => d.latency);
 
-            mergedDisease.symptoms = diseases.SelectMany(disease => disease.symptoms).Distinct().ToList();
+            mergedDisease.symptoms = diseases.SelectMany(disease => disease.symptoms).Distinct().ToHashSet();
             mergedDisease.transmissionType = diseases.Select(disease => disease.transmissionType).Aggregate(TransmissionType.None, (combined, type) => combined | type);
 
             return mergedDisease;
@@ -391,6 +387,11 @@ namespace LethalDiseases
             text += "\n\n";
 
             return text;
+        }
+
+        public static Disease? GetDiseaseFromIngredient(ChemistryIngredient ingredient)
+        {
+            return GetDiseaseFromString(ingredient.specialInstructions);
         }
 
         public static Disease? GetDiseaseFromName(string diseaseName)
@@ -490,11 +491,10 @@ namespace LethalDiseases
 
         public Disease AddSymptom(Symptom symptom)
         {
-            AddSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
-            return this;
+            return AddSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
         }
 
-        public void AddSymptom(int symptomIndex)
+        public Disease AddSymptom(int symptomIndex)
         {
             symptoms.Add(symptomIndex);
 
@@ -502,6 +502,8 @@ namespace LethalDiseases
             {
                 ActivateSymptom(symptomIndex);
             }
+
+            return this;
         }
 
         public void RemoveSymptomAndSync(Symptom symptom)
@@ -514,9 +516,9 @@ namespace LethalDiseases
             NetworkHandler.Instance.RemoveSymptomFromDiseaseRpc(networkObject, ToString(), symptomIndex);
         }
 
-        public void RemoveSymptom(int symptomIndex)
+        public Disease RemoveSymptom(int symptomIndex)
         {
-            if (!symptoms.Contains(symptomIndex)) { return; }
+            if (!symptoms.Contains(symptomIndex)) { return this; }
 
             symptoms.Remove(symptomIndex);
 
@@ -524,11 +526,44 @@ namespace LethalDiseases
             {
                 DeactivateSymptom(symptomIndex);
             }
+
+            return this;
         }
 
-        public static Disease? GetDiseaseFromIngredient(ChemistryIngredient ingredient)
+        public Disease RemoveRandomSymptom()
         {
-            return GetDiseaseFromString(ingredient.specialInstructions);
+            return RemoveSymptom(symptoms.GetRandom(Utils.randomGlobal));
         }
+
+        public Disease RemoveRandomSymptom(Symptom.SymptomType symptomType)
+        {
+            var filteredSymptoms = symptoms.Where(x => Symptom.RegisteredSymptoms[x].symptomType == symptomType);
+            if (filteredSymptoms == null || filteredSymptoms.Count() == 0) { return this; }
+            return RemoveSymptom(filteredSymptoms.GetRandom(Utils.randomGlobal));
+        }
+
+        public Disease AddRandomSymptom()
+        {
+            var availableSymptoms = Symptom.RegisteredSymptoms.Where(x => !symptoms.Contains(Symptom.RegisteredSymptoms.IndexOf(x)));
+            if (availableSymptoms == null || availableSymptoms.Count() == 0) { return this; }
+            var symptomToRemove = availableSymptoms.GetRandom(Utils.randomGlobal);
+            if (symptomToRemove == null) { return this; }
+            return AddSymptom(symptomToRemove);
+        }
+
+        public Disease AddRandomSymptom(Symptom.SymptomType symptomType)
+        {
+            var availableSymptoms = Symptom.RegisteredSymptoms.Where(x => x.symptomType == symptomType && !symptoms.Contains(Symptom.RegisteredSymptoms.IndexOf(x)));
+            if (availableSymptoms == null || availableSymptoms.Count() == 0) { return this; }
+            var symptomToRemove = availableSymptoms.GetRandom(Utils.randomGlobal);
+            if (symptomToRemove == null) { return this; }
+            return AddSymptom(symptomToRemove);
+        }
+
+        //public Disease ReplaceRandomSymptom()
+        //{
+        //    var availableSymptoms = Symptom.RegisteredSymptoms.Where(x => !symptoms.Contains(Symptom.RegisteredSymptoms.IndexOf(x)));
+            
+        //}
     }
 }
