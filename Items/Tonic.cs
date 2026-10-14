@@ -218,5 +218,12 @@ internal class TonicDefinition(string name, string description, TonicAction toni
 
         Register("???", "50% chance to replace a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom() : disease);
         Register("???", "Replaces a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom());
+
+        //// Stats
+
+        // Adding
+        Register("???", "Random percent chance to increase strength by a random percent");
+        Register("???", );
+        Register("???", "Increases strength by 10%");
     }
 }

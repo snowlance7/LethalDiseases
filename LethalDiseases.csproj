@@ -50,6 +50,7 @@
       <None Remove="LethalDiseasesUnityProject\**" />
     </ItemGroup>
     <ItemGroup>
+      <Compile Remove="Items\Tonic - Copy.cs" />
       <Compile Remove="Symptoms\Unfinished\Alarm.cs" />
       <Compile Remove="Symptoms\Unfinished\Attractive.cs" />
       <Compile Remove="Symptoms\Unfinished\Baculovirus.cs" />
