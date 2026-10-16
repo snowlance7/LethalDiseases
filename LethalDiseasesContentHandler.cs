@@ -55,6 +55,15 @@ namespace LethalDiseases
         public class AirFilterAssets(DuskMod mod, string filePath) : AssetBundleLoader<AirFilterAssets>(mod, filePath) { }
         public AirFilterAssets? AirFilter;
 
+        public class ShipSanitizationUpgradeAssets(DuskMod mod, string filePath) : AssetBundleLoader<ShipSanitizationUpgradeAssets>(mod, filePath) { }
+        public ShipSanitizationUpgradeAssets? ShipSanitizationUpgrade;
+
+        public class AdvancedShipSanitizationUpgradeAssets(DuskMod mod, string filePath) : AssetBundleLoader<AdvancedShipSanitizationUpgradeAssets>(mod, filePath) { }
+        public AdvancedShipSanitizationUpgradeAssets? AdvancedShipSanitizationUpgrade;
+
+        public class TonicAssets(DuskMod mod, string filePath) : AssetBundleLoader<TonicAssets>(mod, filePath) { }
+        public TonicAssets? Tonic;
+
         public LethalDiseasesContentHandler(DuskMod mod) : base(mod)
         {
             RegisterContent("biosampler", out BioSampler);
@@ -68,6 +77,9 @@ namespace LethalDiseases
             RegisterContent("sanitizer", out Sanitizer);
             RegisterContent("leech", out Leech);
             RegisterContent("air_filter", out AirFilter);
+            RegisterContent("ship_sanitization_upgrade", out ShipSanitizationUpgrade);
+            RegisterContent("advanced_ship_sanitization_upgrade", out AdvancedShipSanitizationUpgrade);
+            RegisterContent("tonic", out Tonic);
         }
     }
 }

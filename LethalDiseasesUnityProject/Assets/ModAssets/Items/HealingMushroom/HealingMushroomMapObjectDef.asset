@@ -1,0 +1,268 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 608100558, guid: b9fa88e95e15d9348a8d0583367ab6d6, type: 3}
+  m_Name: HealingMushroomMapObjectDef
+  m_EditorClassIdentifier: 
+  _configEntries: []
+  _tags: []
+  <Key>k__BackingField:
+    _namespace: lethal_diseases
+    _key: healing_mushroom
+  <GameObject>k__BackingField: {fileID: 4780607323454162682, guid: 12d26b134eb81c145b91a5f3f7f907a1,
+    type: 3}
+  <MapObjectName>k__BackingField: Healing Mushroom
+  <InsideMapObjectSettings>k__BackingField:
+    spawnFacingAwayFromWall: 1
+    spawnFacingWall: 0
+    spawnWithBackToWall: 0
+    spawnWithBackFlushAgainstWall: 1
+    requireDistanceBetweenSpawns: 0
+    disallowSpawningNearEntrances: 0
+    allowInMineshaft: 1
+  <OutsideMapObjectSettings>k__BackingField:
+    spawnFacingAwayFromWall: 1
+    objectWidth: 1
+    destroyTrees: 0
+    rotationOffset: {x: 0, y: 0, z: 0}
+    spawnableFloorTags: []
+    minimumAINodeSpawnRequirement: 10
+    alignWithTerrain: 1
+  <IsInsideHazard>k__BackingField: 1
+  <CreateInsideHazardConfig>k__BackingField: 1
+  <InsideMoonCurveSpawnWeights>k__BackingField:
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: vanilla
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: custom
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  <InsideInteriorCurveSpawnWeights>k__BackingField:
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: vanilla
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: custom
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  <InsidePrioritiseMoonConfig>k__BackingField: 1
+  <CreateInsideCurveSpawnWeightsConfig>k__BackingField: 1
+  <IsOutsideHazard>k__BackingField: 1
+  <CreateOutsideHazardConfig>k__BackingField: 1
+  <OutsideMoonCurveSpawnWeights>k__BackingField:
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: vanilla
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: custom
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  <OutsideInteriorCurveSpawnWeights>k__BackingField:
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: vanilla
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - <Key>k__BackingField:
+      _namespace: lethal_company
+      _key: custom
+    <Curve>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 5
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  <OutsidePrioritiseMoonConfig>k__BackingField: 1
+  <CreateOutsideCurveSpawnWeightsConfig>k__BackingField: 1
+  <DefaultOutsideCurveSpawnWeights>k__BackingField: 
+  <DefaultInsideCurveSpawnWeights>k__BackingField: 

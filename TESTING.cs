@@ -65,6 +65,12 @@ namespace LethalDiseases
         {
             switch (args[0].Replace("/", ""))
             {
+                case "tonics":
+                    foreach (var tonic in TonicDefinition.RegisteredTonicDefinitions)
+                    {
+                        logger.LogDebug(tonic.description);
+                    }
+                    break;
                 case "spawnLeech":
                     NetworkHandler.Instance.SpawnLeechRpc(localPlayer.actualClientId);
                     break;

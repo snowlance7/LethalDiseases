@@ -1,4 +1,5 @@
-﻿using Dawn.Utils;
+﻿using Dawn;
+using Dawn.Utils;
 using SnowyCraftingCore;
 using SnowyLib;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using static LethalDiseases.Items.Tonic;
 using static LethalDiseases.Items.TonicDefinition;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.Symptom;
@@ -72,12 +72,7 @@ internal class Tonic : PhysicsProp, IMixableIngredient
     }
 }
 
-internal class TonicRecipe
-{
-
-}
-
-internal class TonicDefinition(string name, string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification) : IEquatable<TonicDefinition>
+internal class TonicDefinition(string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification, string name = "", bool spawnable = true, bool craftable = true, bool wild = false) : IEquatable<TonicDefinition>
 {
     public static List<TonicDefinition> RegisteredTonicDefinitions = new List<TonicDefinition>();
 
@@ -86,19 +81,24 @@ internal class TonicDefinition(string name, string description, TonicAction toni
     public TonicAction tonicAction = tonicAction;
     public TonicType tonicType = tonicType;
     public Func<Disease, Disease> diseaseModification = diseaseModification;
+    public bool spawnable = spawnable;
+    public bool craftable = craftable;
+    public bool wild = wild;
 
     public enum TonicAction
     {
         Add,
         Remove,
-        Replace
+        Replace,
+        Other
     }
 
     public enum TonicType
     {
         Symptoms,
         Stats,
-        TransmissionTypes
+        TransmissionTypes,
+        Other
     }
 
     public Color GetColor()
@@ -108,7 +108,7 @@ internal class TonicDefinition(string name, string description, TonicAction toni
             TonicAction.Add => Color.green,
             TonicAction.Remove => Color.red,
             TonicAction.Replace => Color.magenta,
-            _ => Color.white
+            _ => UnityEngine.Random.ColorHSV()
         };
 
         Color typeColor = tonicType switch
@@ -116,7 +116,7 @@ internal class TonicDefinition(string name, string description, TonicAction toni
             TonicType.Symptoms => Color.red,
             TonicType.Stats => Color.green,
             TonicType.TransmissionTypes => Color.blue,
-            _ => Color.white
+            _ => UnityEngine.Random.ColorHSV()
         };
 
         return Color.Lerp(actionColor, typeColor, 0.35f);
@@ -124,7 +124,7 @@ internal class TonicDefinition(string name, string description, TonicAction toni
 
     public ChemistryLiquidAppearance GetChemistryLiquidAppearance()
     {
-        return new ChemistryLiquidAppearance(GetColor(), 5f);
+        return new ChemistryLiquidAppearance(GetColor(), wild ? 5f : 0.5f); // TODO: Test this
     }
 
     public bool Equals(TonicDefinition other)
@@ -132,9 +132,9 @@ internal class TonicDefinition(string name, string description, TonicAction toni
         return name == other.name && description == other.description;
     }
 
-    public static void Register(string name, string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification)
+    public static void Register(string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification, string name = "", bool spawnable = true)
     {
-        Register(new TonicDefinition(name, description, tonicAction, tonicType, diseaseModification));
+        Register(new TonicDefinition(description, tonicAction, tonicType, diseaseModification, name, spawnable));
     }
 
     public static void Register(TonicDefinition tonicDefinition)
@@ -174,56 +174,91 @@ internal class TonicDefinition(string name, string description, TonicAction toni
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
         }));
 
+        // TODO: Have each ingredient define an tonicaction and tonictype, then choose a random tonic with the tonicaction and tonictype. 
+
         //// Symptoms
 
         // Add
-        Register("???", "50% chance to add a good symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Good) : disease);
-        Register("???", "50% chance to add a good or neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Good) : disease.AddRandomSymptom(SymptomType.Neutral));
-        Register("???", "Adds a random good symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Good));
+        Register("50% chance to add a good symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Good) : disease);
+        Register("50% chance to add a good or neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Good) : disease.AddRandomSymptom(SymptomType.Neutral));
+        Register("Adds a random good symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Good));
 
-        Register("???", "50% chance to add a bad symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Bad) : disease);
-        Register("???", "50% chance to add a bad or neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Bad) : disease.AddRandomSymptom(SymptomType.Neutral));
-        Register("???", "Adds a random bad symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Bad));
+        Register("50% chance to add a bad symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Bad) : disease);
+        Register("50% chance to add a bad or neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom(SymptomType.Bad) : disease.AddRandomSymptom(SymptomType.Neutral));
+        Register("Adds a random bad symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Bad));
 
-        Register("???", "Adds a random neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Neutral));
+        Register("Adds a random neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Neutral));
 
-        Register("???", "50% chance to add a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom() : disease);
-        Register("???", "Adds a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom());
+        Register("50% chance to add a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom() : disease);
+        Register("Adds a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom());
 
         // Remove
-        Register("???", "50% chance to remove a good symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease);
-        Register("???", "50% chance to remove a good or neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease.RemoveRandomSymptom(SymptomType.Neutral));
-        Register("???", "Removes a random good symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Good));
+        Register("50% chance to remove a good symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease);
+        Register("50% chance to remove a good or neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease.RemoveRandomSymptom(SymptomType.Neutral));
+        Register("Removes a random good symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Good));
 
-        Register("???", "50% chance to remove a bad symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Bad) : disease);
-        Register("???", "50% chance to remove a bad or neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Bad) : disease.RemoveRandomSymptom(SymptomType.Neutral));
-        Register("???", "Removes a random bad symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Bad));
+        Register("50% chance to remove a bad symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Bad) : disease);
+        Register("50% chance to remove a bad or neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Bad) : disease.RemoveRandomSymptom(SymptomType.Neutral));
+        Register("Removes a random bad symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Bad));
 
-        Register("???", "Removes a random neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Neutral));
+        Register("Removes a random neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Neutral));
 
-        Register("???", "50% chance to remove a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom() : disease);
-        Register("???", "Removes a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom());
+        Register("50% chance to remove a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom() : disease);
+        Register("Removes a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom());
 
         // Replace
-        Register("???", "50% chance to replace a random good symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad) : disease);
-        Register("???", "50% chance to replace a random good symptom with a random bad or neutral symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad) : disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Neutral));
-        Register("???", "Replaces a random good symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad));
+        Register("50% chance to replace a random good symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad) : disease);
+        Register("50% chance to replace a random good symptom with a random bad or neutral symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad) : disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Neutral));
+        Register("Replaces a random good symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad));
 
-        Register("???", "50% chance to replace a random bad symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good) : disease);
-        Register("???", "50% chance to replace a random bad symptom with a random good or neutral symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good) : disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Neutral));
-        Register("???", "Replaces a random bad symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good));
+        Register("50% chance to replace a random bad symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good) : disease);
+        Register("50% chance to replace a random bad symptom with a random good or neutral symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good) : disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Neutral));
+        Register("Replaces a random bad symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Bad, SymptomType.Good));
 
-        Register("???", "Replaces a random neutral symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Good));
-        Register("???", "Replaces a random neutral symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Bad));
+        Register("Replaces a random neutral symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Good));
+        Register("Replaces a random neutral symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Bad));
 
-        Register("???", "50% chance to replace a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom() : disease);
-        Register("???", "Replaces a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom());
+        Register("50% chance to replace a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom() : disease);
+        Register("Replaces a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom());
 
         //// Stats
 
         // Adding
-        Register("???", "Random percent chance to increase strength by a random percent");
-        Register("???", );
-        Register("???", "Increases strength by 10%");
+        //Register("Increases strength by 5%", TonicAction.Add, TonicType.Stats, (disease) =>  );
+        //Register("Increases stability by 5%");
+        //Register("Increases latency by 5%");
+        //Register("Increases transmission by 5%");
+
+        //Register("Increases strength by 10%");
+        //Register("Increases stability by 10%");
+        //Register("Increases latency by 10%");
+        //Register("Increases transmission by 10%");
+
+        //Register("Increases strength by 15%");
+        //Register("Increases stability by 15%");
+        //Register("Increases latency by 15%");
+        //Register("Increases transmission by 15%");
+
+        //Register("Random percent chance to increase strength by a random percent");
+        //Register("Random percent chance to increase stability by a random percent");
+        //Register("Random percent chance to increase latency by a random percent");
+        //Register("Random percent chance to increase transmission by a random percent");
+
+        //Register("Increase strength by a random percent");
+        //Register("Increase strength by a random percent");
+        //Register("Increase strength by a random percent");
+        //Register("Increase strength by a random percent");
+
+        //// Wildcard
+        //Register("Random percent chance to increase a random disease stat by a random percent");
+        //Register("Increase a random disease stat by a random percent");
+
+        //Register("Random percent chance to decrease a random disease stat by a random percent");
+        //Register("Decrease a random disease stat by a random percent");
+
+        //Register("Random percent chance to increase or decrease a random disease stat by a random percent");
+        //Register("Increase or decrease a random disease stat by a random percent");
+
+        //Register("Increase/decrease all disease stats by a random amount");
     }
 }

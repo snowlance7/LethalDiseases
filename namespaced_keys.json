@@ -21,5 +21,9 @@
     "SyringeGun": "lethal_diseases:syringe_gun",
     "TestTube": "lethal_diseases:test_tube",
     "Tonic": "lethal_diseases:tonic"
+  },
+  "LethalDiseasesMapObjectKeys": {
+    "__type": "DawnMapObjectInfo",
+    "HealingMushroom": "lethal_diseases:healing_mushroom"
   }
 }
