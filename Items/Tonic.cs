@@ -27,13 +27,26 @@ internal class Tonic : PhysicsProp, IMixableIngredient
         scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
     }
 
+    public override void Start()
+    {
+        base.Start();
+        if (!transform.position.IsOutside()) SetRandomWildTonicDefinition();
+    }
+
+    public void SetRandomWildTonicDefinition()
+    {
+        var def = RegisteredTonicDefinitions.Where(x => x.wild == true).GetRandom(Utils.randomGlobal)!;
+        tonicDefIndex = RegisteredTonicDefinitions.IndexOf(def);
+        SetTonicDefinition(tonicDefIndex);
+    }
+
     public void SetTonicDefinition(int tonicDefIndex)
     {
         this.tonicDefIndex = tonicDefIndex;
         var def = RegisteredTonicDefinitions[tonicDefIndex];
         int tonicObjsIndex = ((int)def.tonicType) * ((int)def.tonicAction);
         tonicObjs[tonicObjsIndex].SetActive(true);
-        scanNode.headerText = $"{def.name} Tonic";
+        scanNode.headerText = $"{(!string.IsNullOrWhiteSpace(def.name) ? $"{def.name} " : "")}Tonic";
         scanNode.subText = def.description;
     }
 
@@ -72,7 +85,7 @@ internal class Tonic : PhysicsProp, IMixableIngredient
     }
 }
 
-internal class TonicDefinition(string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification, string name = "", bool spawnable = true, bool craftable = true, bool wild = false) : IEquatable<TonicDefinition>
+internal class TonicDefinition(string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification, string name = "", bool wild = false) : IEquatable<TonicDefinition>
 {
     public static List<TonicDefinition> RegisteredTonicDefinitions = new List<TonicDefinition>();
 
@@ -81,24 +94,20 @@ internal class TonicDefinition(string description, TonicAction tonicAction, Toni
     public TonicAction tonicAction = tonicAction;
     public TonicType tonicType = tonicType;
     public Func<Disease, Disease> diseaseModification = diseaseModification;
-    public bool spawnable = spawnable;
-    public bool craftable = craftable;
     public bool wild = wild;
 
     public enum TonicAction
     {
         Add,
         Remove,
-        Replace,
-        Other
+        Replace
     }
 
     public enum TonicType
     {
         Symptoms,
         Stats,
-        TransmissionTypes,
-        Other
+        TransmissionTypes
     }
 
     public Color GetColor()
@@ -132,9 +141,9 @@ internal class TonicDefinition(string description, TonicAction tonicAction, Toni
         return name == other.name && description == other.description;
     }
 
-    public static void Register(string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification, string name = "", bool spawnable = true)
+    public static void Register(string description, TonicAction tonicAction, TonicType tonicType, Func<Disease, Disease> diseaseModification, string name = "", bool wild = false)
     {
-        Register(new TonicDefinition(description, tonicAction, tonicType, diseaseModification, name, spawnable));
+        Register(new TonicDefinition(description, tonicAction, tonicType, diseaseModification, name, wild));
     }
 
     public static void Register(TonicDefinition tonicDefinition)
@@ -174,7 +183,7 @@ internal class TonicDefinition(string description, TonicAction tonicAction, Toni
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
         }));
 
-        // TODO: Have each ingredient define an tonicaction and tonictype, then choose a random tonic with the tonicaction and tonictype. 
+        // TODO: Have each ingredient define a tonicaction and tonictype, then choose a random tonic with the tonicaction and tonictype. 
 
         //// Symptoms
 
@@ -189,9 +198,6 @@ internal class TonicDefinition(string description, TonicAction tonicAction, Toni
 
         Register("Adds a random neutral symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(SymptomType.Neutral));
 
-        Register("50% chance to add a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom() : disease);
-        Register("Adds a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom());
-
         // Remove
         Register("50% chance to remove a good symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease);
         Register("50% chance to remove a good or neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom(SymptomType.Good) : disease.RemoveRandomSymptom(SymptomType.Neutral));
@@ -202,9 +208,6 @@ internal class TonicDefinition(string description, TonicAction tonicAction, Toni
         Register("Removes a random bad symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Bad));
 
         Register("Removes a random neutral symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(SymptomType.Neutral));
-
-        Register("50% chance to remove a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom() : disease);
-        Register("Removes a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom());
 
         // Replace
         Register("50% chance to replace a random good symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom(SymptomType.Good, SymptomType.Bad) : disease);
@@ -218,47 +221,201 @@ internal class TonicDefinition(string description, TonicAction tonicAction, Toni
         Register("Replaces a random neutral symptom with a random good symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Good));
         Register("Replaces a random neutral symptom with a random bad symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(SymptomType.Neutral, SymptomType.Bad));
 
-        Register("50% chance to replace a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom() : disease);
-        Register("Replaces a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom());
+        // Wild
+        Register("50% chance to add a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.AddRandomSymptom() : disease, wild: true);
+        Register("Adds a random symptom", TonicAction.Add, TonicType.Symptoms, (disease) => disease.AddRandomSymptom(), wild: true);
+
+        Register("50% chance to remove a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.RemoveRandomSymptom() : disease, wild: true);
+        Register("Removes a random symptom", TonicAction.Remove, TonicType.Symptoms, (disease) => disease.RemoveRandomSymptom(), wild: true);
+
+        Register("50% chance to replace a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => Utils.randomGlobal.NextBool() ? disease.ReplaceRandomSymptom() : disease, wild: true);
+        Register("Replaces a random symptom with another random symptom", TonicAction.Replace, TonicType.Symptoms, (disease) => disease.ReplaceRandomSymptom(), wild: true);
 
         //// Stats
 
-        // Adding
-        //Register("Increases strength by 5%", TonicAction.Add, TonicType.Stats, (disease) =>  );
-        //Register("Increases stability by 5%");
-        //Register("Increases latency by 5%");
-        //Register("Increases transmission by 5%");
+        // Add
+        Register("Increases strength by 5%", TonicAction.Add, TonicType.Stats, (disease) => { disease.strength *= 1.05f; return disease; });
+        Register("Increases stability by 5%", TonicAction.Add, TonicType.Stats, (disease) => { disease.stability *= 1.05f; return disease; });
+        Register("Increases latency by 5%", TonicAction.Add, TonicType.Stats, (disease) => { disease.latency *= 1.05f; return disease; });
+        Register("Increases transmissibility by 5%", TonicAction.Add, TonicType.Stats, (disease) => { disease.transmissibility *= 1.05f; return disease; });
 
-        //Register("Increases strength by 10%");
-        //Register("Increases stability by 10%");
-        //Register("Increases latency by 10%");
-        //Register("Increases transmission by 10%");
+        Register("Increases strength by 10%", TonicAction.Add, TonicType.Stats, (disease) => { disease.strength *= 1.1f; return disease; });
+        Register("Increases stability by 10%", TonicAction.Add, TonicType.Stats, (disease) => { disease.stability *= 1.1f; return disease; });
+        Register("Increases latency by 10%", TonicAction.Add, TonicType.Stats, (disease) => { disease.latency *= 1.1f; return disease; });
+        Register("Increases transmissibility by 10%", TonicAction.Add, TonicType.Stats, (disease) => { disease.transmissibility *= 1.1f; return disease; });
 
-        //Register("Increases strength by 15%");
-        //Register("Increases stability by 15%");
-        //Register("Increases latency by 15%");
-        //Register("Increases transmission by 15%");
+        Register("Increases strength by 15%", TonicAction.Add, TonicType.Stats, (disease) => { disease.strength *= 1.15f; return disease; });
+        Register("Increases stability by 15%", TonicAction.Add, TonicType.Stats, (disease) => { disease.stability *= 1.15f; return disease; });
+        Register("Increases latency by 15%", TonicAction.Add, TonicType.Stats, (disease) => { disease.latency *= 1.15f; return disease; });
+        Register("Increases transmissibility by 15%", TonicAction.Add, TonicType.Stats, (disease) => { disease.transmissibility *= 1.15f; return disease; });
 
-        //Register("Random percent chance to increase strength by a random percent");
-        //Register("Random percent chance to increase stability by a random percent");
-        //Register("Random percent chance to increase latency by a random percent");
-        //Register("Random percent chance to increase transmission by a random percent");
+        // Remove
+        Register("Decreases strength by 5%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.strength *= 0.95f; return disease; });
+        Register("Decreases stability by 5%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.stability *= 0.95f; return disease; });
+        Register("Decreases latency by 5%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.latency *= 0.95f; return disease; });
+        Register("Decreases transmissibility by 5%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.transmissibility *= 0.95f; return disease; });
 
-        //Register("Increase strength by a random percent");
-        //Register("Increase strength by a random percent");
-        //Register("Increase strength by a random percent");
-        //Register("Increase strength by a random percent");
+        Register("Decreases strength by 10%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.strength *= 0.9f; return disease; });
+        Register("Decreases stability by 10%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.stability *= 0.9f; return disease; });
+        Register("Decreases latency by 10%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.latency *= 0.9f; return disease; });
+        Register("Decreases transmissibility by 10%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.transmissibility *= 0.9f; return disease; });
 
-        //// Wildcard
-        //Register("Random percent chance to increase a random disease stat by a random percent");
-        //Register("Increase a random disease stat by a random percent");
+        Register("Decreases strength by 15%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.strength *= 0.85f; return disease; });
+        Register("Decreases stability by 15%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.stability *= 0.85f; return disease; });
+        Register("Decreases latency by 15%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.latency *= 0.85f; return disease; });
+        Register("Decreases transmissibility by 15%", TonicAction.Remove, TonicType.Stats, (disease) => { disease.transmissibility *= 0.85f; return disease; });
 
-        //Register("Random percent chance to decrease a random disease stat by a random percent");
-        //Register("Decrease a random disease stat by a random percent");
+        // Replace
+        // Strength ↑, Stability ↓
+        Register("Increases strength by 5%, but decreases stability by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.05f; disease.stability *= 0.95f; return disease; });
+        Register("Increases strength by 10%, but decreases stability by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.1f; disease.stability *= 0.9f; return disease; });
+        Register("Increases strength by 15%, but decreases stability by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.15f; disease.stability *= 0.85f; return disease; });
 
-        //Register("Random percent chance to increase or decrease a random disease stat by a random percent");
-        //Register("Increase or decrease a random disease stat by a random percent");
+        // Strength ↑, Latency ↓
+        Register("Increases strength by 5%, but decreases latency by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.05f; disease.latency *= 0.95f; return disease; });
+        Register("Increases strength by 10%, but decreases latency by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.1f; disease.latency *= 0.9f; return disease; });
+        Register("Increases strength by 15%, but decreases latency by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.15f; disease.latency *= 0.85f; return disease; });
 
-        //Register("Increase/decrease all disease stats by a random amount");
+        // Strength ↑, Transmissibility ↓
+        Register("Increases strength by 5%, but decreases transmissibility by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.05f; disease.transmissibility *= 0.95f; return disease; });
+        Register("Increases strength by 10%, but decreases transmissibility by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.1f; disease.transmissibility *= 0.9f; return disease; });
+        Register("Increases strength by 15%, but decreases transmissibility by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.strength *= 1.15f; disease.transmissibility *= 0.85f; return disease; });
+
+        // Stability ↑, Strength ↓
+        Register("Increases stability by 5%, but decreases strength by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.05f; disease.strength *= 0.95f; return disease; });
+        Register("Increases stability by 10%, but decreases strength by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.1f; disease.strength *= 0.9f; return disease; });
+        Register("Increases stability by 15%, but decreases strength by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.15f; disease.strength *= 0.85f; return disease; });
+
+        // Stability ↑, Latency ↓
+        Register("Increases stability by 5%, but decreases latency by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.05f; disease.latency *= 0.95f; return disease; });
+        Register("Increases stability by 10%, but decreases latency by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.1f; disease.latency *= 0.9f; return disease; });
+        Register("Increases stability by 15%, but decreases latency by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.15f; disease.latency *= 0.85f; return disease; });
+
+        // Stability ↑, Transmissibility ↓
+        Register("Increases stability by 5%, but decreases transmissibility by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.05f; disease.transmissibility *= 0.95f; return disease; });
+        Register("Increases stability by 10%, but decreases transmissibility by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.1f; disease.transmissibility *= 0.9f; return disease; });
+        Register("Increases stability by 15%, but decreases transmissibility by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.stability *= 1.15f; disease.transmissibility *= 0.85f; return disease; });
+
+        // Latency ↑, Strength ↓
+        Register("Increases latency by 5%, but decreases strength by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.05f; disease.strength *= 0.95f; return disease; });
+        Register("Increases latency by 10%, but decreases strength by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.1f; disease.strength *= 0.9f; return disease; });
+        Register("Increases latency by 15%, but decreases strength by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.15f; disease.strength *= 0.85f; return disease; });
+
+        // Latency ↑, Stability ↓
+        Register("Increases latency by 5%, but decreases stability by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.05f; disease.stability *= 0.95f; return disease; });
+        Register("Increases latency by 10%, but decreases stability by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.1f; disease.stability *= 0.9f; return disease; });
+        Register("Increases latency by 15%, but decreases stability by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.15f; disease.stability *= 0.85f; return disease; });
+
+        // Latency ↑, Transmissibility ↓
+        Register("Increases latency by 5%, but decreases transmissibility by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.05f; disease.transmissibility *= 0.95f; return disease; });
+        Register("Increases latency by 10%, but decreases transmissibility by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.1f; disease.transmissibility *= 0.9f; return disease; });
+        Register("Increases latency by 15%, but decreases transmissibility by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.latency *= 1.15f; disease.transmissibility *= 0.85f; return disease; });
+
+        // Transmissibility ↑, Strength ↓
+        Register("Increases transmissibility by 5%, but decreases strength by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.05f; disease.strength *= 0.95f; return disease; });
+        Register("Increases transmissibility by 10%, but decreases strength by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.1f; disease.strength *= 0.9f; return disease; });
+        Register("Increases transmissibility by 15%, but decreases strength by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.15f; disease.strength *= 0.85f; return disease; });
+
+        // Transmissibility ↑, Stability ↓
+        Register("Increases transmissibility by 5%, but decreases stability by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.05f; disease.stability *= 0.95f; return disease; });
+        Register("Increases transmissibility by 10%, but decreases stability by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.1f; disease.stability *= 0.9f; return disease; });
+        Register("Increases transmissibility by 15%, but decreases stability by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.15f; disease.stability *= 0.85f; return disease; });
+
+        // Transmissibility ↑, Latency ↓
+        Register("Increases transmissibility by 5%, but decreases latency by 5%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.05f; disease.latency *= 0.95f; return disease; });
+        Register("Increases transmissibility by 10%, but decreases latency by 10%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.1f; disease.latency *= 0.9f; return disease; });
+        Register("Increases transmissibility by 15%, but decreases latency by 15%", TonicAction.Replace, TonicType.Stats, (disease) => { disease.transmissibility *= 1.15f; disease.latency *= 0.85f; return disease; });
+
+        // Wild
+        Register("Increases strength by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.strength *= (1 + Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+        Register("Increases stability by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.stability *= (1 + Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+        Register("Increases latency by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.latency *= (1 + Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+        Register("Increases transmissibility by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.transmissibility *= (1 + Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+
+        Register("Decreases strength by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.strength *= (1 - Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+        Register("Decreases stability by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.stability *= (1 - Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+        Register("Decreases latency by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.latency *= (1 - Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+        Register("Decreases transmissibility by a random percent", TonicAction.Add, TonicType.Stats, (disease) => { disease.transmissibility *= (1 - Utils.randomGlobal.NextFloat(0f, 1f)); return disease; }, wild: true);
+
+        Register("Increases a random disease stat by a random percent", TonicAction.Add, TonicType.Stats, (disease) =>
+        {
+            Action[] stats =
+            {
+                () => disease.strength *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.stability *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.latency *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.transmissibility *= 1 + Utils.randomGlobal.NextFloat(0f, 1f)
+            };
+
+            stats[Utils.randomGlobal.Next(0, stats.Length)]();
+
+            return disease;
+        }, wild: true);
+
+        Register("Decreases a random disease stat by a random percent", TonicAction.Add, TonicType.Stats, (disease) =>
+        {
+            Action[] stats =
+            {
+                () => disease.strength *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.stability *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.latency *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.transmissibility *= 1 - Utils.randomGlobal.NextFloat(0f, 1f)
+            };
+
+            stats[Utils.randomGlobal.Next(0, stats.Length)]();
+
+            return disease;
+        }, wild: true);
+
+        Register("Increases or decrease a random disease stat by a random percent", TonicAction.Replace, TonicType.Stats, (disease) =>
+        {
+            Action[] increaseStats =
+            {
+                () => disease.strength *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.stability *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.latency *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.transmissibility *= 1 + Utils.randomGlobal.NextFloat(0f, 1f)
+            };
+            Action[] decreaseStats =
+            {
+                () => disease.strength *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.stability *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.latency *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.transmissibility *= 1 - Utils.randomGlobal.NextFloat(0f, 1f)
+            };
+
+            if (Utils.randomGlobal.NextBool()) increaseStats[Utils.randomGlobal.Next(0, increaseStats.Length)]();
+            else decreaseStats[Utils.randomGlobal.Next(0, decreaseStats.Length)]();
+
+            return disease;
+        }, wild: true);
+
+        Register("Increases/decreases all disease stats by a random amount", TonicAction.Replace, TonicType.Stats, (disease) =>
+        {
+            Action[] increaseStats =
+            {
+                () => disease.strength *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.stability *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.latency *= 1 + Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.transmissibility *= 1 + Utils.randomGlobal.NextFloat(0f, 1f)
+            };
+            Action[] decreaseStats =
+            {
+                () => disease.strength *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.stability *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.latency *= 1 - Utils.randomGlobal.NextFloat(0f, 1f),
+                () => disease.transmissibility *= 1 - Utils.randomGlobal.NextFloat(0f, 1f)
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (Utils.randomGlobal.NextBool()) increaseStats[i].Invoke();
+                else decreaseStats[i].Invoke();
+            }
+
+            return disease;
+        }, wild: true);
+
+        //// Transmission Types // TODO
     }
 }
