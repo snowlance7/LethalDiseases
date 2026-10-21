@@ -45,7 +45,7 @@ namespace LethalDiseases
                 if (!Utils.testing) { return; }
                 //logger.LogDebug(StartOfRound.Instance.randomMapSeed);
                 //RoundManager.Instance.ShowStaticElectricityWarningServerRpc(localPlayer.NetworkObject, 10f);
-                CheckForWater();
+                //CheckForWater();
             }
             catch
             {

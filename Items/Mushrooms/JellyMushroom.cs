@@ -1,32 +1,34 @@
 ﻿using Dawn;
-using JetBrains.Annotations;
 using SnowyLib;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items.Mushrooms;
 
-internal class JellyMushroom : PhysicsProp // TODO: Register chemistry recipe for making tonic!
+internal class JellyMushroom : PhysicsProp // TODO: Register chemistry recipe for making tonic! // TODO: Make them a bit bigger and spawn around underwater trees
 {
+    public static int roomMask = LayerMask.GetMask("Room");
+    public static List<GameObject> availableTrees = new List<GameObject>();
+
     [StaticInit]
     public static void Init()
     {
         if (!IsServerOrHost) { return; }
-        PostGenSpawnableObject.Register(new PostGenSpawnableObject(LethalContent.Items[LethalDiseasesKeys.JellyMushroom].Item.spawnPrefab, () => RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey == LethalContent.Moons[MoonKeys.March].TypedKey ? UnityEngine.Random.Range(5, 16) : 0, () =>
+        PostGenSpawnableObject.Register(LethalContent.Items[LethalDiseasesKeys.JellyMushroom].Item.spawnPrefab, () => RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey == LethalContent.Moons[MoonKeys.March].TypedKey ? UnityEngine.Random.Range(10, 20) : 0, () =>
         {
-            while (true)
+            if (availableTrees.Count() == 0)
             {
-                var trigger = GameObject.FindObjectsOfType<QuicksandTrigger>().Where(x => x.isInsideWater || x.isWater).GetRandom()!;
-                var triggerCollider = trigger.gameObject.GetComponent<Collider>();
-                var castPoint = triggerCollider.GetRandomPointInsideBounds();
-
-                if (Physics.Raycast(castPoint, Vector3.down, out RaycastHit hit, 10f, LayerMask.GetMask("Room")))
-                {
-                    return new SpawnDefinition(hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal), destroyWithScene: true); // TODO: Test this
-                }
+                availableTrees = GameObject.FindGameObjectsWithTag("Tree").Where(x => x.name.StartsWith("WychElmA")).ToList(); // TODO: This doesnt work because underwater trees cant be walked under
+                logger.LogDebug($"Got {availableTrees.Count()} trees");
             }
-        }));
+
+            var tree = availableTrees.GetRandom();
+            Vector3 castPoint = Utils.GetRandomPositionInCircle(tree.transform.position, 1f);
+            Physics.Raycast(castPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, roomMask);
+            return new SpawnDefinition(hit.point, Quaternion.identity, destroyWithScene: true);
+        }, () => availableTrees.Clear());
     }
 
     public override void ItemActivate(bool used, bool buttonDown = true)

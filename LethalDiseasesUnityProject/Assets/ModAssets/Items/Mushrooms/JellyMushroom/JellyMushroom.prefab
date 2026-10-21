@@ -53,7 +53,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.1, y: 0.1, z: 0.1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!114 &8925082258935271183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,8 +130,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.13965078, y: 0.24243832, z: 0.1453038}
-  m_Center: {x: 0.0018942133, y: 0.12317684, z: 0.0015358552}
+  m_Size: {x: 0.18215795, y: 0.41187692, z: 0.17156717}
+  m_Center: {x: -0.0018581972, y: 0.20789614, z: 0.0045145787}
 --- !u!82 &8418447819721825197
 AudioSource:
   m_ObjectHideFlags: 0
@@ -327,8 +327,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.0015, y: 0.0015, z: 0.0015}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5890237262610258151}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
