@@ -605,5 +605,66 @@ namespace LethalDiseases
 
             return this;
         }
+
+        public Disease AddTransmissionType(TransmissionType type)
+        {
+            if (type == TransmissionType.None) return this;
+
+            transmissionType |= type & ~transmissionType;
+            return this;
+        }
+
+        public Disease RemoveTransmissionType(TransmissionType type)
+        {
+            transmissionType &= ~type;
+            return this;
+        }
+
+        public Disease ReplaceTransmissionType(TransmissionType type)
+        {
+            var existingTypes = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Where(x => x != TransmissionType.None && (transmissionType & x) == x).ToList();
+
+            var availableTypes = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Where(x => x != TransmissionType.None && (transmissionType & x) != x).ToList();
+
+            if (existingTypes.Count == 0 || availableTypes.Count == 0) return this;
+
+            var typeToRemove = existingTypes.GetRandom(Utils.randomGlobal);
+
+            transmissionType &= ~typeToRemove;
+            return AddTransmissionType(type);
+        }
+
+        public Disease RemoveRandomTransmissionType()
+        {
+            var existingTypes = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Where(x => x != TransmissionType.None && (transmissionType & x) == x).ToList();
+
+            if (existingTypes.Count == 0) return this;
+
+            return RemoveTransmissionType(existingTypes.GetRandom(Utils.randomGlobal));
+        }
+
+        public Disease AddRandomTransmissionType()
+        {
+            var availableTypes = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Where(x => x != TransmissionType.None && (transmissionType & x) != x).ToList();
+
+            if (availableTypes.Count == 0) return this;
+
+            return AddTransmissionType(availableTypes.GetRandom(Utils.randomGlobal));
+        }
+
+        public Disease ReplaceRandomTransmissionType()
+        {
+            var existingTypes = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Where(x => x != TransmissionType.None && (transmissionType & x) == x).ToList();
+
+            var availableTypes = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Where(x => x != TransmissionType.None && (transmissionType & x) != x).ToList();
+
+            if (existingTypes.Count == 0 || availableTypes.Count == 0) return this;
+
+            var typeToRemove = existingTypes.GetRandom(Utils.randomGlobal);
+            var typeToAdd = availableTypes.GetRandom(Utils.randomGlobal);
+
+            transmissionType &= ~typeToRemove;
+            return AddTransmissionType(typeToAdd);
+        }
     }
 }

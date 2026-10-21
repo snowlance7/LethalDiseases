@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 466683445, guid: b9fa88e95e15d9348a8d0583367ab6d6, type: 3}
-  m_Name: HealingMushroomDef
+  m_Name: JellyMushroomDef
   m_EditorClassIdentifier: 
   _configEntries: []
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: healing_mushrooom
-  <Item>k__BackingField: {fileID: 11400000, guid: 392143e697d90f04fb84fe60c8e75842,
+    _key: jelly_mushroom
+  <Item>k__BackingField: {fileID: 11400000, guid: e44cebaf7783c6b4089e7bffbb2cc0ca,
     type: 2}
   <ShopItemPreset>k__BackingField:
     <OrderRequestNode>k__BackingField: {fileID: 0}

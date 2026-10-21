@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 608100558, guid: b9fa88e95e15d9348a8d0583367ab6d6, type: 3}
-  m_Name: HealingMushroomMapObjectDef
+  m_Name: HealingMushrromMapObjectDef
   m_EditorClassIdentifier: 
   _configEntries: []
   _tags: []
@@ -34,8 +34,8 @@ MonoBehaviour:
     destroyTrees: 0
     rotationOffset: {x: 0, y: 0, z: 0}
     spawnableFloorTags: []
-    minimumAINodeSpawnRequirement: 10
-    alignWithTerrain: 1
+    minimumAINodeSpawnRequirement: 0
+    alignWithTerrain: 0
   <IsInsideHazard>k__BackingField: 1
   <CreateInsideHazardConfig>k__BackingField: 1
   <InsideMoonCurveSpawnWeights>k__BackingField:
@@ -47,18 +47,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -74,18 +74,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -102,18 +102,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -129,18 +129,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -161,18 +161,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -188,18 +188,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -216,18 +216,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -243,18 +243,18 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
-        inSlope: 5
-        outSlope: 5
+        value: 0
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 10
-        inSlope: 5
-        outSlope: 5
+        value: 50
+        inSlope: 50
+        outSlope: 50
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334

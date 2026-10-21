@@ -3,6 +3,7 @@ using LethalDiseases.Items;
 using SnowyLib;
 using System.Collections;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
@@ -30,14 +31,21 @@ namespace LethalDiseases
         static bool goToNextSymptomInTest;
         static bool symptomsTestRunning;
 
+        public static void CheckForWater()
+        {
+            bool water = Physics.Raycast(localPlayer.gameplayCamera.transform.position + localPlayer.gameplayCamera.transform.forward, localPlayer.gameplayCamera.transform.forward, 5f, LayerMask.GetMask("Triggers"));
+            logger.LogDebug("Water: " + water);
+        }
+
         [HarmonyPostfix, HarmonyPatch(typeof(HUDManager), nameof(HUDManager.PingScan_performed))]
         public static void PingScan_performedPostFix()
         {
             try
             {
                 if (!Utils.testing) { return; }
-                logger.LogDebug(StartOfRound.Instance.randomMapSeed);
+                //logger.LogDebug(StartOfRound.Instance.randomMapSeed);
                 //RoundManager.Instance.ShowStaticElectricityWarningServerRpc(localPlayer.NetworkObject, 10f);
+                CheckForWater();
             }
             catch
             {

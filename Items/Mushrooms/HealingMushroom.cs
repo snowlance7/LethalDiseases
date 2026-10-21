@@ -2,7 +2,7 @@
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
-namespace LethalDiseases.Items
+namespace LethalDiseases.Items.Mushrooms
 {
     internal class HealingMushroom : AttachableObject
     {

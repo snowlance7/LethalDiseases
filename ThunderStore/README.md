@@ -20,3 +20,7 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Syringe Dart Launcher](https://skfb.ly/6qCJG) by Rectus
 - [Leech](https://skfb.ly/URQ6) by Kihkztand
 - [FILTRO](https://skfb.ly/oySUL) by sergio.garcia2
+- [Jelly_Mushroom](https://skfb.ly/6WOt8) by tsishir
+- [Mushroom monster](https://skfb.ly/pOy9E) by Hellrot
+- [Magical Mushroom (Blue)](https://skfb.ly/QNOU) by MA3D
+- [Mushrooms](https://skfb.ly/onNoY) by leha_pu

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LethalDiseases.Items
+namespace LethalDiseases.Items.Mushrooms
 {
     internal class PoisonMushroom
     {
+
     }
 }
