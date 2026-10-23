@@ -25,7 +25,7 @@ namespace LethalDiseases.Items
         [StaticInit]
         public static void Init()
         {
-            CraftingAPI.RegisterIngredient(new ChemistryIngredient(LethalDiseasesKeys.CottonSwab));
+            ChemistryIngredient.Register(LethalDiseasesKeys.CottonSwab);
         }
 
         public void Awake()

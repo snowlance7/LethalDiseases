@@ -26,6 +26,8 @@ namespace LethalDiseases
         public static readonly NamespacedKey<DawnItemInfo> Sanitizer = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "sanitizer");
         public static readonly NamespacedKey<DawnItemInfo> AirFilter = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "air_filter");
         public static readonly NamespacedKey<DawnItemInfo> Tonic = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "tonic");
+        public static readonly NamespacedKey<DawnItemInfo> Mushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "mushroom");
         public static readonly NamespacedKey<DawnItemInfo> JellyMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "jelly_mushroom");
+        public static readonly NamespacedKey<DawnItemInfo> BeechMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "beech_mushroom");
     }
 }

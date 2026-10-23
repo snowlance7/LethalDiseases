@@ -1,15 +1,26 @@
-﻿using SnowyLib;
+﻿using SnowyCraftingCore;
+using SnowyLib;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace LethalDiseases.Items.Mushrooms
 {
-    internal class TrumpetMushroom : PhysicsProp
+    internal class TrumpetMushroom : Mushroom // Black_Trumpet Mushroom (All over the ground outside in Adamance)
     {
         public static void Init()
         {
             //PostGenSpawnableObject.re
+        }
+
+        public override ChemistryIngredient? GetIngredient()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnEatMushroom()
+        {
+            throw new NotImplementedException();
         }
     }
 }
