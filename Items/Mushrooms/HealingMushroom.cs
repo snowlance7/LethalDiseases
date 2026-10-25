@@ -7,6 +7,8 @@ namespace LethalDiseases.Items.Mushrooms
 {
     internal class HealingMushroom : Mushroom
     {
+        [SerializeField] Color color;
+
         public static int HealingAmount => PluginInstance.Config.Bind("Healing Mushroom Options", "Healing Mushroom | Healing Amount", 10, "How much health the healing mushroom heals when eaten").Value;
 
         [StaticInit]

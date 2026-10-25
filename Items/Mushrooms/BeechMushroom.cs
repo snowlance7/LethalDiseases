@@ -11,6 +11,8 @@ namespace LethalDiseases.Items.Mushrooms;
 
 internal class BeechMushroom : Mushroom // Beech_Mushroom: Base of trees in vow
 {
+    [SerializeField] Color color;
+
     public static NamespacedKey<DawnMoonInfo>? currentLevelKey;
     public static List<GameObject> availableTrees = [];
 
@@ -39,17 +41,22 @@ internal class BeechMushroom : Mushroom // Beech_Mushroom: Base of trees in vow
             }
 
             if (availableTrees.Count == 0) { return null; }
-            // TODO: Continue here
+
+            var tree = availableTrees.GetRandom();
+            Vector3 castPosition = Utils.GetRandomPositionInCircle(tree.transform.position, 1f, 1.5f);
+            Vector3 position = castPosition.GetFloorPosition();
+            return new SpawnDefinition(position, Quaternion.identity, destroyWithScene: true);
         });
     }
 
     public override ChemistryIngredient? GetIngredient()
     {
+        Color color = Color.t
         return new ChemistryIngredient(LethalDiseasesKeys.Mushroom, Color.grey, "Add");
     }
 
     public override void OnEatMushroom()
     {
-        throw new NotImplementedException();
+        localPlayer.HealPlayerAndSync(1);
     }
 }

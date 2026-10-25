@@ -10,6 +10,8 @@ namespace LethalDiseases.Items.Mushrooms;
 
 internal class JellyMushroom : Mushroom // Jelly_Mushroom (March water) // TODO: Register chemistry recipe for making tonic! // TODO: Make them a bit bigger and spawn around underwater trees
 {
+    [SerializeField] Color color;
+
     public static int roomMask = LayerMask.GetMask("Room");
     public static List<QuicksandTrigger> availableTriggers = new List<QuicksandTrigger>();
 
@@ -35,7 +37,7 @@ internal class JellyMushroom : Mushroom // Jelly_Mushroom (March water) // TODO:
 
     public override ChemistryIngredient? GetIngredient()
     {
-        return new ChemistryIngredient(LethalDiseasesKeys.Mushroom, Color.magenta, "TransmissionType");
+        return new ChemistryIngredient(LethalDiseasesKeys.Mushroom, color, "TransmissionType"); // TODO: Make tonicaction and tonictype random at the start of each game
     }
 
     public override void OnEatMushroom()

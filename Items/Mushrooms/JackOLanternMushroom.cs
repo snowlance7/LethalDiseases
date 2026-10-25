@@ -2,11 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace LethalDiseases.Items.Mushrooms
 {
     internal class JackOLanternMushroom : Mushroom // Jack_O_Lantern_Mushroom: adamance. some species glow in the dark. (Can cause severe nausea, vomiting, abdominal cramps, and diarrhea)
     {
+        [SerializeField] Color color;
+
         public override ChemistryIngredient? GetIngredient()
         {
             throw new NotImplementedException();
