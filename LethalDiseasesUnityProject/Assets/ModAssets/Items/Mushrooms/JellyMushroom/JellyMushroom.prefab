@@ -299,6 +299,8 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
+  playerAttachedTo: {fileID: 0}
+  color: {r: 0.28627452, g: 0.7137255, b: 0.67058825, a: 0}
 --- !u!1 &8842834773045828421
 GameObject:
   m_ObjectHideFlags: 0

@@ -61,9 +61,9 @@ MonoBehaviour:
   restingRotation: {x: 0, y: 0, z: 0}
   rotationOffset: {x: 0, y: 0, z: 0}
   positionOffset: {x: 0, y: 0, z: 0}
-  meshOffset: 0
+  meshOffset: 1
   meshVariants: []
   materialVariants: []
   clinkAudios: []
   usableInSpecialAnimations: 0
-  canBeInspected: 0
+  canBeInspected: 1

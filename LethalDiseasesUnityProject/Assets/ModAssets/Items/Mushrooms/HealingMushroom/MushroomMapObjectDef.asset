@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 608100558, guid: b9fa88e95e15d9348a8d0583367ab6d6, type: 3}
-  m_Name: HealingMushroomMapObjectDef
+  m_Name: MushroomMapObjectDef
   m_EditorClassIdentifier: 
   _configEntries: []
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: healing_mushroom
-  <GameObject>k__BackingField: {fileID: 4780607323454162682, guid: 12d26b134eb81c145b91a5f3f7f907a1,
+    _key: mushroom
+  <GameObject>k__BackingField: {fileID: 9194112429530129301, guid: b47d3fb3ab59d984ba56a369efdf6baf,
     type: 3}
-  <MapObjectName>k__BackingField: Healing Mushroom
+  <MapObjectName>k__BackingField: Mushroom
   <InsideMapObjectSettings>k__BackingField:
     spawnFacingAwayFromWall: 0
     spawnFacingWall: 0
@@ -148,7 +148,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  <InsidePrioritiseMoonConfig>k__BackingField: 1
+  <InsidePrioritiseMoonConfig>k__BackingField: 0
   <CreateInsideCurveSpawnWeightsConfig>k__BackingField: 1
   <IsOutsideHazard>k__BackingField: 1
   <CreateOutsideHazardConfig>k__BackingField: 1
@@ -262,7 +262,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  <OutsidePrioritiseMoonConfig>k__BackingField: 1
+  <OutsidePrioritiseMoonConfig>k__BackingField: 0
   <CreateOutsideCurveSpawnWeightsConfig>k__BackingField: 1
   <DefaultOutsideCurveSpawnWeights>k__BackingField: 
   <DefaultInsideCurveSpawnWeights>k__BackingField: 

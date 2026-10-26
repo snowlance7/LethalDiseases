@@ -28,11 +28,11 @@ internal class BeechMushroom : Mushroom // Beech_Mushroom: Base of trees in vow 
             {
                 if (currentLevelKey == MoonKeys.March)
                 {
-                    availableTrees = GameObject.FindGameObjectsWithTag("Tree").Where(x => x.name.StartsWith("WychElmB")).ToList();
+                    availableTrees = Utils.currentLevelTrees.Where(x => x.name.StartsWith("WychElmB")).ToList();
                 }
                 else
                 {
-                    availableTrees = GameObject.FindGameObjectsWithTag("Tree").ToList();
+                    availableTrees = Utils.currentLevelTrees.ToList();
                 }
             }
 

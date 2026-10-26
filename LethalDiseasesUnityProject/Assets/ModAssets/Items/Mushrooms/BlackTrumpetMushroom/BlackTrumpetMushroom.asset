@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
-  m_Name: HealingMushroom
+  m_Name: BlackTrumpetMushroom
   m_EditorClassIdentifier: 
   itemId: 0
-  itemName: Healing Mushrooom
+  itemName: Black Trumpet Mushroom
   spawnPositionTypes: []
   twoHanded: 0
   twoHandedAnimation: 0
   disableHandsOnWall: 0
   canBeGrabbedBeforeGameStart: 1
   disallowUtilitySlot: 1
-  weight: 1.01
+  weight: 1.1
   itemIsTrigger: 0
   holdButtonUse: 0
   itemSpawnsOnGround: 0
@@ -29,14 +29,14 @@ MonoBehaviour:
   creditsWorth: 0
   lockedInDemo: 0
   highestSalePercentage: 80
-  maxValue: 10
-  minValue: 5
-  spawnPrefab: {fileID: 4780607323454162682, guid: 12d26b134eb81c145b91a5f3f7f907a1,
+  maxValue: 5
+  minValue: 0
+  spawnPrefab: {fileID: 3084836691221113289, guid: 7bea87912a887134ebc7bdf894d05a6d,
     type: 3}
   requiresBattery: 0
   batteryUsage: 0
   automaticallySetUsingPower: 0
-  itemIcon: {fileID: 21300000, guid: 332838a27a7e53448b9c38bc21337d47, type: 2}
+  itemIcon: {fileID: 21300000, guid: 7cff049b550a3824f83eff4a4af2fff2, type: 3}
   grabAnim: 
   useAnim: 
   pocketAnim: 
@@ -57,7 +57,7 @@ MonoBehaviour:
   verticalOffset: 0
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1
-  restingRotation: {x: 0, y: 0, z: 0}
+  restingRotation: {x: 0, y: 0, z: 90}
   rotationOffset: {x: 0, y: 0, z: 0}
   positionOffset: {x: 0, y: 0, z: 0}
   meshOffset: 1
@@ -65,4 +65,4 @@ MonoBehaviour:
   materialVariants: []
   clinkAudios: []
   usableInSpecialAnimations: 0
-  canBeInspected: 0
+  canBeInspected: 1

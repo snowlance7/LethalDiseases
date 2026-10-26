@@ -1,4 +1,5 @@
-﻿using SnowyLib;
+﻿using Dawn;
+using SnowyLib;
 using System.Linq;
 using UnityEngine;
 using static LethalDiseases.Plugin;
@@ -13,7 +14,8 @@ internal class ChanterelleMushroom : Mushroom // Chanterelle_Mushroom (rarely in
         if (!IsServerOrHost) { return; }
         PostGenSpawnableObject.Register(LethalDiseasesKeys.ChanterelleMushroom, () =>
         {
-            return (int)(GameObject.FindGameObjectsWithTag("Tree").Count() * UnityEngine.Random.Range(0f, 0.15f));
+            if (RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey == MoonKeys.Adamance) { return UnityEngine.Random.Range(0, 25); }
+            return (int)(Utils.currentLevelTrees.Count() * UnityEngine.Random.Range(0f, 0.1f));
         }, () => GetRandomOutsideSpawn());
     }
 

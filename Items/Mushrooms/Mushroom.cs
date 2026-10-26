@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using Dawn;
 using UnityEngine.AI;
 
 namespace LethalDiseases.Items.Mushrooms;
 
 internal abstract class Mushroom : AttachableObject, IMixableIngredient
 {
+    public static readonly List<NamespacedKey<DawnItemInfo>> mushroomKeys = [LethalDiseasesKeys.BeechMushroom, LethalDiseasesKeys.BellcapMushroom, LethalDiseasesKeys.BlackTrumpetMushroom, LethalDiseasesKeys.CaveMushroom, LethalDiseasesKeys.ChanterelleMushroom, LethalDiseasesKeys.DeathCapMushroom, LethalDiseasesKeys.Mushroom, LethalDiseasesKeys.JackOLanternMushroom, LethalDiseasesKeys.JellyMushroom, LethalDiseasesKeys.MonsterMushroom, LethalDiseasesKeys.OysterMushroom, LethalDiseasesKeys.RadioMushroom, LethalDiseasesKeys.ShaggyManeMushroom];
     public static readonly List<string> availableTypes = ["Add", "Remove", "Replace", "Symptom", "Stat", "TransmissionType", "Add", "Remove", "Replace", "Symptom", "Stat", "TransmissionType"];
     public static List<string> newTypes = [];
     public static Dictionary<Type, string> MushroomTypes = [];
