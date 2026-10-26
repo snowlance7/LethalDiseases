@@ -1,23 +1,24 @@
-﻿using SnowyCraftingCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SnowyLib;
+using System.Linq;
 using UnityEngine;
+using static LethalDiseases.Plugin;
 
-namespace LethalDiseases.Items.Mushrooms
+namespace LethalDiseases.Items.Mushrooms;
+
+internal class ChanterelleMushroom : Mushroom // Chanterelle_Mushroom (rarely in forested areas)
 {
-    internal class ChanterelleMushroom : Mushroom // Chanterelle_Mushroom (rarely in forested areas)
+    [StaticInit]
+    public static void Init()
     {
-        [SerializeField] Color color;
-
-        public override ChemistryIngredient? GetIngredient()
+        if (!IsServerOrHost) { return; }
+        PostGenSpawnableObject.Register(LethalDiseasesKeys.ChanterelleMushroom, () =>
         {
-            throw new NotImplementedException();
-        }
+            return (int)(GameObject.FindGameObjectsWithTag("Tree").Count() * UnityEngine.Random.Range(0f, 0.15f));
+        }, () => GetRandomOutsideSpawn());
+    }
 
-        public override void OnEatMushroom()
-        {
-            throw new NotImplementedException();
-        }
+    public override void OnEatMushroom()
+    {
+        return;
     }
 }

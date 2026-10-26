@@ -4,20 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace LethalDiseases.Items.Mushrooms
+namespace LethalDiseases.Items.Mushrooms;
+
+internal class ShaggyManeMushroom : Mushroom // Shaggy Mane Mushroom (Assurance and offense)
 {
-    internal class ShaggyManeMushroom : Mushroom // Shaggy Mane Mushroom (Assurance and offense)
+    public override void OnEatMushroom()
     {
-        [SerializeField] Color color;
-
-        public override ChemistryIngredient? GetIngredient()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void OnEatMushroom()
-        {
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
     }
 }

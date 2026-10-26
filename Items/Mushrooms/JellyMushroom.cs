@@ -1,5 +1,4 @@
 ﻿using Dawn;
-using SnowyCraftingCore;
 using SnowyLib;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +9,6 @@ namespace LethalDiseases.Items.Mushrooms;
 
 internal class JellyMushroom : Mushroom // Jelly_Mushroom (March water) // TODO: Register chemistry recipe for making tonic! // TODO: Make them a bit bigger and spawn around underwater trees
 {
-    [SerializeField] Color color;
-
-    public static int roomMask = LayerMask.GetMask("Room");
     public static List<QuicksandTrigger> availableTriggers = new List<QuicksandTrigger>();
 
     [StaticInit]
@@ -30,14 +26,9 @@ internal class JellyMushroom : Mushroom // Jelly_Mushroom (March water) // TODO:
             var trigger = availableTriggers.GetRandom();
             var triggerCollider = trigger.gameObject.GetComponent<Collider>();
             Vector3 castPoint = triggerCollider.GetRandomPointInsideBounds();
-            Physics.Raycast(castPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, roomMask);
+            Physics.Raycast(castPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, PluginInstance.roomMask);
             return new SpawnDefinition(hit.point, Quaternion.identity, destroyWithScene: true);
         }, () => availableTriggers.Clear());
-    }
-
-    public override ChemistryIngredient? GetIngredient()
-    {
-        return new ChemistryIngredient(LethalDiseasesKeys.Mushroom, color, "TransmissionType"); // TODO: Make tonicaction and tonictype random at the start of each game
     }
 
     public override void OnEatMushroom()

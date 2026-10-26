@@ -11,29 +11,29 @@ namespace LethalDiseases
 {
     public static class DiseaseAPI
     {
-        public static void Infect(this NetworkObject netObj)
+        public static void InfectAndSync(this NetworkObject netObj)
         {
             Disease disease = Disease.CreateRandomDisease();
-            netObj.Infect(disease);
+            netObj.InfectAndSync(disease);
         }
 
-        public static void Infect(this NetworkObject netObj, Disease disease)
+        public static void InfectAndSync(this NetworkObject netObj, Disease disease)
         {
-            netObj.Infect(disease.ToString());
+            netObj.InfectAndSync(disease.ToString());
         }
 
-        public static void Infect(this NetworkObject netObj, string diseaseId)
+        public static void InfectAndSync(this NetworkObject netObj, string diseaseId)
         {
             if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
             netObj.GetHost().InfectRpc(diseaseId);
         }
         // TODO: Make more helper methods like these
-        public static void Infect(this PlayerControllerB player) => player.NetworkObject.Infect();
-        public static void Infect(this PlayerControllerB player, Disease disease) => player.NetworkObject.Infect(disease);
-        public static void Infect(this PlayerControllerB player, string diseaseId) => player.NetworkObject.Infect(diseaseId);
-        public static void Infect(this EnemyAI enemy) => enemy.NetworkObject.Infect();
-        public static void Infect(this EnemyAI enemy, Disease disease) => enemy.NetworkObject.Infect(disease);
-        public static void Infect(this EnemyAI enemy, string diseaseId) => enemy.NetworkObject.Infect(diseaseId);
+        public static void InfectAndSync(this PlayerControllerB player) => player.NetworkObject.InfectAndSync();
+        public static void InfectAndSync(this PlayerControllerB player, Disease disease) => player.NetworkObject.InfectAndSync(disease);
+        public static void InfectAndSync(this PlayerControllerB player, string diseaseId) => player.NetworkObject.InfectAndSync(diseaseId);
+        public static void InfectAndSync(this EnemyAI enemy) => enemy.NetworkObject.InfectAndSync();
+        public static void InfectAndSync(this EnemyAI enemy, Disease disease) => enemy.NetworkObject.InfectAndSync(disease);
+        public static void InfectAndSync(this EnemyAI enemy, string diseaseId) => enemy.NetworkObject.InfectAndSync(diseaseId);
 
         public static void TrySpread(this NetworkObject source, NetworkObject netObj, TransmissionType transmissionType, float multiplier = 1f)
         {

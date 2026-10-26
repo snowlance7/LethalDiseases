@@ -53,7 +53,7 @@ namespace LethalDiseases.Symptoms
         bool meshEnabled;
 
         int currentFootstepSurfaceIndex;
-        private int previousFootstepClip;
+        int previousFootstepClip;
 
         float timeSinceAIInterval;
 

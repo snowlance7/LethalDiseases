@@ -1,9 +1,10 @@
 ﻿using SnowyCraftingCore;
 using SnowyLib;
-using UnityEngine;
-using Unity.Netcode;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.AI;
 
 namespace LethalDiseases.Items.Mushrooms;
 
@@ -22,6 +23,18 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
         newTypes = [.. availableTypes];
 
         AddMushroomType(typeof(BeechMushroom)); // TODO: Continue here
+        AddMushroomType(typeof(BellcapMushroom));
+        AddMushroomType(typeof(CaveMushroom));
+        AddMushroomType(typeof(ChanterelleMushroom));
+        AddMushroomType(typeof(DeathCapMushroom));
+        AddMushroomType(typeof(JackOLanternMushroom));
+        AddMushroomType(typeof(JellyMushroom));
+        AddMushroomType(typeof(MonsterMushroom));
+        AddMushroomType(typeof(OysterMushroom));
+        AddMushroomType(typeof(RadioMushroom));
+        AddMushroomType(typeof(ShaggyManeMushroom));
+        AddMushroomType(typeof(BlackTrumpetMushroom));
+        AddMushroomType(typeof(HealingMushroom));
     }
 
     public static void AddMushroomType(Type type)
@@ -34,6 +47,11 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
         string typeString = newTypes.GetRandom(Utils.randomGlobal); // TODO: Test to make sure randomGlobal exists here
         newTypes.Remove(typeString);
         MushroomTypes.Add(type, typeString);
+    }
+
+    public static SpawnDefinition GetRandomOutsideSpawn()
+    {
+        return new SpawnDefinition(RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(Utils.outsideAINodes.GetRandom().transform.position, 30f, default(NavMeshHit), layerMask: -8193), Quaternion.identity, destroyWithScene: true);
     }
 
     public bool DespawnItemAfterInput()

@@ -174,7 +174,7 @@ namespace LethalDiseases
                     HUDManager.Instance.DisplayTip(symptom.name, symptom.description);
                     Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
                     disease.latency = 0;
-                    localPlayer.Infect(disease);
+                    localPlayer.InfectAndSync(disease);
                     yield return new WaitUntil(() => goToNextSymptomInTest);
                     goToNextSymptomInTest = false;
                 }
@@ -204,7 +204,7 @@ namespace LethalDiseases
                     disease.strength = 1;
                     disease.stability = 1;
                     disease.transmissibility = 0;
-                    localPlayer.Infect(disease);
+                    localPlayer.InfectAndSync(disease);
                     yield return new WaitForSeconds(0.2f);
                 }
 
@@ -220,7 +220,7 @@ namespace LethalDiseases
             try
             {
                 if (!Utils.testing || nextEnemyDisease == null) { return; }
-                __instance.Infect(nextEnemyDisease);
+                __instance.InfectAndSync(nextEnemyDisease);
             }
             catch
             {
@@ -251,7 +251,7 @@ namespace LethalDiseases
                     else if (localPlayer.currentlyHeldObjectServer is DartGunAmmo ammo)
                         ammo.SetDiseaseRpc(disease.ToString(), DartGunAmmo.MaxDartsInAmmo);
                     else
-                        localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
+                        localPlayer.currentlyHeldObjectServer.NetworkObject.InfectAndSync(disease);
 
                     HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
                 }
@@ -259,7 +259,7 @@ namespace LethalDiseases
                 {
                     disease = Disease.CreateRandomDisease();
                     if (now) { disease.latency = 0; }
-                    localPlayer.NetworkObject.Infect(disease);
+                    localPlayer.NetworkObject.InfectAndSync(disease);
                     HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
                 }
                 return;
@@ -295,7 +295,7 @@ namespace LethalDiseases
                         {
                             disease = Disease.CreateRandomDisease();
                             if (now) { disease.latency = 0; }
-                            localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
+                            localPlayer.currentlyHeldObjectServer.NetworkObject.InfectAndSync(disease);
                             HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
                             return;
                         }
@@ -306,7 +306,7 @@ namespace LethalDiseases
                         disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
 
                         if (now) { disease.latency = 0; }
-                        localPlayer.currentlyHeldObjectServer.NetworkObject.Infect(disease);
+                        localPlayer.currentlyHeldObjectServer.NetworkObject.InfectAndSync(disease);
                         HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
                     }
                     else
@@ -317,7 +317,7 @@ namespace LethalDiseases
                         disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
 
                         if (now) { disease.latency = 0; }
-                        localPlayer.NetworkObject.Infect(disease);
+                        localPlayer.NetworkObject.InfectAndSync(disease);
                         HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
                     }
                     break;

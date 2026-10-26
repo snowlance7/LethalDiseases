@@ -259,7 +259,7 @@ internal class DartGun : PhysicsProp
         if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
 
         if (IsServer)
-            player.Infect(loadedAmmo!.storedDisease);
+            player.InfectAndSync(loadedAmmo!.storedDisease);
 
         if (localPlayer == player)
         {
@@ -284,7 +284,7 @@ internal class DartGun : PhysicsProp
         EnemyAI enemy = netObj.GetComponent<EnemyAI>();
 
         if (IsServer)
-            enemy.Infect(loadedAmmo!.storedDisease);
+            enemy.InfectAndSync(loadedAmmo!.storedDisease);
 
         GameObject dartObj = Instantiate(dartPrefab, position, rotation, enemy.transform); // TODO: Test this
         Destroy(dartObj, DartLifetime);

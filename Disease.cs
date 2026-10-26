@@ -36,19 +36,27 @@ namespace LethalDiseases
             }
         }
 
-        // How long it lasts
+        /// <summary>
+        /// How long it lasts
+        /// </summary>
         public float strength { get; internal set; }
-        public float strengthTime => Mathf.Lerp(StrengthRange.Min, StrengthRange.Max, strength);
+        public float strengthTime { get { return Mathf.Lerp(StrengthRange.Min, StrengthRange.Max, strength); } set { strength = Mathf.InverseLerp(StrengthRange.Min, StrengthRange.Max, value); } }
 
-        // How long it lasts outside the player
+        /// <summary>
+        /// How long it lasts outside the player
+        /// </summary>
         public float stability { get; internal set; }
-        public float stabilityTime => Mathf.Lerp(StabilityRange.Min, StabilityRange.Max, stability);
+        public float stabilityTime { get { return Mathf.Lerp(StabilityRange.Min, StabilityRange.Max, stability); } set { stability = Mathf.InverseLerp(StabilityRange.Min, StabilityRange.Max, value); } }
 
-        // How long it takes for the symptoms to show up
+        /// <summary>
+        /// How long it takes for the symptoms to show up
+        /// </summary>
         public float latency { get; internal set; }
-        public float latencyTime => Mathf.Lerp(LatencyRange.Min, LatencyRange.Max, latency);
+        public float latencyTime { get { return Mathf.Lerp(LatencyRange.Min, LatencyRange.Max, latency); } set { latency = Mathf.InverseLerp(LatencyRange.Min, LatencyRange.Max, value); } }
 
-        // Likelyhood it will transmit based on transmission type
+        /// <summary>
+        /// Likelyhood it will transmit based on transmission type
+        /// </summary>
         public float transmissibility { get; internal set; }
 
         public TransmissionType transmissionType { get; private set; }
@@ -175,6 +183,40 @@ namespace LethalDiseases
             return disease;
         }
 
+        internal static Disease CreateRandomDiseaseWithSymptoms(params Symptom[] symptoms)
+        {
+            float RandomPercent() => MathF.Round(UnityEngine.Random.Range(0f, 1f), 2);
+
+            var disease = new Disease
+            {
+                strength = RandomPercent(),
+                transmissibility = RandomPercent(),
+                stability = RandomPercent(),
+                latency = RandomPercent(),
+                transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(new int[] { AirborneTypeWeight, ContactTypeWeight, BloodTypeWeight, FoodborneTypeWeight })
+            };
+
+            disease.AddSymptoms(symptoms);
+            return disease;
+        }
+
+        internal static Disease CreateRandomDiseaseWithSymptoms(params string[] symptomNames)
+        {
+            float RandomPercent() => MathF.Round(UnityEngine.Random.Range(0f, 1f), 2);
+
+            var disease = new Disease
+            {
+                strength = RandomPercent(),
+                transmissibility = RandomPercent(),
+                stability = RandomPercent(),
+                latency = RandomPercent(),
+                transmissionType = (TransmissionType)RoundManager.Instance.GetRandomWeightedIndex(new int[] { AirborneTypeWeight, ContactTypeWeight, BloodTypeWeight, FoodborneTypeWeight })
+            };
+
+            disease.AddSymptoms(symptomNames);
+            return disease;
+        }
+
         public override string ToString() // Format: 0.00|0.00|0.00|0.00|0|0,0,0,0,0,0
         {
             // Ensure consistent float formatting
@@ -239,7 +281,7 @@ namespace LethalDiseases
 
                     if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
                     {
-                        _networkObject.Infect(this);
+                        _networkObject.InfectAndSync(this);
                     }
                 }
             }
@@ -253,17 +295,17 @@ namespace LethalDiseases
                 }
 
                 if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
-                    _networkObject.Infect(this);
+                    _networkObject.InfectAndSync(this);
             }
             if (transmissionType.HasFlag(TransmissionType.Blood) && spreadTransmissionType.HasFlag(TransmissionType.Blood))
             {
                 if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
-                    _networkObject.Infect(this);
+                    _networkObject.InfectAndSync(this);
             }
             if (transmissionType.HasFlag(TransmissionType.Foodborne) && spreadTransmissionType.HasFlag(TransmissionType.Foodborne))
             {
                 if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
-                    _networkObject.Infect(this);
+                    _networkObject.InfectAndSync(this);
             }
         }
 
@@ -492,6 +534,33 @@ namespace LethalDiseases
         public Disease AddSymptom(Symptom symptom)
         {
             return AddSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
+        }
+
+        public Disease AddSymptom(string symptomName)
+        {
+            var symptom = Symptom.GetSymptomByName(symptomName);
+            if (symptom == null) { logger.LogError("Couldnt find symptom with name" + symptomName); return this; }
+            return AddSymptom(symptom);
+        }
+
+        public Disease AddSymptoms(params string[] symptomNames)
+        {
+            foreach (var symptomName in symptomNames)
+            {
+                AddSymptom(symptomName);
+            }
+
+            return this;
+        }
+
+        public Disease AddSymptoms(params Symptom[] symptoms)
+        {
+            foreach (var symptom in symptoms)
+            {
+                AddSymptom(symptom);
+            }
+
+            return this;
         }
 
         public Disease AddSymptom(int symptomIndex)

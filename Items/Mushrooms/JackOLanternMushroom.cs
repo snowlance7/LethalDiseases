@@ -1,23 +1,16 @@
-﻿using SnowyCraftingCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using static LethalDiseases.Plugin;
 using UnityEngine;
 
-namespace LethalDiseases.Items.Mushrooms
+namespace LethalDiseases.Items.Mushrooms;
+
+internal class JackOLanternMushroom : Mushroom // Jack_O_Lantern_Mushroom: adamance. some species glow in the dark. (Can cause severe nausea, vomiting, abdominal cramps, and diarrhea)
 {
-    internal class JackOLanternMushroom : Mushroom // Jack_O_Lantern_Mushroom: adamance. some species glow in the dark. (Can cause severe nausea, vomiting, abdominal cramps, and diarrhea)
+    [SerializeField] MeshRenderer renderer = null!; // TODO: Set up glow in the dark effects
+
+    public override void OnEatMushroom()
     {
-        [SerializeField] Color color;
-
-        public override ChemistryIngredient? GetIngredient()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void OnEatMushroom()
-        {
-            throw new NotImplementedException();
-        }
+        Disease disease = Disease.CreateRandomDiseaseWithSymptoms("Nausea", "Vomiting", "Cramping");
+        localPlayer.InfectAndSync(disease);
     }
 }
