@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RadioMushroom
   m_EditorClassIdentifier: 
   itemId: 0
-  itemName: Radio Mushrooom
+  itemName: Radio Mushroom
   spawnPositionTypes: []
   twoHanded: 0
   twoHandedAnimation: 0

@@ -31,7 +31,6 @@ namespace LethalDiseases
         public static readonly NamespacedKey<DawnItemInfo> CaveMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "cave_mushroom");
         public static readonly NamespacedKey<DawnItemInfo> ChanterelleMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "chanterelle_mushroom");
         public static readonly NamespacedKey<DawnItemInfo> DeathCapMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "death_cap_mushroom");
-        public static readonly NamespacedKey<DawnItemInfo> HealingMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "healing_mushroom");
         public static readonly NamespacedKey<DawnItemInfo> JackOLanternMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "jack_o_lantern_mushroom");
         public static readonly NamespacedKey<DawnItemInfo> JellyMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "jelly_mushroom");
         public static readonly NamespacedKey<DawnItemInfo> MonsterMushroom = NamespacedKey<DawnItemInfo>.From("lethal_diseases", "monster_mushroom");

@@ -44,6 +44,7 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
         if (newTypes.Count == 0)
         {
             MushroomTypes.Add(type, availableTypes.GetRandom(Utils.randomGlobal));
+            return;
         }
 
         string typeString = newTypes.GetRandom(Utils.randomGlobal); // TODO: Test to make sure randomGlobal exists here

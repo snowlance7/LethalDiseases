@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 7928489170369397234}
   - component: {fileID: 5513100752084512911}
   - component: {fileID: 8181935172269814946}
-  m_Layer: 12
+  m_Layer: 6
   m_Name: Mushroom
   m_TagString: PhysicsProp
   m_Icon: {fileID: 0}
@@ -324,7 +324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1822434685
+  GlobalObjectIdHash: 1229620335
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1

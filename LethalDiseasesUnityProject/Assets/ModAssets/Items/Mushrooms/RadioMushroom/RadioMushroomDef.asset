@@ -16,7 +16,7 @@ MonoBehaviour:
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: radio_mushrooom
+    _key: radio_mushroom
   <Item>k__BackingField: {fileID: 11400000, guid: bd7bb1f259aa0e14faf65f79dd812c32,
     type: 2}
   <ShopItemPreset>k__BackingField:

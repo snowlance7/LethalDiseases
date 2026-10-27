@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 1472057577608287120}
   - component: {fileID: 5522780592685416810}
   - component: {fileID: 6709457799582388082}
-  m_Layer: 12
+  m_Layer: 6
   m_Name: BellcapMushroom
   m_TagString: PhysicsProp
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2529216546
+  GlobalObjectIdHash: 787230481
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1

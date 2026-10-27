@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7967331613756989415}
   - component: {fileID: 8247644267205840120}
   - component: {fileID: 4596561362608829069}
-  m_Layer: 12
+  m_Layer: 6
   m_Name: ChanterelleMushroom
   m_TagString: PhysicsProp
   m_Icon: {fileID: 0}
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3237789325
+  GlobalObjectIdHash: 760412938
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1

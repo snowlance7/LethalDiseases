@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 8761207030495414059}
   - component: {fileID: 3017439630052441571}
   - component: {fileID: 7022169702940614509}
-  m_Layer: 12
+  m_Layer: 6
   m_Name: OysterMushroom
   m_TagString: PhysicsProp
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3753064373
+  GlobalObjectIdHash: 2478967851
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
