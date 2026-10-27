@@ -18,20 +18,7 @@ internal class OysterMushroom : Mushroom
         PostGenSpawnableObject.Register(LethalDiseasesKeys.OysterMushroom, () =>
         {
             return (int)(Utils.currentLevelTrees.Count() * UnityEngine.Random.Range(0.1f, 0.25f));
-        }, () =>
-        {
-            Vector3 spawnPosition = Utils.currentLevelTrees.GetRandom().transform.position;
-            float YOffset = UnityEngine.Random.Range(0f, 1f);
-            spawnPosition = new Vector3(spawnPosition.x, spawnPosition.y + YOffset, spawnPosition.z);
-            Vector3 randomDirection = UnityEngine.Random.onUnitSphere * 0.1f;
-            randomDirection = new Vector3(randomDirection.x, 0, randomDirection.z);
-            spawnPosition += randomDirection;
-            return new SpawnDefinition(spawnPosition, Quaternion.FromToRotation(Vector3.forward, randomDirection), postSpawnAction: (netObj) =>
-            {
-                var mushroom = netObj.GetComponent<OysterMushroom>();
-                mushroom.RotateMushroomRpc(UnityEngine.Random.Range(0f, 360f));
-            });
-        });
+        }, () => GetRandomOutsideSpawn());
     }
 
     public override void OnEatMushroom()

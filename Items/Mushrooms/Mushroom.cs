@@ -54,7 +54,9 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
 
     public static SpawnDefinition GetRandomOutsideSpawn()
     {
-        return new SpawnDefinition(RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(Utils.outsideAINodes.GetRandom().transform.position, 30f, default(NavMeshHit), layerMask: -8193), Quaternion.identity, destroyWithScene: true);
+        Vector3 spawnPosition = RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(Utils.outsideAINodes.GetRandom().transform.position, 30f, RoundManager.Instance.navHit, Utils.randomLocal, layerMask: -8193);
+        spawnPosition = spawnPosition.GetFloorPosition();
+        return new SpawnDefinition(spawnPosition, Quaternion.identity, destroyWithScene: true);
     }
 
     public bool DespawnItemAfterInput()

@@ -39,7 +39,7 @@ internal class DeathCapMushroom : Mushroom // Death_Cap_Mushroom (Vow around tre
             if (availableTrees.Count == 0) { return null; }
 
             var tree = availableTrees.GetRandom();
-            Vector3 castPosition = Utils.GetRandomPositionInCircle(tree.transform.position, 1f, 1.5f);
+            Vector3 castPosition = Utils.GetRandomPositionInCircle(new Vector3(tree.transform.position.x, tree.transform.position.y + 1f, tree.transform.position.z), 1f, 1.5f);
             Vector3 position = castPosition.GetFloorPosition();
             return new SpawnDefinition(position, Quaternion.identity, destroyWithScene: true);
         }, () =>

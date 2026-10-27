@@ -29,6 +29,7 @@ namespace LethalDiseases
         public static PlayerControllerB? PlayerFromId(ulong id) { return StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == id).FirstOrDefault(); }
         public static bool IsServerOrHost { get { return NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost; } }
 
+        public readonly int terrainMask = LayerMask.GetMask("Terrain");
         public readonly int roomMask = LayerMask.GetMask("Room");
         public readonly int playerEnemiesPropsMask = LayerMask.GetMask("Props", "Enemies", "Player");
         public readonly int playerEnemiesPropsInteractableObjectMask = LayerMask.GetMask("Props", "InteractableObject", "Enemies", "Player");
