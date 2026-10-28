@@ -56,10 +56,9 @@ internal class Tonic : PhysicsProp, IChemistryIngredient
 
     public void SetFluidColor(ChemistryLiquidAppearance color)
     {
+        if (tonicFluidRenderers[tonicDefIndex] == null) { return; }
         logger.LogDebug("Setting fluid color to " + color.ToString());
-        tonicFluidRenderers[tonicDefIndex].material.color = color.liquidColor;
-        tonicFluidRenderers[tonicDefIndex].material.SetColor("_EmissiveColor", color.liquidColor);
-        tonicFluidRenderers[tonicDefIndex].material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
+        tonicFluidRenderers[tonicDefIndex].material = ChemistryLiquidAppearance.SetFluidColor(tonicFluidRenderers[tonicDefIndex].material, color);
     }
 
     public ChemistryLiquidAppearance GetChemistryLiquidAppearance()
@@ -215,8 +214,6 @@ internal class TonicDefinition : IEquatable<TonicDefinition>
     [StaticInit]
     public static void Init()
     {
-        // TODO
-
         ChemistryIngredient tonicIngredient = new ChemistryIngredient(LethalDiseasesKeys.Tonic);
         ChemistryIngredient.Register(tonicIngredient);
 
@@ -236,8 +233,21 @@ internal class TonicDefinition : IEquatable<TonicDefinition>
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
         });
 
+        logger.LogError("Registering mushrooms");
         ChemistryIngredient mushroomIngredient = new ChemistryIngredient(LethalDiseasesKeys.Mushroom);
         ChemistryIngredient.Register(mushroomIngredient);
+        ChemistryIngredient.Register(LethalDiseasesKeys.BeechMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.BellcapMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.BlackTrumpetMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.CaveMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.ChanterelleMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.DeathCapMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.JackOLanternMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.JellyMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.MonsterMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.OysterMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.RadioMushroom);
+        ChemistryIngredient.Register(LethalDiseasesKeys.ShaggyManeMushroom);
 
         ChemistryRecipe.Register(mushroomIngredient, mushroomIngredient, (ingredientA, ingredientB) =>
         {

@@ -9,7 +9,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases
 {
-    public class DiseaseHost : NetworkBehaviour
+    public class DiseaseHost : MonoBehaviour
     {
         public static HashSet<DiseaseHost> Instances { get; private set; } = new HashSet<DiseaseHost>();
 
@@ -18,7 +18,17 @@ namespace LethalDiseases
         public List<string> DiseaseIds = [];
         public List<string> ImmuneDiseaseIds = [];
 
-        public NetworkObject networkObject => NetworkObject;
+        public NetworkObject? networkObject
+        {
+            get
+            {
+                if (player != null) { return player.NetworkObject; }
+                if (enemy != null) { return enemy.NetworkObject; }
+                if (steamValve != null) { return steamValve.fixInteract.NetworkObject; }
+                if (grabbableObject != null) { return grabbableObject.NetworkObject; }
+                return null;
+            }
+        }
         public PlayerControllerB? player { get; private set; }
         public EnemyAI? enemy { get; private set; }
         internal SteamValveHazard? steamValve { get; private set; }
@@ -39,18 +49,17 @@ namespace LethalDiseases
         void Start()
         {
             Instances.Add(this);
-            player = NetworkObject.gameObject.GetComponent<PlayerControllerB>();
-            enemy = NetworkObject.gameObject.GetComponent<EnemyAI>();
-            steamValve = NetworkObject.gameObject.GetComponent<SteamValveHazard>();
-            grabbableObject = NetworkObject.gameObject.GetComponent<GrabbableObject>();
+            player = gameObject.GetComponent<PlayerControllerB>();
+            enemy = gameObject.GetComponent<EnemyAI>();
+            steamValve = gameObject.GetComponent<SteamValveHazard>();
+            grabbableObject = gameObject.GetComponent<GrabbableObject>();
 
             CreateDiseaseScanNode();
         }
 
-        public override void OnDestroy()
+        public void OnDestroy()
         {
             Instances.Remove(this);
-            base.OnDestroy();
         }
 
         void Update()
@@ -135,14 +144,17 @@ namespace LethalDiseases
             return "";
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SanitizeRpc(float sanitizeTime)
+        public void Sanitize(float sanitizeTime)
         {
             sanitizedTimeLeft = Mathf.Max(sanitizedTimeLeft, sanitizeTime);
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void ReplaceAirFilterRpc()
+        public void SanitizeAndSync(float sanitizeTime)
+        {
+            NetworkHandler.Instance.SanitizeRpc(networkObject, sanitizeTime);
+        }
+
+        public void ReplaceAirFilter()
         {
             airFilterQuality = 1f;
 
@@ -150,8 +162,12 @@ namespace LethalDiseases
                 Utils.DisplayStatusEffect($"Air Filter replaced. Filter quality: {airFilterQuality * 100}%");
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void UseAirFilterRpc(float multiplier = 1f)
+        public void ReplaceAirFilterAndSync()
+        {
+            NetworkHandler.Instance.ReplaceAirFilterRpc(networkObject);
+        }
+
+        public void UseAirFilter(float multiplier = 1f)
         {
             airFilterQuality -= AirFilter.Usage * multiplier;
 
@@ -159,13 +175,22 @@ namespace LethalDiseases
                 Utils.DisplayStatusEffect($"Airborne diseases detected! Filter quality: {airFilterQuality * 100}%");
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void InfectRpc(string diseaseId) // Should only have 1 reference
+        public void UseAirFilterAndSync(float multiplier = 1f)
+        {
+            NetworkHandler.Instance.UseAirFilterRpc(networkObject, multiplier);
+        }
+
+        public void Infect(string diseaseId) // Should only have 1 reference
         {
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null) { return; }
             logger?.LogDebug($"Infecting {gameObject.name} with disease ID: {diseaseId}");
             AddDisease(disease);
+        }
+
+        public void InfectAndSync(string diseaseId)
+        {
+            NetworkHandler.Instance.InfectRpc(networkObject, diseaseId);
         }
     }
 }

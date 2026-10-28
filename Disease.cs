@@ -276,7 +276,7 @@ namespace LethalDiseases
                     if (otherHost.IsAirFilterFunctional)
                     {
                         multiplier += AirFilter.Multiplier;
-                        otherHost.UseAirFilterRpc(multiplier);
+                        otherHost.UseAirFilterAndSync(multiplier);
                     }
 
                     if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)

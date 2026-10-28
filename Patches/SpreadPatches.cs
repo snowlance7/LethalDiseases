@@ -146,7 +146,8 @@ internal static class SpreadPatches
     {
         try
         {
-            if (!__instance.IsServer || Configs.UninfectableItems.Contains(__instance.itemProperties.GetDawnInfo().TypedKey.ToString())) { return; }
+            var dawnInfo = __instance.itemProperties.GetDawnInfo();
+            if (!__instance.IsServer || dawnInfo == null || Configs.UninfectableItems.Contains(dawnInfo.TypedKey.ToString())) { return; }
 
             PlayerControllerB? playerWhoGrabbed = __instance.playerHeldBy;
             if (playerWhoGrabbed == null) { return; }

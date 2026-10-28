@@ -41,7 +41,7 @@ namespace LethalDiseases.Items
                 cadaverGrowth.localPlayerImmunityTimer = 0f;
             }
 
-            localPlayer.GetHost().ReplaceAirFilterRpc();
+            localPlayer.GetHost().ReplaceAirFilterAndSync();
             localPlayer.DespawnHeldObject();
         }
     }

@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 787230481
+  GlobalObjectIdHash: 1317148813
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -282,7 +282,7 @@ MonoBehaviour:
   isInFactory: 0
   useCooldown: 0
   currentUseCooldown: 0
-  itemProperties: {fileID: 11400000, guid: 835d004d3adbba24383f7b45cc86e302, type: 2}
+  itemProperties: {fileID: 11400000, guid: 73538c2937b02e94ea0068f569fadc3b, type: 2}
   insertedBattery:
     empty: 0
     charge: 0

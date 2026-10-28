@@ -52,7 +52,7 @@ namespace LethalDiseases.Items
 
             if (localPlayer.actualClientId == clientId)
             {
-                localPlayer.GetHost().SanitizeRpc(SanitizeTime);
+                localPlayer.GetHost().SanitizeAndSync(SanitizeTime);
             }
         }
     }

@@ -25,7 +25,7 @@ namespace LethalDiseases
         public static void InfectAndSync(this NetworkObject netObj, string diseaseId)
         {
             if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
-            netObj.GetHost().InfectRpc(diseaseId);
+            netObj.GetHost().InfectAndSync(diseaseId);
         }
         // TODO: Make more helper methods like these
         public static void InfectAndSync(this PlayerControllerB player) => player.NetworkObject.InfectAndSync();
@@ -82,7 +82,8 @@ namespace LethalDiseases
 
         internal static DiseaseHost GetHost(this NetworkObject netObj)
         {
-            if (!netObj.gameObject.TryGetComponent(out DiseaseHost host))
+            if (netObj == null) { logger.LogError("NetObj is null"); return null; }
+            if (!netObj.gameObject.TryGetComponent(out DiseaseHost? host) || host == null)
             {
                 host = netObj.gameObject.AddComponent<DiseaseHost>();
             }

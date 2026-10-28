@@ -1826,7 +1826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 233508182
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1894,6 +1894,16 @@ MonoBehaviour:
   - {fileID: 1719316051594608278}
   - {fileID: 4514537691611560507}
   - {fileID: 7943052134236419689}
+  tonicFluidRenderers:
+  - {fileID: 6976159350272052828}
+  - {fileID: 8245237183444890602}
+  - {fileID: 4013301894381398906}
+  - {fileID: 3315725858441227817}
+  - {fileID: 236115519029560520}
+  - {fileID: 2610296115061174359}
+  - {fileID: 8627892392483723729}
+  - {fileID: 5240467837084504415}
+  - {fileID: 2772464931278928380}
 --- !u!1 &4043784930751473689
 GameObject:
   m_ObjectHideFlags: 0

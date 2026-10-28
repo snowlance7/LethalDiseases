@@ -66,6 +66,7 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
 
     public ChemistryIngredient? GetIngredient()
     {
+        Plugin.logger.LogDebug("Getting mushroom ingredient");
         return new ChemistryIngredient(LethalDiseasesKeys.Mushroom, new ChemistryLiquidAppearance(color, 5f), MushroomTypes[GetType()]);
     }
 

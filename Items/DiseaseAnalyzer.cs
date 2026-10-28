@@ -146,6 +146,7 @@ namespace LethalDiseases.Items
             }
             else // Q: Scan self
             {
+                ClearNodes();
                 animator.SetTrigger("self_scan");
                 audioSource.Play();
                 var host = playerHeldBy.NetworkObject.GetHost();

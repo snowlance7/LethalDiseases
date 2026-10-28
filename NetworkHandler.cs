@@ -7,6 +7,7 @@ using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
 using System.Linq;
 using Unity.Netcode;
+using Unity.Services.Authentication.Generated;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
@@ -328,6 +329,34 @@ namespace LethalDiseases
             PlayerControllerB? player = PlayerFromId(clientId);
             if (player == null) { return; }
             AttachableObjectManager.TrySpawnItemOnPlayer(LethalDiseasesKeys.Leech, player);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SanitizeRpc(NetworkObjectReference netRef, float sanitizeTime)
+        {
+            netRef.TryGet(out NetworkObject netObj);
+            netObj.GetHost().Sanitize(sanitizeTime);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void ReplaceAirFilterRpc(NetworkObjectReference netRef)
+        {
+            netRef.TryGet(out NetworkObject netObj);
+            netObj.GetHost().ReplaceAirFilter();
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void UseAirFilterRpc(NetworkObjectReference netRef, float multiplier = 1f)
+        {
+            netRef.TryGet(out NetworkObject netObj);
+            netObj.GetHost().UseAirFilter(multiplier);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void InfectRpc(NetworkObjectReference netRef, string diseaseId) // Should only have 1 reference
+        {
+            netRef.TryGet(out NetworkObject netObj);
+            netObj.GetHost().Infect(diseaseId);
         }
     }
 
