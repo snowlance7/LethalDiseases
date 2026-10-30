@@ -1,6 +1,7 @@
 ﻿using Dawn;
 using HarmonyLib;
 using System.Linq;
+using Unity.Netcode;
 using static LethalDiseases.Configs;
 using static LethalDiseases.Plugin;
 
@@ -54,7 +55,7 @@ namespace LethalDiseases.Patches
                 if (!__instance.IsServer || TESTING.disableDiseaseSpawning || __instance.isInShipRoom || Configs.UninfectableItems.Contains(__instance.itemProperties.GetDawnInfo().TypedKey.ToString())) { return; }
 
                 if (UnityEngine.Random.Range(0f, 1f) < ScrapDiseaseChance)
-                    __instance.NetworkObject.InfectAndSync();
+                    __instance.gameObject.GetComponent<NetworkObject>().InfectAndSync();
             }
             catch (System.Exception e)
             {

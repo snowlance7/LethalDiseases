@@ -16,7 +16,7 @@ MonoBehaviour:
   _tags: []
   <Key>k__BackingField:
     _namespace: lethal_diseases
-    _key: shaggy_mane_mushrooom
+    _key: shaggy_mane_mushroom
   <Item>k__BackingField: {fileID: 11400000, guid: c638ca1f6b15ae84b9c3e47cc6bbe721,
     type: 2}
   <ShopItemPreset>k__BackingField:
