@@ -22,10 +22,10 @@ namespace LethalDiseases
         {
             get
             {
-                if (player != null) { return player.NetworkObject; }
-                if (enemy != null) { return enemy.NetworkObject; }
-                if (steamValve != null) { return steamValve.fixInteract.NetworkObject; }
-                if (grabbableObject != null) { return grabbableObject.NetworkObject; }
+                if (player != null) { return player.gameObject.GetComponent<NetworkObject>(); }
+                if (enemy != null) { return enemy.gameObject.GetComponent<NetworkObject>(); }
+                if (steamValve != null) { return steamValve.fixInteract.gameObject.GetComponent<NetworkObject>(); }
+                if (grabbableObject != null) { return grabbableObject.gameObject.GetComponent<NetworkObject>(); }
                 return null;
             }
         }

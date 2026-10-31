@@ -180,7 +180,7 @@ namespace LethalDiseases.Items
 
                     if (LocalPlayerIsLookingDown)
                     {
-                        host = localPlayer.NetworkObject.GetHost();
+                        host = localPlayer.gameObject.GetComponent<NetworkObject>().GetHost();
                     }
                     else
                     {
@@ -249,7 +249,7 @@ namespace LethalDiseases.Items
 
                     if (LocalPlayerIsLookingDown)
                     {
-                        host = localPlayer.NetworkObject.GetHost();
+                        host = localPlayer.gameObject.GetComponent<NetworkObject>().GetHost();
                     }
                     else
                     {

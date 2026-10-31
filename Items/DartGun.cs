@@ -112,7 +112,7 @@ internal class DartGun : PhysicsProp
             else if (hit.collider.CompareTag("Enemy"))
             {
                 EnemyAI enemy = hit.collider.gameObject.GetComponent<EnemyAICollisionDetect>().mainScript;
-                SpawnDartProjectileRpc(enemy.NetworkObject, position, rotation);
+                SpawnDartProjectileRpc(enemy.gameObject.GetComponent<NetworkObject>(), position, rotation);
             }
             else
             {
@@ -150,7 +150,7 @@ internal class DartGun : PhysicsProp
 
             var ammo = localPlayer.ItemSlots[ammoSlot];
             localPlayer.DiscardItemInSlotAndSync(ammoSlot);
-            LoadAmmoRpc(ammo.NetworkObject);
+            LoadAmmoRpc(ammo.gameObject.GetComponent<NetworkObject>());
             SetControlTipsForItem();
         }
         else // Unload [Q]

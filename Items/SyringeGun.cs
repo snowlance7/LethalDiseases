@@ -105,7 +105,7 @@ namespace LethalDiseases.Items
                 else if (hit.collider.CompareTag("Enemy"))
                 {
                     EnemyAI enemy = hit.collider.gameObject.GetComponent<EnemyAICollisionDetect>().mainScript;
-                    SpawnSyringeProjectileRpc(enemy.NetworkObject, position, rotation);
+                    SpawnSyringeProjectileRpc(enemy.gameObject.GetComponent<NetworkObject>(), position, rotation);
                 }
                 else
                 {
@@ -198,7 +198,7 @@ namespace LethalDiseases.Items
 
             IEnumerator setDiseaseAfterNetworkSpawn()
             {
-                yield return new WaitUntil(() => syringe.NetworkObject != null && syringe.NetworkObject.IsSpawned);
+                yield return new WaitUntil(() => syringe.gameObject.GetComponent<NetworkObject>() != null && syringe.gameObject.GetComponent<NetworkObject>().IsSpawned);
                 syringe.SetDiseaseRpc(diseaseId, false);
             }
 
@@ -248,8 +248,8 @@ namespace LethalDiseases.Items
 
             IEnumerator parentSyringeProjectile()
             {
-                yield return new WaitUntil(() => syringe.NetworkObject != null && syringe.NetworkObject.IsSpawned);
-                syringe.NetworkObject.TrySetParent(player.NetworkObject, worldPositionStays: true);
+                yield return new WaitUntil(() => syringe.gameObject.GetComponent<NetworkObject>() != null && syringe.gameObject.GetComponent<NetworkObject>().IsSpawned);
+                syringe.gameObject.GetComponent<NetworkObject>().TrySetParent(player.gameObject.GetComponent<NetworkObject>(), worldPositionStays: true);
             }
 
             StartCoroutine(parentSyringeProjectile());
@@ -275,8 +275,8 @@ namespace LethalDiseases.Items
 
             IEnumerator parentSyringeProjectile()
             {
-                yield return new WaitUntil(() => syringe.NetworkObject != null && syringe.NetworkObject.IsSpawned);
-                syringe.NetworkObject.TrySetParent(enemy.NetworkObject, worldPositionStays: true);
+                yield return new WaitUntil(() => syringe.gameObject.GetComponent<NetworkObject>() != null && syringe.gameObject.GetComponent<NetworkObject>().IsSpawned);
+                syringe.gameObject.GetComponent<NetworkObject>().TrySetParent(enemy.gameObject.GetComponent<NetworkObject>(), worldPositionStays: true);
             }
 
             StartCoroutine(parentSyringeProjectile());

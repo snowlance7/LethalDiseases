@@ -55,7 +55,7 @@ MonoBehaviour:
   toolTips:
   - Eat [LMB]
   verticalOffset: 0
-  floorYOffset: 0
+  floorYOffset: 90
   allowDroppingAheadOfPlayer: 1
   restingRotation: {x: 0, y: 0, z: 90}
   rotationOffset: {x: 90, y: 90, z: 0}

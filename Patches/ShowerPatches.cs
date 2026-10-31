@@ -18,7 +18,7 @@ namespace LethalDiseases.Patches
         {
             try
             {
-                foreach (var disease in playerScript.NetworkObject.GetDiseases())
+                foreach (var disease in playerScript.gameObject.GetComponent<NetworkObject>().GetDiseases())
                 {
                     if (disease.isActive)
                     {
@@ -26,7 +26,7 @@ namespace LethalDiseases.Patches
                     }
                     else
                     {
-                        playerScript.NetworkObject.RemoveDisease(disease);
+                        playerScript.gameObject.GetComponent<NetworkObject>().RemoveDisease(disease);
                     }
                 }
             }
@@ -42,7 +42,7 @@ namespace LethalDiseases.Patches
         {
             try
             {
-                foreach (var disease in playerScript.NetworkObject.GetDiseases())
+                foreach (var disease in playerScript.gameObject.GetComponent<NetworkObject>().GetDiseases())
                 {
                     disease.elapsedTimeMultiplier = 1;
                 }

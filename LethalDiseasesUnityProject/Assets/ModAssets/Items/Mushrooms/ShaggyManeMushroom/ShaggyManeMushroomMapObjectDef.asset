@@ -35,7 +35,7 @@ MonoBehaviour:
     rotationOffset: {x: 0, y: 0, z: 0}
     spawnableFloorTags: []
     minimumAINodeSpawnRequirement: 0
-    alignWithTerrain: 0
+    alignWithTerrain: 1
   <IsInsideHazard>k__BackingField: 0
   <CreateInsideHazardConfig>k__BackingField: 0
   <InsideMoonCurveSpawnWeights>k__BackingField: []

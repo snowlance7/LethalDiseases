@@ -21,7 +21,7 @@ internal class BeechMushroom : Mushroom // Beech_Mushroom: Base of trees in vow 
             currentLevelKey = RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey;
             if (currentLevelKey == MoonKeys.March) { return UnityEngine.Random.Range(10, 15); }
             if (currentLevelKey == MoonKeys.Vow) { return UnityEngine.Random.Range(10, 30); }
-            return 0;
+            return (int)(Utils.currentLevelTrees.Count() * UnityEngine.Random.Range(0f, 0.25f));
         }, () =>
         {
             if (availableTrees.Count == 0)

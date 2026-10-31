@@ -13,6 +13,7 @@ internal class BellcapMushroom : Mushroom // Panaeolus_Papilionaceus_Mushroom (B
         PostGenSpawnableObject.Register(LethalDiseasesKeys.BellcapMushroom, () =>
         {
             if (RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey == MoonKeys.Adamance && RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Rainy) { return UnityEngine.Random.Range(15, 30); }
+            if (RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Rainy) { return UnityEngine.Random.Range(0, 20); }
             return 0;
         }, () => GetRandomOutsideSpawn());
     }

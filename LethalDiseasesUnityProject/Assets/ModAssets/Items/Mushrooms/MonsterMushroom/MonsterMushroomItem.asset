@@ -18,7 +18,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0a19902c1c3946046b1b1237298bc89e, type: 2}
   twoHanded: 1
   twoHandedAnimation: 0
-  disableHandsOnWall: 1
+  disableHandsOnWall: 0
   canBeGrabbedBeforeGameStart: 1
   disallowUtilitySlot: 1
   weight: 1.2
@@ -44,21 +44,21 @@ MonoBehaviour:
   throwAnim: 
   grabAnimationTime: 0
   grabSFX: {fileID: 8300000, guid: e8b6aebec172a7343bc69cc808d1e372, type: 3}
-  dropSFX: {fileID: 8300000, guid: 8df8604ace2da46468226f39d617af2a, type: 3}
-  pocketSFX: {fileID: 0}
+  dropSFX: {fileID: 8300000, guid: f65b67a5bc580f849bfb7cba35f9e57a, type: 3}
+  pocketSFX: {fileID: 8300000, guid: e8b6aebec172a7343bc69cc808d1e372, type: 3}
   throwSFX: {fileID: 0}
   syncGrabFunction: 0
   syncUseFunction: 0
   syncDiscardFunction: 0
   syncInteractLRFunction: 0
-  saveItemVariable: 1
+  saveItemVariable: 0
   isDefensiveWeapon: 0
   toolTips:
   - Eat [LMB]
   verticalOffset: 0
-  floorYOffset: 0
+  floorYOffset: 90
   allowDroppingAheadOfPlayer: 1
-  restingRotation: {x: 0, y: 0, z: 0}
+  restingRotation: {x: 0, y: 0, z: 90}
   rotationOffset: {x: 90, y: 90, z: 0}
   positionOffset: {x: 0, y: 0.1, z: 0}
   meshOffset: 1

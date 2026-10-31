@@ -28,12 +28,12 @@ namespace LethalDiseases
             netObj.GetHost().InfectAndSync(diseaseId);
         }
         // TODO: Make more helper methods like these
-        public static void InfectAndSync(this PlayerControllerB player) => player.NetworkObject.InfectAndSync();
-        public static void InfectAndSync(this PlayerControllerB player, Disease disease) => player.NetworkObject.InfectAndSync(disease);
-        public static void InfectAndSync(this PlayerControllerB player, string diseaseId) => player.NetworkObject.InfectAndSync(diseaseId);
-        public static void InfectAndSync(this EnemyAI enemy) => enemy.NetworkObject.InfectAndSync();
-        public static void InfectAndSync(this EnemyAI enemy, Disease disease) => enemy.NetworkObject.InfectAndSync(disease);
-        public static void InfectAndSync(this EnemyAI enemy, string diseaseId) => enemy.NetworkObject.InfectAndSync(diseaseId);
+        public static void InfectAndSync(this PlayerControllerB player) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync();
+        public static void InfectAndSync(this PlayerControllerB player, Disease disease) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+        public static void InfectAndSync(this PlayerControllerB player, string diseaseId) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync(diseaseId);
+        public static void InfectAndSync(this EnemyAI enemy) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync();
+        public static void InfectAndSync(this EnemyAI enemy, Disease disease) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+        public static void InfectAndSync(this EnemyAI enemy, string diseaseId) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync(diseaseId);
 
         public static void TrySpread(this NetworkObject source, NetworkObject netObj, TransmissionType transmissionType, float multiplier = 1f)
         {
@@ -93,12 +93,12 @@ namespace LethalDiseases
 
         internal static DiseaseHost GetHost(this PlayerControllerB player)
         {
-            return player.NetworkObject.GetHost();
+            return player.gameObject.GetComponent<NetworkObject>().GetHost();
         }
 
         internal static DiseaseHost GetHost(this EnemyAI enemy)
         {
-            return enemy.NetworkObject.GetHost();
+            return enemy.gameObject.GetComponent<NetworkObject>().GetHost();
         }
 
         public static void AddDisease(this NetworkObject networkObject, Disease disease)

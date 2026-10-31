@@ -44,7 +44,7 @@ internal static class SpreadPatches
 
             if (collidedWith == null || enemyColliding == null) { return; }
             if (__instance != collidedWith) { return; }
-            enemyColliding.NetworkObject.TrySpread(collidedWith.NetworkObject, Disease.TransmissionType.Blood);
+            enemyColliding.gameObject.GetComponent<NetworkObject>().TrySpread(collidedWith.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Blood);
         }
         catch (System.Exception e)
         {
@@ -65,14 +65,14 @@ internal static class SpreadPatches
             enemyColliding = null;
 
             if (!other.gameObject.TryGetComponent(out PlayerControllerB player)) { return; }
-            TrySpreadBetween(__instance.NetworkObject, player.NetworkObject, Disease.TransmissionType.Contact);
+            TrySpreadBetween(__instance.gameObject.GetComponent<NetworkObject>(), player.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Contact);
 
             if (player.bleedingHeavily)
             {
                 int enemyMaxHp = __instance.enemyType.enemyPrefab.GetComponent<EnemyAI>().enemyHP;
                 if (__instance.enemyHP <= Mathf.CeilToInt(enemyMaxHp * 0.1f))
                 {
-                    TrySpreadBetween(__instance.NetworkObject, player.NetworkObject, Disease.TransmissionType.Blood);
+                    TrySpreadBetween(__instance.gameObject.GetComponent<NetworkObject>(), player.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Blood);
                 }
             }
         }
@@ -92,9 +92,9 @@ internal static class SpreadPatches
             if (!__instance.IsServer || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
             if (collidedEnemy != null)
-                TrySpreadBetween(__instance.NetworkObject, collidedEnemy.NetworkObject, Disease.TransmissionType.Contact);
+                TrySpreadBetween(__instance.gameObject.GetComponent<NetworkObject>(), collidedEnemy.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Contact);
             else if (other.gameObject.TryGetComponent(out NetworkObject networkObject))
-                TrySpreadBetween(__instance.NetworkObject, networkObject, Disease.TransmissionType.Contact);
+                TrySpreadBetween(__instance.gameObject.GetComponent<NetworkObject>(), networkObject, Disease.TransmissionType.Contact);
         }
         catch (System.Exception e)
         {
@@ -111,7 +111,7 @@ internal static class SpreadPatches
         {
             if (!__instance.IsServer || playerWhoHit == null || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
-            playerWhoHit.NetworkObject.TrySpread(__instance.NetworkObject, Disease.TransmissionType.Blood | Disease.TransmissionType.Contact);
+            playerWhoHit.gameObject.GetComponent<NetworkObject>().TrySpread(__instance.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Blood | Disease.TransmissionType.Contact);
         }
         catch (System.Exception e)
         {
@@ -131,7 +131,7 @@ internal static class SpreadPatches
             PlayerControllerB? _playerWhoHit = PlayerFromId((ulong)playerWhoHit);
             if (_playerWhoHit == null) { return; }
 
-            _playerWhoHit.NetworkObject.TrySpread(__instance.NetworkObject, Disease.TransmissionType.Blood | Disease.TransmissionType.Contact);
+            _playerWhoHit.gameObject.GetComponent<NetworkObject>().TrySpread(__instance.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Blood | Disease.TransmissionType.Contact);
         }
         catch (System.Exception e)
         {
@@ -152,7 +152,7 @@ internal static class SpreadPatches
             PlayerControllerB? playerWhoGrabbed = __instance.playerHeldBy;
             if (playerWhoGrabbed == null) { return; }
 
-            TrySpreadBetween(playerWhoGrabbed.NetworkObject, __instance.NetworkObject, Disease.TransmissionType.Contact);
+            TrySpreadBetween(playerWhoGrabbed.gameObject.GetComponent<NetworkObject>(), __instance.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Contact);
         }
         catch (System.Exception e)
         {
@@ -169,7 +169,7 @@ internal static class SpreadPatches
         {
             if (!__instance.stoodInWeedsLastCheck) { return; }
 
-            __instance.NetworkObject.TrySpread(localPlayer.NetworkObject, Disease.TransmissionType.Airborne, 0.1f);
+            __instance.gameObject.GetComponent<NetworkObject>().TrySpread(localPlayer.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Airborne, 0.1f);
         }
         catch (System.Exception e)
         {
@@ -187,7 +187,7 @@ internal static class SpreadPatches
             var info = __instance.itemProperties.GetDawnInfo();
             if (info == null || !(info.AllTags().Any(x => Configs.TransmissableFoodborneTags.Contains(x.ToString())) || Configs.TransmissableFoodborneItems.Contains(info.TypedKey.ToString()))) { return; }
             if (__instance.playerHeldBy == null || __instance.playerHeldBy != localPlayer) { return; }
-            __instance.NetworkObject.TrySpread(localPlayer.NetworkObject, Disease.TransmissionType.Foodborne);
+            __instance.gameObject.GetComponent<NetworkObject>().TrySpread(localPlayer.gameObject.GetComponent<NetworkObject>(), Disease.TransmissionType.Foodborne);
         }
         catch (System.Exception e)
         {

@@ -25,7 +25,7 @@ internal class CaveMushroom : Mushroom // Cave Mushroom (mineshaft interior)
 
     public override void OnEatMushroom()
     {
-        Utils.SetNightVisionEnabled(true);
-        Utils.InvokeAfterDelay(() => Utils.SetNightVisionEnabled(false), 30f);
+        NightVision.Enable(true);
+        Utils.InvokeAfterDelay(() => NightVision.Enable(false), 30f);
     }
 }

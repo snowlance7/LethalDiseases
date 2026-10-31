@@ -7,7 +7,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items.Mushrooms;
 
-internal class JellyMushroom : Mushroom // Jelly_Mushroom (March water) // TODO: Register chemistry recipe for making tonic! // TODO: Make them a bit bigger and spawn around underwater trees
+internal class JellyMushroom : Mushroom // Jelly_Mushroom (March water)
 {
     public static List<QuicksandTrigger> availableTriggers = new List<QuicksandTrigger>();
 

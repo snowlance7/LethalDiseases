@@ -107,7 +107,7 @@ namespace LethalDiseases
                 PlayerControllerB? player = PlayerFromId(clientId);
                 if (player == null) { continue; }
 
-                player.NetworkObject.AddDisease(diseaseId);
+                player.gameObject.GetComponent<NetworkObject>().AddDisease(diseaseId);
 
                 if (player == localPlayer)
                 {
@@ -150,7 +150,7 @@ namespace LethalDiseases
         {
             if (!IsServer) { return; }
             DressGirlAI child = (DressGirlAI)Utils.SpawnEnemy(EnemyKeys.Girl, Vector3.zero)!;
-            SpawnGhostGirlRpc(targetPlayerId, child.NetworkObject);
+            SpawnGhostGirlRpc(targetPlayerId, child.gameObject.GetComponent<NetworkObject>());
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -191,7 +191,7 @@ namespace LethalDiseases
             if (player == null) { return; }
 
             CadaverBloomAI cadaverBloom = (CadaverBloomAI)Utils.SpawnEnemy(EnemyKeys.CadaverBloom, new Vector3(1200f, -300f, 0f))!;
-            CadaverBurstFromPlayerRpc(clientId, cadaverBloom.NetworkObject);
+            CadaverBurstFromPlayerRpc(clientId, cadaverBloom.gameObject.GetComponent<NetworkObject>());
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -355,7 +355,7 @@ namespace LethalDiseases
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void InfectRpc(NetworkObjectReference netRef, string diseaseId) // Should only have 1 reference
         {
-            netRef.TryGet(out NetworkObject netObj);
+            if (!netRef.TryGet(out NetworkObject netObj)) { logger.LogError("InfectRpc: Failed to get netObj from netRef"); return; }
             netObj.GetHost().Infect(diseaseId);
         }
     }

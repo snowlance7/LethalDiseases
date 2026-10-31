@@ -1,5 +1,6 @@
 ﻿using Dawn.Utils;
 using SnowyLib;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using static LethalDiseases.Plugin;
@@ -93,9 +94,9 @@ namespace LethalDiseases.Items
         {
             if (UnityEngine.Random.Range(0f, 1f) > RemoveDiseaseChance) { return; }
 
-            string? diseaseId = localPlayer.NetworkObject.GetDiseaseIds().GetRandom();
+            string? diseaseId = localPlayer.gameObject.GetComponent<NetworkObject>().GetDiseaseIds().GetRandom();
             if (diseaseId == null) { return; }
-            NetworkHandler.Instance.RemoveDiseaseRpc(localPlayer.NetworkObject, diseaseId);
+            NetworkHandler.Instance.RemoveDiseaseRpc(localPlayer.gameObject.GetComponent<NetworkObject>(), diseaseId);
         }
     }
 }

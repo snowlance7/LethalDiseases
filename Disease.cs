@@ -320,9 +320,9 @@ namespace LethalDiseases
             foreach (var col in airborneColliders)
             {
                 if (col.gameObject.TryGetComponent(out PlayerControllerB p))
-                    TrySpread(p.NetworkObject, TransmissionType.Airborne, multiplier);
+                    TrySpread(p.gameObject.GetComponent<NetworkObject>(), TransmissionType.Airborne, multiplier);
                 else if (col.gameObject.TryGetComponent(out EnemyAI e))
-                    TrySpread(e.NetworkObject, TransmissionType.Airborne, multiplier);
+                    TrySpread(e.gameObject.GetComponent<NetworkObject>(), TransmissionType.Airborne, multiplier);
             }
         }
 

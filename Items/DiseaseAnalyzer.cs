@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using static LethalDiseases.Plugin;
@@ -149,7 +150,7 @@ namespace LethalDiseases.Items
                 ClearNodes();
                 animator.SetTrigger("self_scan");
                 audioSource.Play();
-                var host = playerHeldBy.NetworkObject.GetHost();
+                var host = playerHeldBy.gameObject.GetComponent<NetworkObject>().GetHost();
                 if (!host.hasDisease) { return; }
                 currentNodeInLOS = host.diseaseScanNode;
                 RefreshScreen();

@@ -4,6 +4,7 @@ using SnowyLib;
 using System;
 using static LethalDiseases.NetworkHandler;
 using static LethalDiseases.Plugin;
+using Unity.Netcode;
 using static LethalDiseases.SymptomAffectedObjects;
 
 namespace LethalDiseases.Symptoms
@@ -14,11 +15,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect SpongeLegs(Disease disease)
         {
             if (disease.player != null)
-                AddSymptomAffectedObject("SpongeLegs", disease.player.NetworkObject);
+                AddSymptomAffectedObject("SpongeLegs", disease.player.gameObject.GetComponent<NetworkObject>());
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                RemoveSymptomAffectedObject("SpongeLegs", disease.player.NetworkObject);
+                RemoveSymptomAffectedObject("SpongeLegs", disease.player.gameObject.GetComponent<NetworkObject>());
             }, disease.ToString(), "SpongeLegs", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

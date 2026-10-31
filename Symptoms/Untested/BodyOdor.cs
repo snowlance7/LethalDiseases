@@ -3,6 +3,7 @@ using HarmonyLib;
 using SnowyLib;
 using System;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
@@ -15,11 +16,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect BodyOdor(Disease disease)
         {
             if (disease.player != null)
-                AddSymptomAffectedObject("BodyOdor", disease.player.NetworkObject);
+                AddSymptomAffectedObject("BodyOdor", disease.player.gameObject.GetComponent<NetworkObject>());
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                RemoveSymptomAffectedObject("BodyOdor", disease.player.NetworkObject);
+                RemoveSymptomAffectedObject("BodyOdor", disease.player.gameObject.GetComponent<NetworkObject>());
             }, disease.ToString(), "BodyOdor", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

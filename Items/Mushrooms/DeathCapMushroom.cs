@@ -21,7 +21,7 @@ internal class DeathCapMushroom : Mushroom // Death_Cap_Mushroom (Vow around tre
             currentLevelKey = RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey;
             if (currentLevelKey == MoonKeys.March) { return UnityEngine.Random.Range(5, 15); }
             if (currentLevelKey == MoonKeys.Vow) { return UnityEngine.Random.Range(5, 30); }
-            return 0;
+            return (int)(Utils.currentLevelTrees.Count() * UnityEngine.Random.Range(0f, 0.2f));
         }, () =>
         {
             if (availableTrees.Count == 0)

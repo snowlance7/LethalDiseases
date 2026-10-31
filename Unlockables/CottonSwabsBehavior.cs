@@ -30,8 +30,8 @@ namespace LethalDiseases.Unlockables
             {
                 IEnumerator sendSpawnOutputIngredient()
                 {
-                    yield return new WaitUntil(() => cottonSwab.NetworkObject != null && cottonSwab.NetworkObject.IsSpawned);
-                    SpawnCottonSwabClientRpc(clientGrabbingId, cottonSwab.NetworkObject);
+                    yield return new WaitUntil(() => cottonSwab.gameObject.GetComponent<NetworkObject>() != null && cottonSwab.gameObject.GetComponent<NetworkObject>().IsSpawned);
+                    SpawnCottonSwabClientRpc(clientGrabbingId, cottonSwab.gameObject.GetComponent<NetworkObject>());
                 }
 
                 StartCoroutine(sendSpawnOutputIngredient());

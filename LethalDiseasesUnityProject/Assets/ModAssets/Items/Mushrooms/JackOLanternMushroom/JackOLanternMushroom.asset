@@ -36,7 +36,7 @@ MonoBehaviour:
   requiresBattery: 0
   batteryUsage: 0
   automaticallySetUsingPower: 0
-  itemIcon: {fileID: 21300000, guid: 332838a27a7e53448b9c38bc21337d47, type: 2}
+  itemIcon: {fileID: 21300000, guid: 7cff049b550a3824f83eff4a4af2fff2, type: 3}
   grabAnim: 
   useAnim: 
   pocketAnim: 
@@ -55,9 +55,9 @@ MonoBehaviour:
   toolTips:
   - Eat [LMB]
   verticalOffset: 0
-  floorYOffset: 0
+  floorYOffset: 90
   allowDroppingAheadOfPlayer: 1
-  restingRotation: {x: 0, y: 0, z: 0}
+  restingRotation: {x: 0, y: 0, z: 90}
   rotationOffset: {x: 90, y: 90, z: 0}
   positionOffset: {x: 0, y: 0.1, z: 0}
   meshOffset: 1

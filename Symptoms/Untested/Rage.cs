@@ -4,6 +4,7 @@ using SnowyLib;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 using static LethalDiseases.SymptomAffectedObjects;
+using Unity.Netcode;
 
 namespace LethalDiseases.Symptoms
 {
@@ -13,11 +14,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Rage(Disease disease)
         {
             if (disease.player != null)
-                AddSymptomAffectedObject("Rage", disease.player.NetworkObject);
+                AddSymptomAffectedObject("Rage", disease.player.gameObject.GetComponent<NetworkObject>());
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                AddSymptomAffectedObject("Rage", disease.player.NetworkObject);
+                AddSymptomAffectedObject("Rage", disease.player.gameObject.GetComponent<NetworkObject>());
             }, disease.ToString(), "Rage", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

@@ -3,6 +3,7 @@ using GameNetcodeStuff;
 using SnowyLib;
 using System.Collections;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using static LethalDiseases.Plugin;
@@ -104,7 +105,7 @@ namespace LethalDiseases.Items
 
             yield return new WaitForSeconds(0.84375f);
 
-            bool infected = playerHeldBy.NetworkObject.HasDisease();
+            bool infected = playerHeldBy.gameObject.GetComponent<NetworkObject>().HasDisease();
             animator.SetTrigger(infected ? "red" : "green");
             scanRoutine = null;
         }

@@ -3,6 +3,7 @@ using HarmonyLib;
 using SnowyLib;
 using System;
 using static LethalDiseases.Plugin;
+using Unity.Netcode;
 using static LethalDiseases.SymptomAffectedObjects;
 
 namespace LethalDiseases.Symptoms
@@ -13,11 +14,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Scaly(Disease disease)
         {
             if (disease.player != null)
-                AddSymptomAffectedObject("Scaly", disease.player.NetworkObject);
+                AddSymptomAffectedObject("Scaly", disease.player.gameObject.GetComponent<NetworkObject>());
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                RemoveSymptomAffectedObject("Scaly", disease.player.NetworkObject);
+                RemoveSymptomAffectedObject("Scaly", disease.player.gameObject.GetComponent<NetworkObject>());
             }, disease.ToString(), "Scaly", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

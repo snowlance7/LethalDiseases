@@ -1,5 +1,6 @@
 ﻿using SnowyLib;
 using static LethalDiseases.SymptomAffectedObjects;
+using Unity.Netcode;
 
 namespace LethalDiseases.Symptoms
 {
@@ -9,11 +10,11 @@ namespace LethalDiseases.Symptoms
         public static StatusEffect Insanity(Disease disease)
         {
             if (disease.player != null)
-                AddSymptomAffectedObject("Insanity", disease.player.NetworkObject);
+                AddSymptomAffectedObject("Insanity", disease.player.gameObject.GetComponent<NetworkObject>());
             return new OnRemoveActionEffect((effect) =>
             {
                 if (disease.player == null) { return; }
-                RemoveSymptomAffectedObject("Insanity", disease.player.NetworkObject);
+                RemoveSymptomAffectedObject("Insanity", disease.player.gameObject.GetComponent<NetworkObject>());
             }, disease.ToString(), "Insanity", disease.strengthTime, SetHighestDurationAndDeny);
         }
 
