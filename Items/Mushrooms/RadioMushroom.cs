@@ -1,11 +1,7 @@
-﻿using SnowyCraftingCore;
-using SnowyLib;
-using System;
-using System.Collections.Generic;
+﻿using SnowyLib;
 using System.Linq;
-using System.Text;
-using static LethalDiseases.Plugin;
 using UnityEngine;
+using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items.Mushrooms;
 
@@ -31,6 +27,7 @@ internal class RadioMushroom : Mushroom // Radio Mushroom (near apparatus)
 
     public override void OnEatMushroom()
     {
-        throw new NotImplementedException();
+        Disease disease = Disease.CreateRandomDiseaseWithSymptoms("Ionizing", "Glowing", "Cramping", "Vomiting", "Itching", "Nausea");
+        localPlayer.InfectSynced(disease);
     }
 }

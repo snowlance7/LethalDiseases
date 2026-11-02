@@ -57,6 +57,6 @@ internal class DeathCapMushroom : Mushroom // Death_Cap_Mushroom (Vow around tre
         disease.stabilityTime = 0f;
         disease.transmissibility = 0f;
         disease.AddSymptom("DeathCapPoisoning");
-        localPlayer.InfectAndSync(disease);
+        localPlayer.InfectSynced(disease);
     }
 }

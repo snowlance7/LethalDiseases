@@ -69,7 +69,6 @@
       <Compile Remove="Symptoms\Unfinished\FreshScent.cs" />
       <Compile Remove="Symptoms\Unfinished\Green.cs" />
       <Compile Remove="Symptoms\Unfinished\Heartworm.cs" />
-      <Compile Remove="Symptoms\Unfinished\Ionizing.cs" />
       <Compile Remove="Symptoms\Unfinished\KneeWater.cs" />
       <Compile Remove="Symptoms\Unfinished\LactoseIntolerant.cs" />
       <Compile Remove="Symptoms\Unfinished\Mitosis.cs" />

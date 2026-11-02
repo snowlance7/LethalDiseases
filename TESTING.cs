@@ -176,7 +176,7 @@ public static class TESTING
                 HUDManager.Instance.DisplayTip(symptom.name, symptom.description);
                 Disease disease = Disease.CreateRandomDiseaseWithSymptom(Symptom.RegisteredSymptoms.IndexOf(symptom));
                 disease.latency = 0;
-                localPlayer.InfectAndSync(disease);
+                localPlayer.InfectSynced(disease);
                 yield return new WaitUntil(() => goToNextSymptomInTest);
                 goToNextSymptomInTest = false;
             }
@@ -206,7 +206,7 @@ public static class TESTING
                 disease.strength = 1;
                 disease.stability = 1;
                 disease.transmissibility = 0;
-                localPlayer.InfectAndSync(disease);
+                localPlayer.InfectSynced(disease);
                 yield return new WaitForSeconds(0.2f);
             }
 

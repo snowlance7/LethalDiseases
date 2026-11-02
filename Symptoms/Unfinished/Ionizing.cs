@@ -11,7 +11,7 @@ namespace LethalDiseases.Symptoms
 {
     internal static partial class Symptoms
     {
-        [Symptom("Ionizing", "You periodically do damage to nearby players", Symptom.SymptomType.Bad, 50)]
+        [Symptom("Ionizing", "You periodically do damage to nearby players and yourself", Symptom.SymptomType.Bad, 50)]
         public static StatusEffect Ionizing(Disease disease)
         {
             throw new NotImplementedException();

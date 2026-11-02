@@ -1,7 +1,6 @@
 ﻿using Dawn;
 using SnowyLib;
 using System.Linq;
-using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items.Mushrooms;
@@ -21,6 +20,6 @@ internal class ChanterelleMushroom : Mushroom // Chanterelle_Mushroom (rarely in
 
     public override void OnEatMushroom()
     {
-        return;
+        localPlayer.HealPlayerAndSync(1);
     }
 }

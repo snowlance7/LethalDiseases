@@ -1,11 +1,9 @@
-﻿using SnowyCraftingCore;
+﻿using Dawn;
+using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
-using Dawn;
-using UnityEngine.AI;
 
 namespace LethalDiseases.Items.Mushrooms;
 
@@ -24,7 +22,7 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
 
         newTypes = [.. availableTypes];
 
-        AddMushroomType(typeof(BeechMushroom)); // TODO: Continue here
+        AddMushroomType(typeof(BeechMushroom));
         AddMushroomType(typeof(BellcapMushroom));
         AddMushroomType(typeof(CaveMushroom));
         AddMushroomType(typeof(ChanterelleMushroom));
@@ -47,7 +45,7 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
             return;
         }
 
-        string typeString = newTypes.GetRandom(Utils.randomGlobal); // TODO: Test to make sure randomGlobal exists here
+        string typeString = newTypes.GetRandom(Utils.randomGlobal);
         newTypes.Remove(typeString);
         MushroomTypes.Add(type, typeString);
     }

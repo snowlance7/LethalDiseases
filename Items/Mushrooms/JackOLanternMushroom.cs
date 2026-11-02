@@ -1,6 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
 using static LethalDiseases.Plugin;
-using UnityEngine;
 
 namespace LethalDiseases.Items.Mushrooms;
 
@@ -15,7 +14,7 @@ internal class JackOLanternMushroom : Mushroom // Jack_O_Lantern_Mushroom: adama
         // 650 - 1000
         if (!hasBeenHeld && (TimeOfDay.Instance.dayMode == DayMode.Sundown || TimeOfDay.Instance.dayMode == DayMode.Midnight))
         {
-            SetGlow(Mathf.InverseLerp(650, 1000, )) // TODO
+            SetGlow(Mathf.InverseLerp(650, 1000, TimeOfDay.Instance.currentDayTime)); // TODO: Test this
         }
         else
         {
@@ -31,6 +30,6 @@ internal class JackOLanternMushroom : Mushroom // Jack_O_Lantern_Mushroom: adama
     public override void OnEatMushroom()
     {
         Disease disease = Disease.CreateRandomDiseaseWithSymptoms("Nausea", "Vomiting", "Cramping");
-        localPlayer.InfectAndSync(disease);
+        localPlayer.InfectSynced(disease);
     }
 }

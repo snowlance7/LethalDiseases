@@ -212,9 +212,15 @@ internal class MonsterMushroom : Mushroom
         base.DiscardItem();
     }
 
+    public override void ItemActivate(bool used, bool buttonDown = true)
+    {
+        if (!buttonDown || !ai.isEnemyDead) { return; }
+        OnEatMushroom();
+    }
+
     public override void OnEatMushroom()
     {
-        throw new NotImplementedException();
+        localPlayer.HealPlayerAndSync(5, allowOverhealing: true);
     }
 }
 

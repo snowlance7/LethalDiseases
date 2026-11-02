@@ -15,18 +15,19 @@ internal class JellyMushroom : Mushroom // Jelly_Mushroom (March water)
     public static void Init()
     {
         if (!IsServerOrHost) { return; }
-        PostGenSpawnableObject.Register(LethalContent.Items[LethalDiseasesKeys.JellyMushroom].Item.spawnPrefab, () => RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey == LethalContent.Moons[MoonKeys.March].TypedKey ? UnityEngine.Random.Range(15, 30) : 0, () =>
+        PostGenSpawnableObject.Register(LethalContent.Items[LethalDiseasesKeys.JellyMushroom].Item.spawnPrefab, () =>
         {
-            if (availableTriggers.Count() == 0)
-            {
-                availableTriggers = GameObject.FindObjectsOfType<QuicksandTrigger>().Where(x => x.isWater || x.isInsideWater).ToList();
-                logger.LogDebug($"Got {availableTriggers.Count()} triggers");
-            }
+            availableTriggers = GameObject.FindObjectsOfType<QuicksandTrigger>().Where(x => x.isWater || x.isInsideWater).ToList();
+            logger.LogDebug($"Got {availableTriggers.Count()} water triggers");
+            return RoundManager.Instance.currentLevel.GetDawnInfo().TypedKey == LethalContent.Moons[MoonKeys.March].TypedKey ? UnityEngine.Random.Range(15, 30) : UnityEngine.Random.Range(0, 30);
+        }, () =>
+        {
+            if (availableTriggers.Count() == 0) { return null; }
 
             var trigger = availableTriggers.GetRandom();
             var triggerCollider = trigger.gameObject.GetComponent<Collider>();
             Vector3 castPoint = triggerCollider.GetRandomPointInsideBounds();
-            Physics.Raycast(castPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, PluginInstance.roomMask);
+            if (!Physics.Raycast(castPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, PluginInstance.roomMask)) { return null; }
             return new SpawnDefinition(hit.point, Quaternion.identity, destroyWithScene: true);
         }, () => availableTriggers.Clear());
     }

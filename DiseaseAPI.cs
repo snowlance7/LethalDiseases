@@ -29,7 +29,7 @@ namespace LethalDiseases
         }
         // TODO: Make more helper methods like these
         public static void InfectAndSync(this PlayerControllerB player) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync();
-        public static void InfectAndSync(this PlayerControllerB player, Disease disease) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+        public static void InfectSynced(this PlayerControllerB player, Disease disease) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
         public static void InfectAndSync(this PlayerControllerB player, string diseaseId) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync(diseaseId);
         public static void InfectAndSync(this EnemyAI enemy) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync();
         public static void InfectAndSync(this EnemyAI enemy, Disease disease) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
