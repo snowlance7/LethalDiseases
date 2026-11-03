@@ -1431,4 +1431,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stoppedTime: 1
   _movingTime: 2
-  snapBottom: 1
+  snapBottom: 0
