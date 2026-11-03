@@ -19,7 +19,7 @@ namespace LethalDiseases.Patches
                 if (!__instance.IsServer || TESTING.disableDiseaseSpawning || Configs.UninfectableEnemies.Contains(__instance.enemyType.GetDawnInfo().TypedKey.ToString())) { return; }
 
                 if (UnityEngine.Random.Range(0f, 1f) < MonsterDiseaseChance)
-                    __instance.gameObject.GetComponent<NetworkObject>().InfectAndSync();
+                    __instance.gameObject.GetComponent<NetworkObject>().InfectSynced();
             }
             catch (System.Exception e)
             {
@@ -37,7 +37,7 @@ namespace LethalDiseases.Patches
                 if (!__instance.fixInteract.IsServer || TESTING.disableDiseaseSpawning) { return; }
 
                 if (UnityEngine.Random.Range(0f, 1f) < SteamDiseaseChance)
-                    __instance.fixInteract.gameObject.GetComponent<NetworkObject>().InfectAndSync();
+                    __instance.fixInteract.gameObject.GetComponent<NetworkObject>().InfectSynced();
             }
             catch (System.Exception e)
             {
@@ -55,7 +55,7 @@ namespace LethalDiseases.Patches
                 if (!__instance.IsServer || TESTING.disableDiseaseSpawning || __instance.isInShipRoom || Configs.UninfectableItems.Contains(__instance.itemProperties.GetDawnInfo().TypedKey.ToString())) { return; }
 
                 if (UnityEngine.Random.Range(0f, 1f) < ScrapDiseaseChance)
-                    __instance.gameObject.GetComponent<NetworkObject>().InfectAndSync();
+                    __instance.gameObject.GetComponent<NetworkObject>().InfectSynced();
             }
             catch (System.Exception e)
             {

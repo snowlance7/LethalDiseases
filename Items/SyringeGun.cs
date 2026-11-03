@@ -253,7 +253,7 @@ namespace LethalDiseases.Items
             }
 
             StartCoroutine(parentSyringeProjectile());
-            player.InfectAndSync(diseaseId);
+            player.InfectSynced(diseaseId);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -280,7 +280,7 @@ namespace LethalDiseases.Items
             }
 
             StartCoroutine(parentSyringeProjectile());
-            enemy.InfectAndSync(diseaseId);
+            enemy.InfectSynced(diseaseId);
         }
     }
 

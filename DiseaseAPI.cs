@@ -11,29 +11,29 @@ namespace LethalDiseases
 {
     public static class DiseaseAPI
     {
-        public static void InfectAndSync(this NetworkObject netObj)
+        public static void InfectSynced(this NetworkObject netObj)
         {
             Disease disease = Disease.CreateRandomDisease();
-            netObj.InfectAndSync(disease);
+            netObj.InfectSynced(disease);
         }
 
-        public static void InfectAndSync(this NetworkObject netObj, Disease disease)
+        public static void InfectSynced(this NetworkObject netObj, Disease disease)
         {
-            netObj.InfectAndSync(disease.ToString());
+            netObj.InfectSynced(disease.ToString());
         }
 
-        public static void InfectAndSync(this NetworkObject netObj, string diseaseId)
+        public static void InfectSynced(this NetworkObject netObj, string diseaseId)
         {
             if (netObj.GetImmuneDiseaseIds().Contains(diseaseId)) { return; }
-            netObj.GetHost().InfectAndSync(diseaseId);
+            netObj.GetHost().InfectSynced(diseaseId);
         }
         // TODO: Make more helper methods like these
-        public static void InfectAndSync(this PlayerControllerB player) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync();
-        public static void InfectSynced(this PlayerControllerB player, Disease disease) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
-        public static void InfectAndSync(this PlayerControllerB player, string diseaseId) => player.gameObject.GetComponent<NetworkObject>().InfectAndSync(diseaseId);
-        public static void InfectAndSync(this EnemyAI enemy) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync();
-        public static void InfectAndSync(this EnemyAI enemy, Disease disease) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
-        public static void InfectAndSync(this EnemyAI enemy, string diseaseId) => enemy.gameObject.GetComponent<NetworkObject>().InfectAndSync(diseaseId);
+        public static void InfectSynced(this PlayerControllerB player) => player.gameObject.GetComponent<NetworkObject>().InfectSynced();
+        public static void InfectSynced(this PlayerControllerB player, Disease disease) => player.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
+        public static void InfectSynced(this PlayerControllerB player, string diseaseId) => player.gameObject.GetComponent<NetworkObject>().InfectSynced(diseaseId);
+        public static void InfectSynced(this EnemyAI enemy) => enemy.gameObject.GetComponent<NetworkObject>().InfectSynced();
+        public static void InfectSynced(this EnemyAI enemy, Disease disease) => enemy.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
+        public static void InfectSynced(this EnemyAI enemy, string diseaseId) => enemy.gameObject.GetComponent<NetworkObject>().InfectSynced(diseaseId);
 
         public static void TrySpread(this NetworkObject source, NetworkObject netObj, TransmissionType transmissionType, float multiplier = 1f)
         {

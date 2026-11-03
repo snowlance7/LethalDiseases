@@ -221,11 +221,12 @@ public static class TESTING
     {
         try
         {
-            if (!Utils.testing || nextEnemyDisease == null) { return; }
-            __instance.InfectAndSync(nextEnemyDisease);
+            if (!IsServerOrHost || !Utils.testing || nextEnemyDisease == null) { return; }
+            __instance.InfectSynced(nextEnemyDisease);
         }
-        catch
+        catch(System.Exception e)
         {
+            logger.LogError(e);
             return;
         }
         finally
@@ -253,7 +254,7 @@ public static class TESTING
                 else if (localPlayer.currentlyHeldObjectServer is DartGunAmmo ammo)
                     ammo.SetDiseaseRpc(disease.ToString(), DartGunAmmo.MaxDartsInAmmo);
                 else
-                    localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+                    localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
 
                 HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
             }
@@ -261,7 +262,7 @@ public static class TESTING
             {
                 disease = Disease.CreateRandomDisease();
                 if (now) { disease.latency = 0; }
-                localPlayer.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+                localPlayer.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
                 HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
             }
             return;
@@ -297,7 +298,7 @@ public static class TESTING
                     {
                         disease = Disease.CreateRandomDisease();
                         if (now) { disease.latency = 0; }
-                        localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+                        localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
                         HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
                         return;
                     }
@@ -308,7 +309,7 @@ public static class TESTING
                     disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
 
                     if (now) { disease.latency = 0; }
-                    localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+                    localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
                     HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} with disease {disease.ToString()}");
                 }
                 else
@@ -319,7 +320,7 @@ public static class TESTING
                     disease = Disease.CreateRandomDiseaseWithSymptom(symptomIndex);
 
                     if (now) { disease.latency = 0; }
-                    localPlayer.gameObject.GetComponent<NetworkObject>().InfectAndSync(disease);
+                    localPlayer.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
                     HUDManager.Instance.DisplayTip("LethalDiseases", $"Infected local player with disease {disease.ToString()}");
                 }
                 break;

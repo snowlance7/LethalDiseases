@@ -240,7 +240,7 @@ namespace LethalDiseases.Items
 
                     CancelStabAnimation();
 
-                    host.networkObject.InfectAndSync(storedDisease);
+                    host.networkObject.InfectSynced(storedDisease);
                     SetDiseaseRpc("", false);
                 }
                 else

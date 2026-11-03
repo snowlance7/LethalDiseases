@@ -281,7 +281,7 @@ namespace LethalDiseases
 
                     if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
                     {
-                        _networkObject.InfectAndSync(this);
+                        _networkObject.InfectSynced(this);
                     }
                 }
             }
@@ -295,17 +295,17 @@ namespace LethalDiseases
                 }
 
                 if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
-                    _networkObject.InfectAndSync(this);
+                    _networkObject.InfectSynced(this);
             }
             if (transmissionType.HasFlag(TransmissionType.Blood) && spreadTransmissionType.HasFlag(TransmissionType.Blood))
             {
                 if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
-                    _networkObject.InfectAndSync(this);
+                    _networkObject.InfectSynced(this);
             }
             if (transmissionType.HasFlag(TransmissionType.Foodborne) && spreadTransmissionType.HasFlag(TransmissionType.Foodborne))
             {
                 if (UnityEngine.Random.Range(0f, 1f) * multiplier < transmissibility)
-                    _networkObject.InfectAndSync(this);
+                    _networkObject.InfectSynced(this);
             }
         }
 

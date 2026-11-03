@@ -188,7 +188,7 @@ namespace LethalDiseases
             AddDisease(disease);
         }
 
-        public void InfectAndSync(string diseaseId)
+        public void InfectSynced(string diseaseId)
         {
             NetworkHandler.Instance.InfectRpc(networkObject, diseaseId);
         }
