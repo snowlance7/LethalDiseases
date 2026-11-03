@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using Unity.Netcode;
 using static LethalDiseases.Plugin;
+using GameNetcodeStuff;
 
 /* bodyparts
  * 0 head
@@ -27,7 +28,7 @@ namespace LethalDiseases;
 public static class TESTING
 {
     public static bool disableDiseaseSpawning = false;
-    static Disease? nextEnemyDisease;
+    public static Disease? nextEnemyDisease;
 
     static bool goToNextSymptomInTest;
     static bool symptomsTestRunning;
@@ -47,7 +48,10 @@ public static class TESTING
             //logger.LogDebug(StartOfRound.Instance.randomMapSeed);
             //RoundManager.Instance.ShowStaticElectricityWarningServerRpc(localPlayer.gameObject.GetComponent<NetworkObject>(), 10f);
             //CheckForWater();
-            logger.LogDebug(TimeOfDay.Instance.currentDayTime);
+            //logger.LogDebug(TimeOfDay.Instance.currentDayTime);
+
+            //logger.LogDebug(GameObject.FindObjectOfType<EnemyAI>().gameObject.GetComponent<NetworkObject>().name);
+            //logger.LogDebug(GameObject.FindObjectOfType<PlayerControllerB>().gameObject.GetComponent<NetworkObject>().name);
         }
         catch
         {
@@ -214,25 +218,6 @@ public static class TESTING
         }
 
         NetworkHandler.Instance.StartCoroutine(symptomsTestAll());
-    }
-
-    [HarmonyPostfix, HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.Start))]
-    public static void EnemyAI_Start_PostFix(EnemyAI __instance)
-    {
-        try
-        {
-            if (!IsServerOrHost || !Utils.testing || nextEnemyDisease == null) { return; }
-            __instance.InfectSynced(nextEnemyDisease);
-        }
-        catch(System.Exception e)
-        {
-            logger.LogError(e);
-            return;
-        }
-        finally
-        {
-            nextEnemyDisease = null;
-        }
     }
 
     static void Debug_Infect(string[] args, bool now = false)

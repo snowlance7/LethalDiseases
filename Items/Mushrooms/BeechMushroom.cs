@@ -51,6 +51,6 @@ internal class BeechMushroom : Mushroom // Beech_Mushroom: Base of trees in vow 
 
     public override void OnEatMushroom()
     {
-        localPlayer.HealPlayerAndSync(1);
+        localPlayer.HealPlayerSynced(1);
     }
 }

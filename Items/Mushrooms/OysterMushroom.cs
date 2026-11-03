@@ -18,6 +18,6 @@ internal class OysterMushroom : Mushroom
 
     public override void OnEatMushroom()
     {
-        localPlayer.HealPlayerAndSync(1);
+        localPlayer.HealPlayerSynced(1);
     }
 }

@@ -7,6 +7,6 @@ internal class HealingMushroom : Mushroom
 {
     public override void OnEatMushroom()
     {
-        localPlayer.HealPlayerAndSync(10);
+        localPlayer.HealPlayerSynced(10);
     }
 }

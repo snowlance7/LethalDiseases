@@ -14,8 +14,20 @@
     "DartGun": "lethal_diseases:dart_gun",
     "DiseaseAnalyzer": "lethal_diseases:disease_analyzer",
     "DiseaseScanner": "lethal_diseases:disease_scanner",
-    "HealingMushrooom": "lethal_diseases:healing_mushrooom",
     "Leech": "lethal_diseases:leech",
+    "BeechMushroom": "lethal_diseases:beech_mushroom",
+    "BellcapMushroom": "lethal_diseases:bellcap_mushroom",
+    "BlackTrumpetMushroom": "lethal_diseases:black_trumpet_mushroom",
+    "CaveMushroom": "lethal_diseases:cave_mushroom",
+    "ChanterelleMushroom": "lethal_diseases:chanterelle_mushroom",
+    "DeathCapMushroom": "lethal_diseases:death_cap_mushroom",
+    "Mushroom": "lethal_diseases:mushroom",
+    "JackOLanternMushroom": "lethal_diseases:jack_o_lantern_mushroom",
+    "JellyMushroom": "lethal_diseases:jelly_mushroom",
+    "MonsterMushroom": "lethal_diseases:monster_mushroom",
+    "OysterMushroom": "lethal_diseases:oyster_mushroom",
+    "RadioMushroom": "lethal_diseases:radio_mushroom",
+    "ShaggyManeMushroom": "lethal_diseases:shaggy_mane_mushroom",
     "Sanitizer": "lethal_diseases:sanitizer",
     "Syringe": "lethal_diseases:syringe",
     "SyringeGun": "lethal_diseases:syringe_gun",
@@ -24,6 +36,9 @@
   },
   "LethalDiseasesMapObjectKeys": {
     "__type": "DawnMapObjectInfo",
-    "HealingMushroom": "lethal_diseases:healing_mushroom"
+    "BlackTrumpetMushroom": "lethal_diseases:black_trumpet_mushroom",
+    "Mushroom": "lethal_diseases:mushroom",
+    "JackOLanternMushroom": "lethal_diseases:jack_o_lantern_mushroom",
+    "ShaggyManeMushroom": "lethal_diseases:shaggy_mane_mushroom"
   }
 }

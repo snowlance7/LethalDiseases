@@ -220,7 +220,7 @@ internal class MonsterMushroom : Mushroom
 
     public override void OnEatMushroom()
     {
-        localPlayer.HealPlayerAndSync(5, allowOverhealing: true);
+        localPlayer.HealPlayerSynced(5, allowOverhealing: true);
     }
 }
 

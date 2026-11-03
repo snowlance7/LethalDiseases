@@ -149,7 +149,7 @@ internal class DartGun : PhysicsProp
             }
 
             var ammo = localPlayer.ItemSlots[ammoSlot];
-            localPlayer.DiscardItemInSlotAndSync(ammoSlot);
+            localPlayer.DiscardItemInSlotSynced(ammoSlot);
             LoadAmmoRpc(ammo.gameObject.GetComponent<NetworkObject>());
             SetControlTipsForItem();
         }

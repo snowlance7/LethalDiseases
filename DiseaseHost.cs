@@ -46,7 +46,27 @@ namespace LethalDiseases
         public float airFilterQuality = 1f;
         public bool IsAirFilterFunctional => airFilterQuality > 0f;
 
-        void Start()
+        internal void SetHost(PlayerControllerB player)
+        {
+            this.player = player;
+        }
+
+        internal void SetHost(EnemyAI enemy)
+        {
+            this.enemy = enemy;
+        }
+
+        internal void SetHost(SteamValveHazard steamValveHazard)
+        {
+            this.steamValve = steamValveHazard;
+        }
+
+        internal void SetHost(GrabbableObject grabbableObject)
+        {
+            this.grabbableObject = grabbableObject;
+        }
+
+        public void Start()
         {
             Instances.Add(this);
             player = gameObject.GetComponent<PlayerControllerB>();
@@ -62,7 +82,7 @@ namespace LethalDiseases
             Instances.Remove(this);
         }
 
-        void Update()
+        public void Update()
         {
             if (IsSanitized)
             {
@@ -117,16 +137,16 @@ namespace LethalDiseases
 
             if (enemy != null)
             {
-                collider = enemy.gameObject.GetComponentInChildren<EnemyAICollisionDetect>()?.GetComponent<Collider>(); // TODO: Test this
+                collider = enemy.gameObject.GetComponentInChildren<ScanNodeProperties>()?.GetComponent<Collider>(); // TODO: Test this
             }
             else
             {
-                collider = networkObject.gameObject.GetComponent<Collider>();
+                collider = networkObject!.gameObject.GetComponent<Collider>();
             }
             //if (collider == null) { logger.LogError($"Couldn't create disease scan node, no collider found on {networkObject.name}"); return; }
             //if (collider != null) { logger.LogDebug($"Got Collider {collider.name}"); }
 
-            GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider != null ? collider.transform : networkObject.transform);
+            GameObject scanNodeObj = Instantiate(LethalDiseasesContentHandler.Instance.DiseaseAssets!.DiseaseScanNodePrefab, collider != null ? collider.transform : networkObject!.transform);
             diseaseScanNode = scanNodeObj.GetComponent<DiseaseScanNode>();
             diseaseScanNode.diseaseHost = this;
             diseaseScanNode.parentCollider = collider;
@@ -191,6 +211,11 @@ namespace LethalDiseases
         public void InfectSynced(string diseaseId)
         {
             NetworkHandler.Instance.InfectRpc(networkObject, diseaseId);
+        }
+
+        public void InfectSynced(Disease disease)
+        {
+            NetworkHandler.Instance.InfectRpc(networkObject, disease.ToString());
         }
     }
 }

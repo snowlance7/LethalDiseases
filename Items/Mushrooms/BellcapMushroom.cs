@@ -20,6 +20,6 @@ internal class BellcapMushroom : Mushroom // Panaeolus_Papilionaceus_Mushroom (B
 
     public override void OnEatMushroom()
     {
-        localPlayer.HealPlayerAndSync(1);
+        localPlayer.HealPlayerSynced(1);
     }
 }

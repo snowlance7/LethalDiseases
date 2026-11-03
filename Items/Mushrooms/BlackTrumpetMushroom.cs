@@ -7,6 +7,6 @@ internal class BlackTrumpetMushroom : Mushroom // Black_Trumpet Mushroom (All ov
 {
     public override void OnEatMushroom()
     {
-        localPlayer.HealPlayerAndSync(1);
+        localPlayer.HealPlayerSynced(1);
     }
 }

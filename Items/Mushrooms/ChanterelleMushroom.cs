@@ -20,6 +20,6 @@ internal class ChanterelleMushroom : Mushroom // Chanterelle_Mushroom (rarely in
 
     public override void OnEatMushroom()
     {
-        localPlayer.HealPlayerAndSync(1);
+        localPlayer.HealPlayerSynced(1);
     }
 }

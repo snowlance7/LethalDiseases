@@ -82,13 +82,7 @@ namespace LethalDiseases
 
         internal static DiseaseHost GetHost(this NetworkObject netObj)
         {
-            if (netObj == null) { logger.LogError("NetObj is null"); return null; }
-            if (!netObj.gameObject.TryGetComponent(out DiseaseHost? host) || host == null)
-            {
-                host = netObj.gameObject.AddComponent<DiseaseHost>();
-            }
-
-            return host;
+            return netObj.gameObject.GetComponent<DiseaseHost>();
         }
 
         internal static DiseaseHost GetHost(this PlayerControllerB player)
