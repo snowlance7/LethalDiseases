@@ -169,7 +169,7 @@ namespace LethalDiseases
             sanitizedTimeLeft = Mathf.Max(sanitizedTimeLeft, sanitizeTime);
         }
 
-        public void SanitizeAndSync(float sanitizeTime)
+        public void SanitizeSynced(float sanitizeTime)
         {
             NetworkHandler.Instance.SanitizeRpc(networkObject, sanitizeTime);
         }
@@ -182,7 +182,7 @@ namespace LethalDiseases
                 Utils.DisplayStatusEffect($"Air Filter replaced. Filter quality: {airFilterQuality * 100}%");
         }
 
-        public void ReplaceAirFilterAndSync()
+        public void ReplaceAirFilterSynced()
         {
             NetworkHandler.Instance.ReplaceAirFilterRpc(networkObject);
         }
@@ -195,7 +195,7 @@ namespace LethalDiseases
                 Utils.DisplayStatusEffect($"Airborne diseases detected! Filter quality: {airFilterQuality * 100}%");
         }
 
-        public void UseAirFilterAndSync(float multiplier = 1f)
+        public void UseAirFilterSynced(float multiplier = 1f)
         {
             NetworkHandler.Instance.UseAirFilterRpc(networkObject, multiplier);
         }

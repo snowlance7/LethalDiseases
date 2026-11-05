@@ -35,13 +35,16 @@ namespace LethalDiseases.Items
 
             audioSource.Play();
 
+            //localPlayer.PlayQuickSpecialAnimation(1f);
+            //localPlayer.playerBodyAnimator.Play("InhaleTZPChemical", 2);
+
             var cadaverGrowth = GameObject.FindObjectOfType<CadaverGrowthAI>();
             if (cadaverGrowth != null)
             {
                 cadaverGrowth.localPlayerImmunityTimer = 0f;
             }
 
-            localPlayer.GetHost().ReplaceAirFilterAndSync();
+            localPlayer.GetHost().ReplaceAirFilterSynced();
             localPlayer.DespawnHeldObject();
         }
     }
