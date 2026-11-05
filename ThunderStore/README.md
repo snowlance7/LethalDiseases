@@ -19,8 +19,8 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Assorted Bottle - Chemical Lab](https://skfb.ly/oST6v) by kane_sk06
 - [Syringe Dart Launcher](https://skfb.ly/6qCJG) by Rectus
 - [Leech](https://skfb.ly/URQ6) by Kihkztand
-- [FILTRO](https://skfb.ly/oySUL) by sergio.garcia2
 - [Jelly_Mushroom](https://skfb.ly/6WOt8) by tsishir
 - [Mushroom monster](https://skfb.ly/pOy9E) by Hellrot
 - [Magical Mushroom (Blue)](https://skfb.ly/QNOU) by MA3D
 - [Stylized glowing mushrooms](https://skfb.ly/oNppA) by RiZoRuS77
+- [Air Filter poppy playtime chapter 4](https://skfb.ly/p9KEM) by Friteabc
