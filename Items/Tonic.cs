@@ -233,7 +233,6 @@ internal class TonicDefinition : IEquatable<TonicDefinition>
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
         });
 
-        logger.LogError("Registering mushrooms");
         ChemistryIngredient mushroomIngredient = new ChemistryIngredient(LethalDiseasesKeys.Mushroom);
         ChemistryIngredient.Register(mushroomIngredient);
         ChemistryIngredient.Register(LethalDiseasesKeys.BeechMushroom);

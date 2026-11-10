@@ -54,12 +54,12 @@ MonoBehaviour:
   isDefensiveWeapon: 0
   toolTips:
   - Eat [LMB]
-  verticalOffset: 0
+  verticalOffset: -0.02
   floorYOffset: 90
   allowDroppingAheadOfPlayer: 1
-  restingRotation: {x: 0, y: 0, z: 90}
+  restingRotation: {x: 0, y: 0, z: 60}
   rotationOffset: {x: 90, y: 90, z: 0}
-  positionOffset: {x: 0, y: 0.1, z: 0}
+  positionOffset: {x: 0.06, y: 0.08, z: 0}
   meshOffset: 1
   meshVariants:
   - {fileID: -915712872417006085, guid: 6a7823d7a321832408ce11c8e846c3cc, type: 3}
