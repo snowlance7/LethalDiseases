@@ -6,6 +6,7 @@ using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Linq;
+using Unity.Jobs;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
@@ -68,6 +69,20 @@ namespace LethalDiseases.Items
             scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 
+        public override void Update()
+        {
+            grabbable = localPlayer.currentlyHeldObjectServer is not IChemistryOutputContainer;
+            customGrabTooltip = localPlayer.currentlyHeldObjectServer is IChemistryOutputContainer ? $"Fill {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} : [E]" : "";
+            
+            base.Update();
+        }
+
+        public override void InteractItem()
+        {
+            if (localPlayer.currentlyHeldObjectServer is not IChemistryOutputContainer) { return; }
+            FillOutputContainerRpc(localPlayer.actualClientId);
+        }
+
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
             logger.LogDebug("Setting fluid color to " + color.ToString());
@@ -83,7 +98,7 @@ namespace LethalDiseases.Items
             fluidRenderer.enabled = IsFilled && enable;
         }
 
-        ChemistryIngredient IChemistryIngredient.GetIngredient()
+        public ChemistryIngredient GetIngredient()
         {
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
         }
@@ -152,6 +167,20 @@ namespace LethalDiseases.Items
         public void SetDiseaseRpc(string diseaseId)
         {
             SetDisease(diseaseId);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void FillOutputContainerRpc(ulong clientId)
+        {
+            PlayerControllerB player = PlayerFromId(clientId);
+
+            var outputContainer = localPlayer.currentlyHeldObjectServer as IChemistryOutputContainer;
+            if (outputContainer == null) { return; }
+
+            if (!outputContainer.ReceiveChemistryOutput(GetIngredient())) { return; }
+            
+            if (!IsServer) { return; }
+            NetworkObject.Despawn(destroy: true);
         }
     }
 }

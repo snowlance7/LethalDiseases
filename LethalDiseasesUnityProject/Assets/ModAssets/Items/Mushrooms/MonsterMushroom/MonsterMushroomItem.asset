@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
   m_Name: MonsterMushroomItem
   m_EditorClassIdentifier: 
-  itemId: 123984
+  itemId: 0
   itemName: Monster Mushroom
   spawnPositionTypes:
   - {fileID: 11400000, guid: 0a19902c1c3946046b1b1237298bc89e, type: 2}
-  twoHanded: 1
+  twoHanded: 0
   twoHandedAnimation: 0
   disableHandsOnWall: 0
   canBeGrabbedBeforeGameStart: 1
@@ -51,16 +51,16 @@ MonoBehaviour:
   syncUseFunction: 0
   syncDiscardFunction: 0
   syncInteractLRFunction: 0
-  saveItemVariable: 0
+  saveItemVariable: 1
   isDefensiveWeapon: 0
   toolTips:
   - Eat [LMB]
   verticalOffset: 0
   floorYOffset: 90
   allowDroppingAheadOfPlayer: 1
-  restingRotation: {x: 0, y: 0, z: 90}
-  rotationOffset: {x: 90, y: 90, z: 0}
-  positionOffset: {x: 0, y: 0.1, z: 0}
+  restingRotation: {x: 0, y: 0, z: 70}
+  rotationOffset: {x: 60, y: 180, z: 88}
+  positionOffset: {x: -0.069, y: 0.1, z: -0.03}
   meshOffset: 1
   meshVariants: []
   materialVariants: []
