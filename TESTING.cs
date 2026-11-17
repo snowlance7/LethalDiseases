@@ -237,7 +237,7 @@ public static class TESTING
                 else if (localPlayer.currentlyHeldObjectServer is TestTube testTube)
                     testTube.SetDiseaseRpc(disease.ToString());
                 else if (localPlayer.currentlyHeldObjectServer is DartGunAmmo ammo)
-                    ammo.SetDiseaseRpc(disease.ToString(), DartGunAmmo.MaxDartsInAmmo);
+                    ammo.SetDiseaseRpc(disease.ToString());
                 else
                     localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
 

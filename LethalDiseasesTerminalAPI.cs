@@ -11,6 +11,8 @@ namespace LethalDiseases
 {
     internal static class LethalDiseasesTerminalAPI
     {
+        public static string AnalyzedSample = "";
+
         public static DispensableItem testTubeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new Vector3(0, 0, 0), new Vector3(0, 180, 0));
         public static DispensableItem cottonSwabDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item, new Vector3(0.04f, 0f, 0f), new Vector3(0, 180, 0));
         public static DispensableItem syringeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.Syringe].Item, new Vector3(0.035f, -0.01f, 0f), new Vector3(0, 0, 0));
@@ -23,7 +25,7 @@ namespace LethalDiseases
             TerminalAPI.RegisterTerminalCommand("diseases", GetDiseases, "Other", "DISEASES", "Gets all previously analyzed disease names as a list.");
             if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled && TestTube.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", $"Synthesizes and dispenses a test tube sample of a disease.{(Configs.SynthesizePowerUsage > 0f ? $" Requires {Configs.SynthesizePowerUsage * 100}% apparatus power to synthesize." : "")}"); }
             if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", $"Analyzes a test tube or cotton swab sample.{(Configs.AnalyzeDiseasePowerUsage > 0f ? $" Requires {Configs.AnalyzeDiseasePowerUsage * 100}% apparatus power to synthesize." : "")}"); }
-            if (Syringe.IsEnabled && ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName]", $"Synthesizes and dispenses a syringe containing the specified disease. Requires an empty syringe{(Configs.SynthesizeSyringePowerUsage > 0f ? $" and {Configs.SynthesizeSyringePowerUsage * 100}% apparatus power to synthesize" : "")}."); }
+            if (Syringe.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName] [amount(optional)]", $"Synthesizes and orders syringes containing the specified disease."); }
             if (DartGunAmmo.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsyntha", SynthesizeDartGunAmmo, "Other", "DSYNTHA [diseaseName] [amount(optional)]", "Synthesizes and orders dart gun ammo containing the specified disease."); }
             TerminalAPI.RegisterTerminalCommand("ddelete", DeleteDisease, "Other", "DDELETE [diseaseName]", "Deletes a named disease");
             if (ShipSanitizationUpgrade.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsanitize", Sanitize, "Other", "DSANITIZE", $"Sanitizes the ship of all diseases. Experimental. Requires the Ship Sanitization Upgrade to be installed{(ShipSanitizationUpgrade.PowerUsage > 0f ? $" and {ShipSanitizationUpgrade.PowerUsage * 100}% apparatus power" : "")}."); }
@@ -109,41 +111,57 @@ namespace LethalDiseases
 
         private static string AnalyzeDisease(string[] args)
         {
-            if (ApparatusPowerPort.Instance == null) { return "Analysis failed, requires apparatus port module, which is not installed"; }
-            if (SmallItemDispenser.Instance == null) { return "Analysis failed, requires small item dispenser module, which is not installed"; }
+            NetworkHandler.Instance.RequestDiseaseAnalysisRpc(localPlayer.actualClientId); // TODO: Test this to make sure it works, if not fix it
 
-            if (SmallItemDispenser.Instance.IsBeingUsed) { return "Analysis failed, small item dispenser is already in use"; }
-
-            if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Analysis failed, not enough power available for analysis, alternative power source required"; }
-
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.AnalyzeDiseasePowerUsage)) { return "Analysis failed, not enough power available for analysis, new alternative power source required"; }
-
-            NetworkHandler.Instance.AnalyzeDiseaseRpc(localPlayer.actualClientId);
-
-            return $"Analysis ready, please input sample in item port";
+            return $"Item ship on route, please place sample in item ship for analysis. After analysis, the results will be sent to the terminal.";
         }
+
+        //private static string AnalyzeDisease(string[] args)
+        //{
+        //    if (ApparatusPowerPort.Instance == null) { return "Analysis failed, requires apparatus port module, which is not installed"; }
+        //    if (SmallItemDispenser.Instance == null) { return "Analysis failed, requires small item dispenser module, which is not installed"; }
+
+        //    if (SmallItemDispenser.Instance.IsBeingUsed) { return "Analysis failed, small item dispenser is already in use"; }
+
+        //    if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Analysis failed, not enough power available for analysis, alternative power source required"; }
+
+        //    if (!ApparatusPowerPort.Instance.UsePower(Configs.AnalyzeDiseasePowerUsage)) { return "Analysis failed, not enough power available for analysis, new alternative power source required"; }
+
+        //    NetworkHandler.Instance.AnalyzeDiseaseRpc(localPlayer.actualClientId);
+
+        //    return $"Analysis ready, please input sample in item port";
+        //}
 
         private static string SynthesizeSyringe(string[] args)
         {
-            if (ApparatusPowerPort.Instance == null) { return "Synthesis failed, requires apparatus port module, which is not installed"; }
-            if (SmallItemDispenser.Instance == null) { return "Synthesis failed, requires small item dispenser module, which is not installed"; }
+            //if (ApparatusPowerPort.Instance == null) { return "Synthesis failed, requires apparatus port module, which is not installed"; }
+            //if (SmallItemDispenser.Instance == null) { return "Synthesis failed, requires small item dispenser module, which is not installed"; }
             if (args.Length == 1) { return "Synthesis failed, no diseaseName specified"; }
-            if (args.Length > 2) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTHS [diseaseName])"; }
+            if (args.Length > 3) { return "Synthesis failed, incorrect syntax (expected syntax: DSYNTHS [diseaseName] [amount(optional)])"; }
 
             string diseaseName = args[1];
 
             Disease? disease = Disease.GetDiseaseFromName(diseaseName);
             if (disease == null) { return $"Synthesis failed, could not find disease with name: {diseaseName}"; }
 
-            if (SmallItemDispenser.Instance.IsBeingUsed) { return "Synthesis failed, small item dispenser is already in use"; }
+            var dawnItem = LethalContent.Items[LethalDiseasesKeys.Syringe];
+            if (dawnItem == null) { return $"Synthesis failed, syringe is not available for purchase"; }
 
-            if (!ApparatusPowerPort.Instance.IsApparatusInSlot) { return "Synthesis failed, not enough power available for synthesis, alternative power source required"; }
+            int count = 1;
+            if (args.Length == 3 && int.TryParse(args[2], out int _count))
+            {
+                count = Mathf.Min(1, _count);
+            }
 
-            if (!ApparatusPowerPort.Instance.UsePower(Configs.SynthesizeSyringePowerUsage)) { return "Synthesis failed, not enough power available for synthesis, new alternative power source required"; }
+            int totalCost = count * (Syringe.Cost + disease.CalculateSynthesisCost());
+            int newGroupCredits = Utils.terminal!.groupCredits - totalCost;
 
-            NetworkHandler.Instance.SynthesizeDiseaseSyringeRpc(disease.ToString());
+            if (newGroupCredits < 0) { return $"Synthesis failed. You could not afford these items!\nYour balance is {Utils.terminal.groupCredits}. Total cost of these items is {totalCost}."; }
 
-            return "Synthesis starting, please insert Syringe";
+            NetworkHandler.Instance.SynthesizeSyringeRpc(disease.ToString(), count);
+            Utils.SyncGroupCredits(newGroupCredits);
+
+            return $"Synthesis succeeded. Ordered {count} syringes. Your new balance is {newGroupCredits}. Our contractors enjoy fast, free shipping while on the job! Any purchased items will arrive hourly at your approximate location.";
         }
 
         public static string SynthesizeDartGunAmmo(string[] args)
@@ -157,21 +175,23 @@ namespace LethalDiseases
             if (disease == null) { return $"Synthesis failed, could not find disease with name: {diseaseName}"; }
 
             var dawnItem = LethalContent.Items[LethalDiseasesKeys.DartGunAmmo];
-            if (dawnItem == null || dawnItem.ShopInfo == null) { return $"Synthesis failed, dart gun ammo is not available for purchase"; }
+            if (dawnItem == null) { return $"Synthesis failed, dart gun ammo is not available for purchase"; }
 
             int count = 1;
             if (args.Length == 3 && int.TryParse(args[2], out int _count))
+            {
                 count = Mathf.Min(1, _count);
+            }
 
-            int totalCost = count * (int)(dawnItem.ShopInfo.DawnPurchaseInfo.Cost.Provide() * (dawnItem.ShopInfo.GetSalePercentage() / 100f));
+            int totalCost = count * (DartGunAmmo.Cost + disease.CalculateSynthesisCost());
             int newGroupCredits = Utils.terminal!.groupCredits - totalCost;
 
             if (newGroupCredits < 0) { return $"Synthesis failed. You could not afford these items!\nYour balance is {Utils.terminal.groupCredits}. Total cost of these items is {totalCost}."; }
 
-            Utils.BuyItem(LethalDiseasesKeys.DartGunAmmo, count, true, newGroupCredits);
             NetworkHandler.Instance.SynthesizeDartGunAmmoRpc(disease.ToString(), count);
+            Utils.SyncGroupCredits(newGroupCredits);
 
-            return $"Synthesis succeeded. Ordered {count} dart gun ammo. Your new balance is {newGroupCredits}.Our contractors enjoy fast, free shipping while on the job! Any purchased items will arrive hourly at your approximate location.";
+            return $"Synthesis succeeded. Ordered {count} dart gun ammo. Your new balance is {newGroupCredits}. Our contractors enjoy fast, free shipping while on the job! Any purchased items will arrive hourly at your approximate location.";
         }
 
         public static string Sanitize(string[] args)

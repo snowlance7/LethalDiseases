@@ -13,7 +13,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class TestTube : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData
+    internal class TestTube : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData, IDiseaseSample
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.TestTube] != null;
 
@@ -21,7 +21,7 @@ namespace LethalDiseases.Items
 
         ScanNodeProperties scanNode = null!;
 
-        public string? storedDisease = "";
+        public string storedDisease { get; set; } = "";
 
         public bool IsFilled => !string.IsNullOrWhiteSpace(storedDisease);
 

@@ -40,6 +40,7 @@ namespace LethalDiseases.Items
         bool inStabbingAnimation;
         readonly Vector3 stabPositionOffset = new Vector3(0f, 0.16f, 0.01f);
         readonly Vector3 stabRotationOffset = new Vector3(0, 0, 170);
+        public static int Cost => PluginInstance.Config.Bind("Syringe Options", "Syringe | Cost", 10, "The base cost of the syringe").Value;
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
@@ -142,7 +143,7 @@ namespace LethalDiseases.Items
             base.PocketItem();
         }
 
-        public override void EnableItemMeshes(bool enable)
+        public override void EnableItemMeshes(bool enable) // TODO: Make sure this is working
         {
             base.EnableItemMeshes(enable);
             fluidRenderer.enabled = enable && isFilled;

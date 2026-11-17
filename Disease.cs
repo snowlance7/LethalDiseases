@@ -735,5 +735,10 @@ namespace LethalDiseases
             transmissionType &= ~typeToRemove;
             return AddTransmissionType(typeToAdd);
         }
+
+        public int CalculateSynthesisCost()
+        {
+            throw new NotImplementedException(); // TODO
+        }
     }
 }

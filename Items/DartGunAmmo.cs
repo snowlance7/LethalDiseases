@@ -15,8 +15,6 @@ namespace LethalDiseases.Items
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGunAmmo] != null;
 
-        public static List<string> spawningStoredDiseases = new List<string>();
-
         [SerializeField]
         MeshRenderer[] dartRenderers = null!;
 
@@ -31,6 +29,7 @@ namespace LethalDiseases.Items
         public bool IsFilled => AmmoLeft > 0;
 
         public static int MaxDartsInAmmo => PluginInstance.Config.Bind("Dart Gun Options", "Dart Gun | Max Darts", 10, "The max amount of darts in a clip").Value;
+        public static int Cost => PluginInstance.Config.Bind("Dart Gun Options", "Dart Gun | Cost", 10, "The base cost of the dart gun ammo").Value;
 
         bool itemMeshEnabled = true;
 
@@ -46,22 +45,6 @@ namespace LethalDiseases.Items
         public static void InitConfigs()
         {
             _ = MaxDartsInAmmo;
-        }
-
-        public override void Start()
-        {
-            base.Start();
-
-            if (spawningStoredDiseases.Count > 0)
-            {
-                SetAmmo(MaxDartsInAmmo);
-                SetDisease(spawningStoredDiseases.First());
-                spawningStoredDiseases.RemoveAt(0);
-            }
-            else
-            {
-                SetAmmo(0);
-            }
         }
 
         public override void EnableItemMeshes(bool enable)
@@ -115,6 +98,7 @@ namespace LethalDiseases.Items
         public void SetDiseaseRpc(string diseaseId)
         {
             SetDisease(diseaseId);
+            SetAmmo(MaxDartsInAmmo);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

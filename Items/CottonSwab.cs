@@ -10,15 +10,15 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class CottonSwab : PhysicsProp, IDistillableIngredient, IDawnSaveData
+    internal class CottonSwab : PhysicsProp, IDistillableIngredient, IDawnSaveData, IDiseaseSample
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.CottonSwab] != null;
+
+        public string storedDisease { get; set; } = "";
 
         public MeshRenderer tipRenderer = null!;
 
         ScanNodeProperties scanNode = null!;
-
-        public string storedDisease = "";
 
         readonly float maxDistance = 5f;
 
