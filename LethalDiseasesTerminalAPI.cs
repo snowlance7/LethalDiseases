@@ -1,10 +1,8 @@
 ﻿using Dawn;
 using LethalDiseases.Items;
 using LethalDiseases.Unlockables;
-using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
 using UnityEngine;
-using UnityEngine.UIElements;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases
@@ -13,9 +11,6 @@ namespace LethalDiseases
     {
         public static string AnalyzedSample = "";
 
-        public static DispensableItem testTubeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.TestTube].Item, new Vector3(0, 0, 0), new Vector3(0, 180, 0));
-        public static DispensableItem cottonSwabDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.CottonSwab].Item, new Vector3(0.04f, 0f, 0f), new Vector3(0, 180, 0));
-        public static DispensableItem syringeDispensable = new DispensableItem(LethalContent.Items[LethalDiseasesKeys.Syringe].Item, new Vector3(0.035f, -0.01f, 0f), new Vector3(0, 0, 0));
 
         [StaticInit]
         public static void Init()
@@ -23,8 +18,8 @@ namespace LethalDiseases
             TerminalAPI.RegisterTerminalCommand("dget", GetDisease, "Other", "DGET [diseaseName]", "Gets the analyzed information of a disease");
             TerminalAPI.RegisterTerminalCommand("drename", RenameDisease, "Other", "DRENAME [diseaseName] [newDiseaseName]", "Renames a disease");
             TerminalAPI.RegisterTerminalCommand("diseases", GetDiseases, "Other", "DISEASES", "Gets all previously analyzed disease names as a list.");
-            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled && TestTube.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", $"Synthesizes and dispenses a test tube sample of a disease.{(Configs.SynthesizePowerUsage > 0f ? $" Requires {Configs.SynthesizePowerUsage * 100}% apparatus power to synthesize." : "")}"); }
-            if (ApparatusPowerPort.IsEnabled && SmallItemDispenser.IsEnabled) { TerminalAPI.RegisterTerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", $"Analyzes a test tube or cotton swab sample.{(Configs.AnalyzeDiseasePowerUsage > 0f ? $" Requires {Configs.AnalyzeDiseasePowerUsage * 100}% apparatus power to synthesize." : "")}"); }
+            TerminalAPI.RegisterTerminalCommand("dsynth", SynthesizeDisease, "Other", "DSYNTH [diseaseName]", $"Synthesizes and dispenses a test tube sample of a disease.{(Configs.SynthesizePowerUsage > 0f ? $" Requires {Configs.SynthesizePowerUsage * 100}% apparatus power to synthesize." : "")}");
+            TerminalAPI.RegisterTerminalCommand("danalyze", AnalyzeDisease, "Other", "DANALYZE", $"Analyzes a test tube or cotton swab sample.{(Configs.AnalyzeDiseasePowerUsage > 0f ? $" Requires {Configs.AnalyzeDiseasePowerUsage * 100}% apparatus power to synthesize." : "")}");
             if (Syringe.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsynths", SynthesizeSyringe, "Other", "DSYNTHS [diseaseName] [amount(optional)]", $"Synthesizes and orders syringes containing the specified disease."); }
             if (DartGunAmmo.IsEnabled) { TerminalAPI.RegisterTerminalCommand("dsyntha", SynthesizeDartGunAmmo, "Other", "DSYNTHA [diseaseName] [amount(optional)]", "Synthesizes and orders dart gun ammo containing the specified disease."); }
             TerminalAPI.RegisterTerminalCommand("ddelete", DeleteDisease, "Other", "DDELETE [diseaseName]", "Deletes a named disease");

@@ -37,10 +37,6 @@ namespace LethalDiseases
 
             _ = AccessibilityMode;
 
-            _ = SynthesizePowerUsage;
-            _ = AnalyzeDiseasePowerUsage;
-            _ = SynthesizeSyringePowerUsage;
-
             _ = TransmissableFoodborneItems;
             _ = TransmissableFoodborneTags;
         }
@@ -66,10 +62,6 @@ namespace LethalDiseases
         public static float ScrapDiseaseChance => PluginInstance.Config.Bind("Chances", "Scrap Disease Chance", 0.1f, "0-1 chance for a scrap item to have a random disease when spawned during dungeon generation").Value;
 
         public static bool AccessibilityMode => PluginInstance.Config.Bind("Client Options", "Accessibility Mode", false, "Enables accessibility features").Value;
-
-        public static float SynthesizePowerUsage => PluginInstance.Config.Bind("Terminal Commands", "Synthesize Power Usage", 0.1f, "The amount of apparatus power this command uses").Value;
-        public static float AnalyzeDiseasePowerUsage => PluginInstance.Config.Bind("Terminal Commands", "Analyze Disease Power Usage", 0.05f, "The amount of apparatus power this command uses").Value;
-        public static float SynthesizeSyringePowerUsage => PluginInstance.Config.Bind("Terminal Commands", "Synthesize Syringe Power Usage", 0.1f, "The amount of apparatus power this command uses").Value;
 
         public static string[] TransmissableFoodborneItems => PluginInstance.Config.Bind("Other Options", "Transmissable Foodborne Items", DefaultTransmissableFoodborneItems, "Dawnlib item NamespacedKeys that can transmit diseases with the foodborne transmission type").Value.Replace(" ", "").Split(",");
         public static string[] TransmissableFoodborneTags => PluginInstance.Config.Bind("Other Options", "Transmissable Foodborne Item Tags", DefaultTransmissableFoodborneTags, "Dawnlib tags for items that can transmit diseases with the foodborne transmission type").Value.Replace(" ", "").Split(",");
