@@ -29,7 +29,6 @@ namespace LethalDiseases.Items
         public bool IsFilled => AmmoLeft > 0;
 
         public static int MaxDartsInAmmo => PluginInstance.Config.Bind("Dart Gun Options", "Dart Gun | Max Darts", 10, "The max amount of darts in a clip").Value;
-        public static int Cost => PluginInstance.Config.Bind("Dart Gun Options", "Dart Gun | Cost", 10, "The base cost of the dart gun ammo").Value;
 
         bool itemMeshEnabled = true;
 

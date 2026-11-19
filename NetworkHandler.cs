@@ -236,57 +236,29 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void SynthesizeDartGunAmmoRpc(string diseaseId, int count)
-        {
-            ItemDropshipOperations.DeliverItem(LethalDiseasesKeys.DartGunAmmo, (x) => ((DartGunAmmo)x).SetDiseaseRpc(diseaseId), count);
-        }
-
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SynthesizeDiseaseRpc(string id)
-        {
-            SmallItemDispenser.Instance!.ItemDispenseOperation(LethalDiseasesTerminalAPI.testTubeDispensable, (item) => ((TestTube)item).OnChemicalOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, specialInstructions: id)), 30f);
-        }
-
-        [Rpc(SendTo.Server, RequireOwnership = false)]
         public void SynthesizeSyringeRpc(string id, int count)
         {
             ItemDropshipOperations.DeliverItem(LethalDiseasesKeys.Syringe, (x) => ((Syringe)x).SetDiseaseRpc(id, false), count);
         }
 
-        //[Rpc(SendTo.Everyone, RequireOwnership = false)]
-        //public void AnalyzeDiseaseRpc(ulong clientId)
-        //{
-        //    SmallItemDispenser.Instance!.ItemModificationOperation([LethalDiseasesTerminalAPI.testTubeDispensable, LethalDiseasesTerminalAPI.cottonSwabDispensable], (inputItem) =>
-        //    {
-        //        Disease? disease = null;
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void SynthesizeDiseaseRpc(NamespacedKey<DawnItemInfo> itemKey, string diseaseId, int count)
+        {
+            ItemDropshipOperations.DeliverItem(itemKey, (item) =>
+            {
+                RecieveChemistryOutputRpc(item.NetworkObject, diseaseId);
+            }, count);
+        }
 
-        //        if (inputItem is CottonSwab cottonSwab)
-        //        {
-        //            disease = Disease.GetDiseaseFromString(cottonSwab.storedDisease);
-        //        }
-        //        else if (inputItem is TestTube testTube)
-        //        {
-        //            disease = Disease.GetDiseaseFromString(testTube.storedDisease);
-        //        }
-
-        //        if (disease != null)
-        //        {
-        //            disease.name = $"disease{Disease.namedDiseases.Count}";
-
-        //            if (localPlayer.actualClientId == clientId)
-        //            {
-        //                HUDManager.Instance.DisplayTip("Analysis succeeded", $"Use 'DGET {disease.name}' in the terminal to see the results");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (localPlayer.actualClientId == clientId)
-        //            {
-        //                HUDManager.Instance.DisplayTip("Analysis failed", "No disease detected on sample");
-        //            }
-        //        }
-        //    }, 30f, 20f, 30f, "Requires sample");
-        //}
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void RecieveChemistryOutputRpc(NetworkObjectReference netRef, string diseaseId)
+        {
+            if (!netRef.TryGet(out NetworkObject netObj)) { logger.LogError("RecieveChemistryOutputRpc: Failed to get netObj from netRef"); return; }
+            var grabbableObject = netObj.gameObject.GetComponent<GrabbableObject>();
+            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            if (disease == null) { logger.LogError("RecieveChemistryOutputRpc: Failed to get disease from id"); return; }
+            ((IChemistryOutputContainer)grabbableObject).ReceiveChemistryOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, disease.GetChemistryLiquidAppearance(), diseaseId));
+        }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void AnalyzeDiseaseRpc(string diseaseId, ulong clientId)
@@ -309,25 +281,6 @@ namespace LethalDiseases
                     HUDManager.Instance.DisplayTip("Analysis failed", "No sample recieved or no disease detected on sample");
                 }
             }
-        }
-
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void RequestDiseaseAnalysisRpc(ulong clientIdRequesting)
-        {
-            string analyzedDisease = "";
-
-            ItemDropshipOperations.OperationCondition condition = new ItemDropshipOperations.OperationCondition((player) =>
-            {
-                if (player.currentlyHeldObjectServer is not IDiseaseSample sample) { return false; }
-                //LethalDiseasesTerminalAPI.AnalyzedSample = sample.storedDisease;
-                analyzedDisease = sample.storedDisease;
-                player.DespawnHeldObjectSynced();
-                return true;
-            }, "Test Tube or Cotton Swab sample");
-            ItemDropshipOperations.RequestOperation(condition, (result) =>
-            {
-                AnalyzeDiseaseRpc(analyzedDisease, clientIdRequesting);
-            }, Utils.testing ? 0f : 30f);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

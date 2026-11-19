@@ -424,13 +424,13 @@ namespace LethalDiseases.Items
         {
             if (IsFilled)
             {
-                HUDManager.Instance.DisplayTip("Insert ingredient failed", "Container is already full", isWarning: true);
+                //HUDManager.Instance.DisplayTip("Insert ingredient failed", "Container is already full", isWarning: true);
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(ingredient.specialInstructions))
             {
-                HUDManager.Instance.DisplayTip("Insert ingredient failed", "No diseases to insert", isWarning: true);
+                //HUDManager.Instance.DisplayTip("Insert ingredient failed", "No diseases to insert", isWarning: true);
                 return false;
             }
 
