@@ -236,12 +236,6 @@ namespace LethalDiseases
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void SynthesizeSyringeRpc(string id, int count)
-        {
-            ItemDropshipOperations.DeliverItem(LethalDiseasesKeys.Syringe, (x) => ((Syringe)x).SetDiseaseRpc(id, false), count);
-        }
-
-        [Rpc(SendTo.Server, RequireOwnership = false)]
         public void SynthesizeDiseaseRpc(NamespacedKey<DawnItemInfo> itemKey, string diseaseId, int count)
         {
             ItemDropshipOperations.DeliverItem(itemKey, (item) =>
