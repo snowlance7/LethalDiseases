@@ -14,7 +14,7 @@ namespace LethalDiseases.Symptoms
             return new RandomIntervalActionEffect(new BoundedRange(120f, 450f), () =>
             {
                 logger.LogDebug("anarchist start2");
-                if (disease.hasActor)
+                if (disease.HasActor)
                     networkHandler.SpawnMapObjectRpc(MapObjectKeys.Landmine, disease.networkObject.gameObject.transform.position + disease.networkObject.gameObject.transform.forward * 2);
             }, disease.ToString(), "Anarchist", disease.strengthTime, SetHighestDurationAndDeny);
         }

@@ -11,7 +11,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class Syringe : PhysicsProp, IChemistryOutputContainer, IDawnSaveData
+    internal class Syringe : PhysicsProp, IChemistryOutputContainer, IDawnSaveData, IDiseaseStorable
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.Syringe] != null;
 
@@ -21,9 +21,9 @@ namespace LethalDiseases.Items
 
         ScanNodeProperties scanNode = null!;
 
-        public string storedDisease = "";
+        public string StoredDisease { get; set; } = "";
 
-        public bool isFilled => !storedDisease.IsNullOrWhiteSpace();
+        public bool isFilled => !StoredDisease.IsNullOrWhiteSpace();
 
         public bool freezingLocalPlayer;
 
@@ -86,6 +86,12 @@ namespace LethalDiseases.Items
                         SetControlTipsForItem();
                     }
                 }
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(StoredDisease))
+            {
+                scanNode.subText = Disease.GetNameFromString(StoredDisease);
             }
         }
 
@@ -242,7 +248,7 @@ namespace LethalDiseases.Items
 
                     CancelStabAnimation();
 
-                    host.networkObject.InfectSynced(storedDisease);
+                    host.networkObject.InfectSynced(StoredDisease);
                     SetDiseaseRpc("", false);
                 }
                 else
@@ -293,15 +299,14 @@ namespace LethalDiseases.Items
             
             if (disease != null)
             {
-                storedDisease = diseaseId;
-                scanNode.subText = disease.name;
+                StoredDisease = diseaseId;
 
                 SetFluidColor(disease.GetChemistryLiquidAppearance());
                 animator.SetTrigger(doAnimation ? "fill" : "filled");
             }
             else
             {
-                storedDisease = "";
+                StoredDisease = "";
                 animator.SetTrigger(doAnimation ? "empty" : "emptied");
             }
         }
@@ -336,14 +341,14 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
-            return JToken.FromObject(storedDisease);
+            return JToken.FromObject(StoredDisease);
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
-            storedDisease = saveData.Value<string>();
-            if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
-            SetDisease(storedDisease, false);
+            StoredDisease = saveData.Value<string>();
+            if (string.IsNullOrWhiteSpace(StoredDisease)) { return; }
+            SetDisease(StoredDisease, false);
         }
     }
 }

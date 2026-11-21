@@ -6,14 +6,13 @@ using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Linq;
-using Unity.Jobs;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class TestTube : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData, IDiseaseSample
+    internal class TestTube : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData, IDiseaseStorable // TODO: Test analyzable ingredient to make sure its synced between all clients
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.TestTube] != null;
 
@@ -21,9 +20,9 @@ namespace LethalDiseases.Items
 
         ScanNodeProperties scanNode = null!;
 
-        public string storedDisease { get; set; } = "";
+        public string StoredDisease { get; set; } = "";
 
-        public bool IsFilled => !string.IsNullOrWhiteSpace(storedDisease);
+        public bool IsFilled => !string.IsNullOrWhiteSpace(StoredDisease);
 
         [StaticInit]
         public static void Init()
@@ -74,6 +73,11 @@ namespace LethalDiseases.Items
             grabbable = localPlayer.currentlyHeldObjectServer is not IChemistryOutputContainer;
             customGrabTooltip = localPlayer.currentlyHeldObjectServer is IChemistryOutputContainer ? $"Fill {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} : [E]" : "";
             
+            if (!string.IsNullOrWhiteSpace(StoredDisease))
+            {
+                scanNode.subText = Disease.GetNameFromString(StoredDisease);
+            }
+
             base.Update();
         }
 
@@ -100,7 +104,7 @@ namespace LethalDiseases.Items
 
         public ChemistryIngredient GetIngredient()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), StoredDisease);
         }
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
@@ -110,7 +114,6 @@ namespace LethalDiseases.Items
 
         Action<AnalyzableIngredient, PlayerControllerB> IAnalyzableIngredient.OnAnalyze()
         {
-            
             return static (ingredient, player) =>
             {
                 Disease? disease = Disease.GetDiseaseFromString(ingredient.specialInstructions);
@@ -144,7 +147,7 @@ namespace LethalDiseases.Items
                 return;
             }
 
-            storedDisease = diseaseId;
+            StoredDisease = diseaseId;
             scanNode.subText = disease.name;
 
             SetFluidColor(disease.GetChemistryLiquidAppearance());
@@ -153,14 +156,14 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
-            return JToken.FromObject(storedDisease != null ? storedDisease : "");
+            return JToken.FromObject(StoredDisease != null ? StoredDisease : "");
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
-            storedDisease = saveData.Value<string>();
-            if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
-            SetDisease(storedDisease);
+            StoredDisease = saveData.Value<string>();
+            if (string.IsNullOrWhiteSpace(StoredDisease)) { return; }
+            SetDisease(StoredDisease);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

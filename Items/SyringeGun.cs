@@ -9,7 +9,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class SyringeGun : PhysicsProp
+    internal class SyringeGun : PhysicsProp, IDiseaseStorable
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.SyringeGun] != null;
 
@@ -19,17 +19,19 @@ namespace LethalDiseases.Items
         public AudioClip fireSFX = null!;
         public AudioClip clickSFX = null!;
 
+        ScanNodeProperties scanNode = null!;
+
         Animator animator = null!;
         AudioSource audioSource = null!;
 
-        public bool IsLoaded => !string.IsNullOrWhiteSpace(storedDisease);
+        public bool IsLoaded => !string.IsNullOrWhiteSpace(StoredDisease);
 
         int mask;
 
         bool hitSomething;
         RaycastHit hit;
 
-        public string storedDisease = "";
+        public string StoredDisease { get; set; } = "";
         public static float maxDistance = 400f;
 
         public void Awake()
@@ -40,6 +42,7 @@ namespace LethalDiseases.Items
             mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain", "Colliders");
             animator = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
+            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
@@ -65,6 +68,16 @@ namespace LethalDiseases.Items
         {
             playerHeldBy.equippedUsableItemQE = false;
             base.PocketItem();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (!string.IsNullOrWhiteSpace(StoredDisease))
+            {
+                scanNode.subText = Disease.GetNameFromString(StoredDisease);
+            }
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -141,7 +154,7 @@ namespace LethalDiseases.Items
                 return;
             }
 
-            string diseaseId = ((Syringe)localPlayer.ItemSlots[ammoSlot]).storedDisease;
+            string diseaseId = ((Syringe)localPlayer.ItemSlots[ammoSlot]).StoredDisease;
             localPlayer.DestroyItemInSlotAndSync(ammoSlot);
             ReloadRpc(diseaseId);
         }
@@ -177,7 +190,7 @@ namespace LethalDiseases.Items
         {
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null) { logger.LogError("Failed to parse disease from disease id"); return; }
-            storedDisease = diseaseId;
+            StoredDisease = diseaseId;
             SetFluidColor(disease.GetChemistryLiquidAppearance());
             animator.SetTrigger("reload");
             audioSource.PlayOneShot(reloadSFX);
@@ -189,8 +202,8 @@ namespace LethalDiseases.Items
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
 
-            string diseaseId = storedDisease;
-            storedDisease = "";
+            string diseaseId = StoredDisease;
+            StoredDisease = "";
 
             if (!IsServer) { return; }
             Syringe? syringe = Utils.SpawnItem(LethalDiseasesKeys.Syringe, position) as Syringe;
@@ -211,8 +224,8 @@ namespace LethalDiseases.Items
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
 
-            string diseaseId = storedDisease;
-            storedDisease = "";
+            string diseaseId = StoredDisease;
+            StoredDisease = "";
 
             if (!IsServer) { return; }
             GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
@@ -225,8 +238,8 @@ namespace LethalDiseases.Items
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
 
-            string diseaseId = storedDisease;
-            storedDisease = "";
+            string diseaseId = StoredDisease;
+            StoredDisease = "";
 
             PlayerControllerB? player = PlayerFromId(clientId);
             if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
@@ -262,8 +275,8 @@ namespace LethalDiseases.Items
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
 
-            string diseaseId = storedDisease;
-            storedDisease = "";
+            string diseaseId = StoredDisease;
+            StoredDisease = "";
 
             if (!IsServer) { return; }
             if (!enemyNetRef.TryGet(out NetworkObject netObj)) { logger.LogError("Failed to get networkobject from networkobjectreference"); return; }

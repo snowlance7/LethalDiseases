@@ -1,17 +1,13 @@
 ﻿using Dawn;
 using GameNetcodeStuff;
 using HarmonyLib;
-using LethalDiseases.Items;
 using SnowyCraftingCore;
-using SnowyCraftingCore.TerminalAdditions;
 using SnowyLib;
 using System.Linq;
 using Unity.Netcode;
-using Unity.Services.Authentication.Generated;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using static LethalDiseases.Plugin;
-using static Netcode.Transports.Facepunch.FacepunchTransport;
 
 namespace LethalDiseases
 {

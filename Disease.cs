@@ -75,7 +75,7 @@ namespace LethalDiseases
         public PlayerControllerB? player => host?.player;
         public EnemyAI? enemy => host?.enemy;
 
-        public bool hasActor => host != null && host.hasActor;
+        public bool HasActor => host != null && host.hasActor;
 
         public HashSet<int> symptoms = [];
 
@@ -738,7 +738,20 @@ namespace LethalDiseases
 
         public int CalculateSynthesisCost()
         {
-            throw new NotImplementedException(); // TODO
+            return symptoms.Count(); // TODO: Better calculation for this?
+            //throw new NotImplementedException();
+        }
+
+        public static string GetNameFromString(string diseaseString)
+        {
+            if (namedDiseases.TryGetValue(diseaseString, out string diseaseName))
+            {
+                return diseaseName;
+            }
+            else
+            {
+                return "???";
+            }
         }
     }
 }

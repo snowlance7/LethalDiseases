@@ -26,6 +26,8 @@ internal class DartGun : PhysicsProp
     AudioSource audioSource = null!;
     Animator animator = null!;
 
+    ScanNodeProperties scanNode = null!;
+
     [HideInInspector]
     public DartGunAmmo? loadedAmmo;
 
@@ -53,6 +55,7 @@ internal class DartGun : PhysicsProp
         mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain", "Colliders");
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
     }
 
     public override void Update()
@@ -62,6 +65,11 @@ internal class DartGun : PhysicsProp
         if (loadedAmmo != null)
         {
             loadedAmmo.transform.position = transform.position;
+        }
+
+        if (loadedAmmo != null && !string.IsNullOrWhiteSpace(loadedAmmo.StoredDisease))
+        {
+            scanNode.subText = Disease.GetNameFromString(loadedAmmo.StoredDisease);
         }
     }
 
@@ -259,7 +267,7 @@ internal class DartGun : PhysicsProp
         if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
 
         if (IsServer)
-            player.InfectSynced(loadedAmmo!.storedDisease);
+            player.InfectSynced(loadedAmmo!.StoredDisease);
 
         if (localPlayer == player)
         {
@@ -284,7 +292,7 @@ internal class DartGun : PhysicsProp
         EnemyAI enemy = netObj.GetComponent<EnemyAI>();
 
         if (IsServer)
-            enemy.InfectSynced(loadedAmmo!.storedDisease);
+            enemy.InfectSynced(loadedAmmo!.StoredDisease);
 
         GameObject dartObj = Instantiate(dartPrefab, position, rotation, enemy.transform); // TODO: Test this
         Destroy(dartObj, DartLifetime);

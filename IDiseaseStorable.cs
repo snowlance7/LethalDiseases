@@ -4,7 +4,8 @@ using System.Text;
 
 namespace LethalDiseases
 {
-    internal class TonicDiseaseManipulation
+    internal interface IDiseaseStorable
     {
+        public string StoredDisease { get; set; }
     }
 }

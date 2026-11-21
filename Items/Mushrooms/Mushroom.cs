@@ -1,4 +1,5 @@
 ﻿using Dawn;
+using GameNetcodeStuff;
 using SnowyCraftingCore;
 using SnowyLib;
 using System;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace LethalDiseases.Items.Mushrooms;
 
-internal abstract class Mushroom : AttachableObject, IMixableIngredient
+internal abstract class Mushroom : AttachableObject, IMixableIngredient, IAnalyzableIngredient
 {
     public static readonly List<NamespacedKey<DawnItemInfo>> mushroomKeys = [LethalDiseasesKeys.BeechMushroom, LethalDiseasesKeys.BellcapMushroom, LethalDiseasesKeys.BlackTrumpetMushroom, LethalDiseasesKeys.CaveMushroom, LethalDiseasesKeys.ChanterelleMushroom, LethalDiseasesKeys.DeathCapMushroom, LethalDiseasesKeys.Mushroom, LethalDiseasesKeys.JackOLanternMushroom, LethalDiseasesKeys.JellyMushroom, LethalDiseasesKeys.MonsterMushroom, LethalDiseasesKeys.OysterMushroom, LethalDiseasesKeys.RadioMushroom, LethalDiseasesKeys.ShaggyManeMushroom];
     public static readonly List<string> availableTypes = ["Add", "Remove", "Replace", "Symptom", "Stat", "TransmissionType", "Add", "Remove", "Replace", "Symptom", "Stat", "TransmissionType"];
@@ -82,5 +83,18 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient
 
         OnEatMushroom();
         playerHeldBy.DespawnHeldObject();
+    }
+
+    public Action<AnalyzableIngredient, PlayerControllerB> OnAnalyze()
+    {
+        return static (ingredient, player) =>
+        {
+            HUDManager.Instance.DisplayTip("Analysis complete", $"This mushroom can be used to create tonics to modify diseases.\nMushroom type: {ingredient.specialInstructions}");
+        };
+    }
+
+    public bool HoldItem()
+    {
+        return false;
     }
 }

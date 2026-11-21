@@ -10,11 +10,11 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class CottonSwab : PhysicsProp, IDistillableIngredient, IDawnSaveData, IDiseaseSample
+    internal class CottonSwab : PhysicsProp, IDistillableIngredient, IDawnSaveData, IDiseaseStorable
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.CottonSwab] != null;
 
-        public string storedDisease { get; set; } = "";
+        public string StoredDisease { get; set; } = "";
 
         public MeshRenderer tipRenderer = null!;
 
@@ -39,7 +39,7 @@ namespace LethalDiseases.Items
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             base.ItemActivate(used, buttonDown);
-            if (!buttonDown || storedDisease != "") { return; }
+            if (!buttonDown || StoredDisease != "") { return; }
 
             if (!Physics.Raycast(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward, out RaycastHit hitInfo, maxDistance, PluginInstance.playerEnemiesPropsMask)) { return; }
 
@@ -72,7 +72,7 @@ namespace LethalDiseases.Items
 
         public ChemistryIngredient? DistilleryOutput()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissiveIntensity")), StoredDisease);
         }
 
         public float DistilleryMixTime()
@@ -87,7 +87,7 @@ namespace LethalDiseases.Items
 
         public ChemistryIngredient? GetIngredient()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.CottonSwab, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.CottonSwab, new ChemistryLiquidAppearance(tipRenderer.material.color, tipRenderer.material.GetFloat("_EmissiveIntensity")), StoredDisease);
         }
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
@@ -100,7 +100,7 @@ namespace LethalDiseases.Items
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null) { logger.LogError($"Unable to parse disease from id ({diseaseId})"); return; }
 
-            storedDisease = diseaseId;
+            StoredDisease = diseaseId;
             scanNode.subText = disease.name;
 
             SetFluidColor(disease.GetChemistryLiquidAppearance());
@@ -108,14 +108,14 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
-            return JToken.FromObject(storedDisease);
+            return JToken.FromObject(StoredDisease);
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
-            storedDisease = saveData.Value<string>();
-            if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
-            SetDisease(storedDisease);
+            StoredDisease = saveData.Value<string>();
+            if (string.IsNullOrWhiteSpace(StoredDisease)) { return; }
+            SetDisease(StoredDisease);
         }
     }
 }

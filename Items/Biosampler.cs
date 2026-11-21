@@ -12,7 +12,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class Biosampler : PhysicsProp, IDistillableIngredient, IChemistryOutputContainer, IDawnSaveData
+    internal class Biosampler : PhysicsProp, IDistillableIngredient, IChemistryOutputContainer, IDawnSaveData, IDiseaseStorable
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.Biosampler] != null;
 
@@ -21,9 +21,9 @@ namespace LethalDiseases.Items
         ScanNodeProperties scanNode = null!;
         Animator animator = null!;
 
-        public string storedDisease = "";
+        public string StoredDisease { get; set; } = "";
 
-        public bool IsFilled => !storedDisease.IsNullOrWhiteSpace();
+        public bool IsFilled => !StoredDisease.IsNullOrWhiteSpace();
 
         public bool freezingLocalPlayer;
 
@@ -240,7 +240,7 @@ namespace LethalDiseases.Items
 
                     CancelStabAnimation();
 
-                    host.networkObject.InfectSynced(storedDisease);
+                    host.networkObject.InfectSynced(StoredDisease);
                     SetDiseaseRpc("", false);
                 }
                 else
@@ -358,7 +358,7 @@ namespace LethalDiseases.Items
 
             if (disease != null)
             {
-                storedDisease = diseaseId;
+                StoredDisease = diseaseId;
                 scanNode.subText = disease.name;
 
                 SetFluidColor(disease.GetChemistryLiquidAppearance());
@@ -366,7 +366,7 @@ namespace LethalDiseases.Items
             }
             else
             {
-                storedDisease = "";
+                StoredDisease = "";
                 animator.SetTrigger(doAnimation ? "empty" : "emptied");
             }
         }
@@ -394,7 +394,7 @@ namespace LethalDiseases.Items
 
         public ChemistryIngredient GetIngredient()
         {
-            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), storedDisease);
+            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), StoredDisease);
         }
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
@@ -405,7 +405,7 @@ namespace LethalDiseases.Items
 
         public ChemistryIngredient? DistilleryOutput()
         {
-            var _storedDisease = storedDisease;
+            var _storedDisease = StoredDisease;
             SetDisease("", false);
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), _storedDisease);
         }
@@ -441,14 +441,14 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
-            return JToken.FromObject(storedDisease);
+            return JToken.FromObject(StoredDisease);
         }
 
         public void LoadDawnSaveData(JToken saveData)
         {
-            storedDisease = saveData.Value<string>();
-            if (string.IsNullOrWhiteSpace(storedDisease)) { return; }
-            SetDisease(storedDisease, false);
+            StoredDisease = saveData.Value<string>();
+            if (string.IsNullOrWhiteSpace(StoredDisease)) { return; }
+            SetDisease(StoredDisease, false);
         }
     }
 }

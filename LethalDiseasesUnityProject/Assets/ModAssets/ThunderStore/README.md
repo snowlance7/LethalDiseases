@@ -24,3 +24,4 @@ For issues and suggestions visit the [github](https://github.com/snowlance7/Leth
 - [Magical Mushroom (Blue)](https://skfb.ly/QNOU) by MA3D
 - [Stylized glowing mushrooms](https://skfb.ly/oNppA) by RiZoRuS77
 - [Air Filter poppy playtime chapter 4](https://skfb.ly/p9KEM) by Friteabc
+- [30mm Test Tube Rack](https://skfb.ly/oASqw) by Stefan Stoks

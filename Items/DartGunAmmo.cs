@@ -11,7 +11,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class DartGunAmmo : PhysicsProp, IDawnSaveData // TODO: Lots of bugs omgah
+    internal class DartGunAmmo : PhysicsProp, IDawnSaveData, IDiseaseStorable // TODO: Lots of bugs omgah
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGunAmmo] != null;
 
@@ -21,7 +21,7 @@ namespace LethalDiseases.Items
         ScanNodeProperties scanNode = null!;
 
         [HideInInspector]
-        public string storedDisease = "";
+        public string StoredDisease { get; set; } = "";
 
         int dartsToShow = 0;
 
@@ -89,7 +89,7 @@ namespace LethalDiseases.Items
             if (disease == null) { logger.LogError($"Failed to parse disease from string: {diseaseId}"); return; }
 
             logger.LogDebug("Setting disease to " + diseaseId);
-            storedDisease = diseaseId;
+            StoredDisease = diseaseId;
             SetFluidColor(disease.GetChemistryLiquidAppearance());
         }
 
@@ -109,7 +109,7 @@ namespace LethalDiseases.Items
 
         public JToken GetDawnDataToSave()
         {
-            string data = $"{AmmoLeft}/{storedDisease}";
+            string data = $"{AmmoLeft}/{StoredDisease}";
             return JToken.FromObject(data);
         }
 
