@@ -111,7 +111,8 @@ namespace LethalDiseases.Items
         public override void EnableItemMeshes(bool enable)
         {
             base.EnableItemMeshes(enable);
-            fluidRenderer.enabled = enable && IsFilled;
+            fluidRenderer.enabled = enable && IsFilled; // TODO: This isnt working
+            logger.LogDebug("enabled: " + (enable && IsFilled).ToString());
         }
 
         public override void SetControlTipsForItem()
@@ -204,6 +205,12 @@ namespace LethalDiseases.Items
                     host.enemy.HitEnemyServerRpc(0, (int)localPlayer.actualClientId, false);
                 }
 
+                if (IsFilled)
+                {
+                    CancelStabAnimation();
+                    yield break;
+                }
+
                 string diseaseString = "";
 
                 if (host.Diseases.Count > 0)
@@ -284,7 +291,7 @@ namespace LethalDiseases.Items
                 && !localPlayer.inSpecialInteractAnimation
                 && !localPlayer.isClimbingLadder
                 && !localPlayer.isGrabbingObjectAnimation
-                && !localPlayer.takingFallDamage 
+                && !localPlayer.takingFallDamage
                 && localPlayer.timeSinceTakingDamage > Time.deltaTime; // TODO: Test this
         }
 
@@ -301,14 +308,16 @@ namespace LethalDiseases.Items
             StoredDisease = diseaseString;
 
             Disease? disease = Disease.GetDiseaseFromString(diseaseString);
-            SetFluidColor(disease != null ? disease.GetChemistryLiquidAppearance() : new ChemistryLiquidAppearance(Color.black));
+            SetFluidColor(disease != null ? disease.GetChemistryLiquidAppearance() : new ChemistryLiquidAppearance(Random.ColorHSV()));
             animator.SetTrigger(doAnimation ? "fill" : "filled");
+            IsFilled = true;
         }
 
         public void Empty(bool doAnimation = true)
         {
             StoredDisease = "";
             animator.SetTrigger(doAnimation ? "empty" : "emptied");
+            IsFilled = false;
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
