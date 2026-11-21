@@ -22,7 +22,7 @@ MonoBehaviour:
   disallowUtilitySlot: 1
   weight: 1.1
   itemIsTrigger: 0
-  holdButtonUse: 0
+  holdButtonUse: 1
   itemSpawnsOnGround: 1
   isConductiveMetal: 0
   isScrap: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   pocketSFX: {fileID: 8300000, guid: 944fca2e8a072f34b939c64bea33c1e5, type: 3}
   throwSFX: {fileID: 0}
   syncGrabFunction: 0
-  syncUseFunction: 0
+  syncUseFunction: 1
   syncDiscardFunction: 0
   syncInteractLRFunction: 0
   saveItemVariable: 0
@@ -58,8 +58,8 @@ MonoBehaviour:
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1
   restingRotation: {x: 0, y: 0, z: 0}
-  rotationOffset: {x: 0, y: 0, z: 0}
-  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 90, y: 90, z: 0}
+  positionOffset: {x: -0.055, y: 0.09, z: -0.06}
   meshOffset: 1
   meshVariants: []
   materialVariants: []

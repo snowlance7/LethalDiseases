@@ -25,8 +25,6 @@ namespace LethalDiseases.Items
         public void Awake()
         {
             itemProperties.syncUseFunction = true;
-            itemProperties.positionOffset = new Vector3(0, 0.07f, -0.04f);
-            itemProperties.rotationOffset = new Vector3(0, 0, 0);
             audioSource = GetComponent<AudioSource>();
         }
 
@@ -58,6 +56,8 @@ namespace LethalDiseases.Items
                 {
                     yield return new WaitForSeconds(2f);
                     ReplaceAirFilter();
+                    previousPlayerHeldBy.activatingItem = false;
+                    previousPlayerHeldBy.playerBodyAnimator.SetBool("useTZPItem", false);
                     localPlayer.DespawnHeldObject();
                 }
 

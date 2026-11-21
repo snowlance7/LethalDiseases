@@ -1,4 +1,5 @@
-﻿using Dawn;
+﻿using BepInEx;
+using Dawn;
 using GameNetcodeStuff;
 using LethalDiseases.Items;
 using SnowyCraftingCore;
@@ -744,6 +745,8 @@ namespace LethalDiseases
 
         public static string GetNameFromString(string diseaseString)
         {
+            if (string.IsNullOrWhiteSpace(diseaseString)) { return ""; }
+
             if (namedDiseases.TryGetValue(diseaseString, out string diseaseName))
             {
                 return diseaseName;

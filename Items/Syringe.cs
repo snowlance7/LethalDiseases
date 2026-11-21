@@ -88,11 +88,7 @@ namespace LethalDiseases.Items
                 }
             }
 
-
-            if (!string.IsNullOrWhiteSpace(StoredDisease))
-            {
-                scanNode.subText = Disease.GetNameFromString(StoredDisease);
-            }
+            scanNode.subText = Disease.GetNameFromString(StoredDisease);
         }
 
         public override void LateUpdate()
