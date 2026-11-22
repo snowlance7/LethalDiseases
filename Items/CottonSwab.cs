@@ -39,7 +39,7 @@ namespace LethalDiseases.Items
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             base.ItemActivate(used, buttonDown);
-            if (!buttonDown || StoredDisease != "") { return; }
+            if (!buttonDown || tipRenderer.enabled) { return; }
 
             if (!Physics.Raycast(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward, out RaycastHit hitInfo, maxDistance, PluginInstance.playerEnemiesPropsMask)) { return; }
 
@@ -50,10 +50,13 @@ namespace LethalDiseases.Items
             logger.LogDebug("Got network object: " + netObj.name);
 
             List<Disease> diseases = netObj.GetDiseases();
-            if (diseases.Count == 0) { return; }
-            Disease? disease = diseases.GetRandom();
-            if (disease == null) { return; }
-            SetDiseaseRpc(disease.ToString());
+            if (diseases.Count == 0)
+            {
+                SetDiseaseRpc("", new ChemistryLiquidAppearance(UnityEngine.Random.ColorHSV(), UnityEngine.Random.Range(0f, 10f)));
+                return;
+            }
+            Disease disease = diseases.GetRandom();
+            SetDiseaseRpc(disease.ToString(), disease.GetChemistryLiquidAppearance());
         }
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
@@ -65,9 +68,9 @@ namespace LethalDiseases.Items
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SetDiseaseRpc(string disease)
+        public void SetDiseaseRpc(string disease, ChemistryLiquidAppearance color)
         {
-            SetDisease(disease);
+            SetDisease(disease, color);
         }
 
         public ChemistryIngredient? DistilleryOutput()
@@ -92,18 +95,14 @@ namespace LethalDiseases.Items
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
         {
-            SetDisease(ingredient.specialInstructions);
+            SetDisease(ingredient.specialInstructions, ingredient.chemistryLiquidAppearance);
         }
 
-        public void SetDisease(string diseaseId)
+        public void SetDisease(string diseaseString, ChemistryLiquidAppearance color)
         {
-            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null) { logger.LogError($"Unable to parse disease from id ({diseaseId})"); return; }
-
-            StoredDisease = diseaseId;
-            scanNode.subText = disease.name;
-
-            SetFluidColor(disease.GetChemistryLiquidAppearance());
+            StoredDisease = diseaseString;
+            scanNode.subText = Disease.GetNameFromString(diseaseString);
+            SetFluidColor(color);
         }
 
         public JToken GetDawnDataToSave()
@@ -113,9 +112,11 @@ namespace LethalDiseases.Items
 
         public void LoadDawnSaveData(JToken saveData)
         {
-            StoredDisease = saveData.Value<string>();
-            if (string.IsNullOrWhiteSpace(StoredDisease)) { return; }
-            SetDisease(StoredDisease);
+            string? diseaseString = saveData.Value<string>();
+            if (string.IsNullOrWhiteSpace(diseaseString)) { return; }
+            Disease? disease = Disease.GetDiseaseFromString(diseaseString);
+            if (disease == null) { return; }
+            SetDisease(diseaseString, disease.GetChemistryLiquidAppearance());
         }
     }
 }

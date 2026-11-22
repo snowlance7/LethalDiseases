@@ -1,15 +1,12 @@
-﻿using BepInEx;
-using Dawn;
+﻿using Dawn;
 using Dawn.Interfaces;
 using GameNetcodeStuff;
 using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
-using SnowyLib;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements.Experimental;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
@@ -22,6 +19,7 @@ namespace LethalDiseases.Items
 
         ScanNodeProperties scanNode = null!;
         Animator animator = null!;
+        AudioSource audioSource = null!;
         PlayerControllerB previousPlayerHeldBy = null!;
 
         public string StoredDisease { get; set; } = "";
@@ -36,13 +34,12 @@ namespace LethalDiseases.Items
         bool inStabbingAnimation;
 
         const float fillTime = 1.5f;
-        const float maxDistance = 1f;
+        const float maxDistance = 2f;
         readonly Vector3 stabPositionOffset = new Vector3(-0.05f, 0.1f, 0f);
         readonly Vector3 stabRotationOffset = new Vector3(-10, -90, 0);
 
         public void SetFluidColor(ChemistryLiquidAppearance color)
         {
-            //fluidRenderer.enabled = true;
             fluidRenderer.material.color = color.liquidColor;
             fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
             fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
@@ -56,6 +53,7 @@ namespace LethalDiseases.Items
             itemProperties.grabAnim = "HoldKnife";
             scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
             animator = GetComponent<Animator>();
+            audioSource = gameObject.GetComponent<AudioSource>();
         }
 
         public override void Update()
@@ -152,10 +150,10 @@ namespace LethalDiseases.Items
             base.ItemInteractLeftRight(right);
             if (right || !IsFilled) { return; }
 
-            Empty();
+            EmptyRpc();
         }
 
-        public void DoStabAnimation() // TODO: Test this
+        public void DoStabAnimation()
         {
             IEnumerator doStabAnimation()
             {
@@ -191,7 +189,7 @@ namespace LethalDiseases.Items
                         if (localPlayer.health != 1)
                         {
                             localPlayer.inSpecialInteractAnimation = true;
-                            localPlayer.DamagePlayer(1, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
+                            localPlayer.DamagePlayer(0, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
                             localPlayer.inSpecialInteractAnimation = false;
                         }
                     }
@@ -217,11 +215,11 @@ namespace LethalDiseases.Items
                 {
                     Disease disease = Disease.MergeDiseases(host.Diseases);
                     diseaseString = disease.ToString();
-                    FillRpc(diseaseString);
+                    FillRpc(diseaseString, true, disease.GetChemistryLiquidAppearance());
                 }
                 else
                 {
-                    FillRpc();
+                    FillRpc("", true, new ChemistryLiquidAppearance(UnityEngine.Random.ColorHSV(), UnityEngine.Random.Range(0f, 10f)));
                 }
 
                 localPlayer.playerBodyAnimator.speed = 0f;
@@ -234,6 +232,7 @@ namespace LethalDiseases.Items
 
                     if (!CanContinueAnimation() || Vector3.Distance(host.transform.position, localPlayer.transform.position) > maxDistance)
                     {
+                        logger.LogDebug("Cancelling stab animation early");
                         animator.SetTrigger("emptied");
                         EmptyRpc(doAnimation: false);
                         FreezePlayerAnimatorRpc(false);
@@ -256,43 +255,77 @@ namespace LethalDiseases.Items
 
         private DiseaseHost? GetClosestDiseaseHost()
         {
-            DiseaseHost? closest = null;
-            float closestAngle = 361;
+            DiseaseHost? host = null;
+            bool hasHitSomething = false;
+            int surfaceIndex = -1;
 
-            foreach (var host in DiseaseHost.Instances)
+            var objectsHitByKnife = Physics.SphereCastAll(previousPlayerHeldBy.gameplayCamera.transform.position + previousPlayerHeldBy.gameplayCamera.transform.right * 0.1f, 0.3f, previousPlayerHeldBy.gameplayCamera.transform.forward, 0.75f, 1084754248, QueryTriggerInteraction.Collide);
+            var objectsHitByKnifeList = objectsHitByKnife.OrderBy((x) => x.distance).ToList();
+
+            foreach (var hit in objectsHitByKnifeList)
             {
-                if (!host.hasActor) { continue; }
-                var position = host.player != null ? host.player.bodyParts[5].position : host.enemy!.eye.position;
-                float angle = localPlayer.LineOfSightToPositionAngle(position, (int)maxDistance);
-                if (angle == -361f || angle > closestAngle) { continue; }
-                closest = host;
-                closestAngle = angle;
+                if (hit.transform.gameObject.layer == 8 || hit.transform.gameObject.layer == 11)
+                {
+                    hasHitSomething = true;
+                    string hitTag = hit.collider.gameObject.tag;
+                    for (int j = 0; j < StartOfRound.Instance.footstepSurfaces.Length; j++)
+                    {
+                        if (StartOfRound.Instance.footstepSurfaces[j].surfaceTag == hitTag)
+                        {
+                            surfaceIndex = j;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!hit.transform.TryGetComponent<IHittable>(out var hittable) || hit.transform == previousPlayerHeldBy.transform || !(hit.point == Vector3.zero) && Physics.Linecast(previousPlayerHeldBy.gameplayCamera.transform.position, hit.point, out var _, StartOfRound.Instance.collidersAndRoomMaskAndDefault, QueryTriggerInteraction.Ignore)) { continue; }
+
+                    hasHitSomething = true;
+
+                    EnemyAICollisionDetect collision = hit.transform.GetComponent<EnemyAICollisionDetect>();
+                    if (collision != null && collision.mainScript != null)
+                    {
+                        host = collision.mainScript.GetHost();
+                        break;
+                    }
+
+                    PlayerControllerB? playerHit = hit.transform.GetComponent<PlayerControllerB>();
+                    if (playerHit != null)
+                    {
+                        host = playerHit.GetHost();
+                    }
+                }
             }
 
-            return closest;
+            if (hasHitSomething)
+            {
+                audioSource.Play();
+                RoundManager.Instance.PlayAudibleNoise(transform.position, 17f, 0.8f);
+                if (host == null && surfaceIndex != -1)
+                {
+                    HitSurfaceRpc(surfaceIndex);
+                }
+            }
+
+            return host;
         }
 
         private bool CanContinueAnimation()
         {
             return localPlayer != null
-                && localPlayer == localPlayer
+                && localPlayer == previousPlayerHeldBy
                 && !localPlayer.isWalking
                 && !localPlayer.isJumping
-                && localPlayer.IsPlayerNearGround()
-                && !localPlayer.isPlayerSliding
                 && !localPlayer.isPlayerDead
                 && localPlayer.isPlayerControlled
                 && !localPlayer.inSpecialMenu
                 && !localPlayer.inShockingMinigame
                 && !localPlayer.inTerminalMenu
                 && !localPlayer.isTypingChat
-                && !localPlayer.twoHanded
-                && !localPlayer.twoHandedAnimation
                 && !localPlayer.inSpecialInteractAnimation
                 && !localPlayer.isClimbingLadder
-                && !localPlayer.isGrabbingObjectAnimation
-                && !localPlayer.takingFallDamage
-                && localPlayer.timeSinceTakingDamage > Time.deltaTime; // TODO: Test this
+                && !localPlayer.takingFallDamage;
         }
 
         private void CancelStabAnimation()
@@ -303,12 +336,10 @@ namespace LethalDiseases.Items
             routine = null;
         }
 
-        public void Fill(string diseaseString = "", bool doAnimation = true)
+        public void Fill(string diseaseString, bool doAnimation, ChemistryLiquidAppearance color)
         {
             StoredDisease = diseaseString;
-
-            Disease? disease = Disease.GetDiseaseFromString(diseaseString);
-            SetFluidColor(disease != null ? disease.GetChemistryLiquidAppearance() : new ChemistryLiquidAppearance(Random.ColorHSV()));
+            SetFluidColor(color);
             animator.SetTrigger(doAnimation ? "fill" : "filled");
             IsFilled = true;
         }
@@ -321,9 +352,9 @@ namespace LethalDiseases.Items
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void FillRpc(string diseaseString = "", bool doAnimation = true)
+        public void FillRpc(string diseaseString, bool doAnimation, ChemistryLiquidAppearance color)
         {
-            Fill(diseaseString, doAnimation);
+            Fill(diseaseString, doAnimation, color);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -354,6 +385,13 @@ namespace LethalDiseases.Items
             previousPlayerHeldBy.playerBodyAnimator.speed = value ? 0 : 1;
         }
 
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void HitSurfaceRpc(int hitSurfaceID)
+        {
+            audioSource.PlayOneShot(StartOfRound.Instance.footstepSurfaces[hitSurfaceID].hitSurfaceSFX);
+            WalkieTalkie.TransmitOneShotAudio(audioSource, StartOfRound.Instance.footstepSurfaces[hitSurfaceID].hitSurfaceSFX);
+        }
+
         public ChemistryIngredient GetIngredient()
         {
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), StoredDisease);
@@ -361,7 +399,7 @@ namespace LethalDiseases.Items
 
         public void OnChemicalOutput(ChemistryIngredient ingredient)
         {
-            Fill(ingredient.specialInstructions);
+            Fill(ingredient.specialInstructions, true, ingredient.chemistryLiquidAppearance);
         }
 
         public ChemistryIngredient? DistilleryOutput()
@@ -385,7 +423,7 @@ namespace LethalDiseases.Items
         {
             if (IsFilled) { return false; }
 
-            Fill(ingredient.specialInstructions);
+            Fill(ingredient.specialInstructions, true, ingredient.chemistryLiquidAppearance);
             return true;
         }
 
@@ -397,7 +435,10 @@ namespace LethalDiseases.Items
         public void LoadDawnSaveData(JToken saveData)
         {
             string? diseaseString = saveData.Value<string>();
-            Fill(diseaseString != null ? diseaseString : "", false);
+            if (diseaseString == null) { return; }
+            Disease? disease = Disease.GetDiseaseFromString(diseaseString);
+            if (disease == null) { return; }
+            Fill(diseaseString, false, disease.GetChemistryLiquidAppearance());
         }
     }
 }

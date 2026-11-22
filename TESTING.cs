@@ -52,6 +52,7 @@ public static class TESTING
 
             //logger.LogDebug(GameObject.FindObjectOfType<EnemyAI>().gameObject.GetComponent<NetworkObject>().name);
             //logger.LogDebug(GameObject.FindObjectOfType<PlayerControllerB>().gameObject.GetComponent<NetworkObject>().name);
+            //Utils.LogLayerNames(1084754248);
         }
         catch
         {
@@ -231,7 +232,7 @@ public static class TESTING
                 if (now) { disease.latency = 0; }
 
                 if (localPlayer.currentlyHeldObjectServer is CottonSwab cottonSwab)
-                    cottonSwab.SetDiseaseRpc(disease.ToString());
+                    cottonSwab.SetDiseaseRpc(disease.ToString(), disease.GetChemistryLiquidAppearance());
                 else if (localPlayer.currentlyHeldObjectServer is Syringe syringe)
                     syringe.SetDiseaseRpc(disease.ToString(), true);
                 else if (localPlayer.currentlyHeldObjectServer is TestTube testTube)
