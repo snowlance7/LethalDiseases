@@ -223,7 +223,7 @@ namespace LethalDiseases
                 return "Sanitization cancelled.";
             });
 
-            return new TerminalResult($"You have requested to sanitize the ship.\nThis will use {ShipSanitizationUpgrade.PowerUsage * 100}% apparatus power.\n\nPlease CONFIRM or DENY.");
+            return new TerminalResult($"You have requested to sanitize the ship.\nThis will use {ShipSanitizationUpgrade.PowerUsage * 100}% apparatus power.\n\nPlease CONFIRM or DENY.", [callback1, callback2]);
         }
 
         public static TerminalResult SafeSanitize(string[] args)
@@ -246,7 +246,7 @@ namespace LethalDiseases
                 return "Sanitization cancelled.";
             });
 
-            return new TerminalResult($"You have requested to sanitize the ship.\nThis will use {AdvancedShipSanitizationUpgrade.PowerUsage * 100}% apparatus power.\n\nPlease CONFIRM or DENY.");
+            return new TerminalResult($"You have requested to sanitize the ship.\nThis will use {AdvancedShipSanitizationUpgrade.PowerUsage * 100}% apparatus power.\n\nPlease CONFIRM or DENY.", [callback1, callback2]);
         }
     }
 }

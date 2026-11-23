@@ -11,34 +11,20 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class DartGunAmmo : PhysicsProp, IDawnSaveData, IDiseaseStorable // TODO: Lots of bugs omgah
+    internal class DartGunAmmo : DiseaseStorable // TODO: Lots of bugs omgah
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.DartGunAmmo] != null;
 
         [SerializeField]
         MeshRenderer[] dartRenderers = null!;
 
-        ScanNodeProperties scanNode = null!;
-
-        [HideInInspector]
-        public string StoredDisease { get; set; } = "";
-
         int dartsToShow = 0;
 
         public int AmmoLeft { get; private set; } = 0;
-        public bool IsFilled => AmmoLeft > 0;
 
         public static int MaxDartsInAmmo => PluginInstance.Config.Bind("Dart Gun Options", "Dart Gun | Max Darts", 10, "The max amount of darts in a clip").Value;
 
         bool itemMeshEnabled = true;
-
-        public void Awake()
-        {
-            itemProperties.positionOffset = new Vector3(0.07f, 0.12f, 0.02f);
-            itemProperties.rotationOffset = new Vector3(20, -80, 100);
-
-            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
-        }
 
         [StaticInit]
         public static void InitConfigs()
@@ -51,16 +37,6 @@ namespace LethalDiseases.Items
             base.EnableItemMeshes(enable);
             itemMeshEnabled = enable;
             SetAmmoVisual();
-        }
-
-        public void SetFluidColor(ChemistryLiquidAppearance color)
-        {
-            foreach (var dartRenderer in dartRenderers)
-            {
-                dartRenderer.materials[2].color = color.liquidColor;
-                dartRenderer.materials[2].SetColor("_EmissiveColor", color.liquidColor);
-                dartRenderer.materials[2].SetFloat("_EmissiveIntensity", color.emissionIntensity);
-            }
         }
 
         public void UseAmmo()
@@ -83,48 +59,42 @@ namespace LethalDiseases.Items
             }
         }
 
-        public void SetDisease(string diseaseId)
+        public override void Fill(string fluidString, ChemistryLiquidAppearance color, bool doAnimation = false)
         {
-            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null) { logger.LogError($"Failed to parse disease from string: {diseaseId}"); return; }
-
-            logger.LogDebug("Setting disease to " + diseaseId);
-            StoredDisease = diseaseId;
-            SetFluidColor(disease.GetChemistryLiquidAppearance());
-        }
-
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SetDiseaseRpc(string diseaseId)
-        {
-            SetDisease(diseaseId);
+            base.Fill(fluidString, color, doAnimation);
             SetAmmo(MaxDartsInAmmo);
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SetDiseaseRpc(string diseaseId, int ammoAmount)
+        public void Fill(string fluidString, ChemistryLiquidAppearance color, int ammoCount)
         {
-            SetDisease(diseaseId);
-            SetAmmo(ammoAmount);
+            base.Fill(fluidString, color, false);
+            SetAmmo(ammoCount);
         }
 
-        public JToken GetDawnDataToSave()
+        [System.Serializable]
+        struct DartGunAmmoSaveData(ChemistryIngredient? ingredient, int ammoCount)
         {
-            string data = $"{AmmoLeft}/{StoredDisease}";
-            return JToken.FromObject(data);
+            public ChemistryIngredient? ingredient = ingredient;
+            public int ammoCount = ammoCount;
         }
 
-        public void LoadDawnSaveData(JToken saveData)
+        public override JToken GetDawnDataToSave()
         {
-            string data = saveData.Value<string>()!;
+            return JToken.FromObject(new DartGunAmmoSaveData(GetIngredient(), AmmoLeft));
+        }
 
-            if (string.IsNullOrWhiteSpace(data)) { return; }
+        public override void LoadDawnSaveData(JToken saveData) // TODO: Test this
+        {
+            DartGunAmmoSaveData data = saveData.Value<DartGunAmmoSaveData>()!;
 
-            string[] args = data.Split("/");
+            if (data.ingredient == null) { return; }
 
-            SetAmmo(int.Parse(args[0]));
-            if (args.Length == 1) { return; } // TODO: Test this
+            Fill(data.ingredient.specialInstructions, data.ingredient.chemistryLiquidAppearance, data.ammoCount);
+        }
 
-            SetDisease(args[1]);
+        public override bool AllowChemistryOutputContainer()
+        {
+            return false;
         }
     }
 }

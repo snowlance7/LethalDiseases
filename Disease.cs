@@ -397,6 +397,11 @@ namespace LethalDiseases
             return mergedDisease;
         }
 
+        public static ChemistryLiquidAppearance GetChemistryLiquidAppearance(string diseaseString) // TODO: Do this better!
+        {
+            return GetDiseaseFromString(diseaseString)!.GetChemistryLiquidAppearance();
+        }
+
         public ChemistryLiquidAppearance GetChemistryLiquidAppearance()
         {
             Color color = GetColor();
@@ -745,16 +750,8 @@ namespace LethalDiseases
 
         public static string GetNameFromString(string diseaseString)
         {
-            if (string.IsNullOrWhiteSpace(diseaseString)) { return ""; }
-
-            if (namedDiseases.TryGetValue(diseaseString, out string diseaseName))
-            {
-                return diseaseName;
-            }
-            else
-            {
-                return "???";
-            }
+            if (string.IsNullOrWhiteSpace(diseaseString) || !namedDiseases.TryGetValue(diseaseString, out string diseaseName)) { return "???"; }
+            return diseaseName;
         }
     }
 }

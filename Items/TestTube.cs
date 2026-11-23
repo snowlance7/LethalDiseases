@@ -135,20 +135,19 @@ namespace LethalDiseases.Items
             return true;
         }
 
-        public void SetDisease(string diseaseId)
+        public void SetDisease(string diseaseString)
         {
-            logger.LogDebug($"Setting stored disease to disease with id: {diseaseId}");
-            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
+            logger.LogDebug($"Setting stored disease to disease with id: {diseaseString}");
+            Disease? disease = Disease.GetDiseaseFromString(diseaseString);
             if (disease == null)
             {
-                logger.LogDebug($"Unable to parse disease from id ({diseaseId})");
+                logger.LogDebug($"Unable to parse disease from id ({diseaseString})");
                 SetFluidColor(new ChemistryLiquidAppearance(Color.black, 1f));
                 scanNode.subText = "Toxic Sludge";
                 return;
             }
 
-            StoredDisease = diseaseId;
-            scanNode.subText = disease.name;
+            StoredDisease = diseaseString;
 
             SetFluidColor(disease.GetChemistryLiquidAppearance());
             return;

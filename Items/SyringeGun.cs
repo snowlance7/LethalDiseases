@@ -9,47 +9,31 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class SyringeGun : PhysicsProp, IDiseaseStorable
+    internal class SyringeGun : DiseaseStorable
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.SyringeGun] != null;
-
-        public SkinnedMeshRenderer syringeFluidRenderer = null!;
+        
         public GameObject syringeProjectilePrefab = null!;
         public AudioClip reloadSFX = null!;
         public AudioClip fireSFX = null!;
         public AudioClip clickSFX = null!;
 
-        ScanNodeProperties scanNode = null!;
-
         Animator animator = null!;
         AudioSource audioSource = null!;
-
-        public bool IsLoaded => !string.IsNullOrWhiteSpace(StoredDisease);
 
         int mask;
 
         bool hitSomething;
         RaycastHit hit;
 
-        public string StoredDisease { get; set; } = "";
         public static float maxDistance = 400f;
 
-        public void Awake()
+        public override void Awake()
         {
-            itemProperties.positionOffset = new Vector3(-0.04f, 0.26f, 0.07f);
-            itemProperties.rotationOffset = new Vector3(10, -90, 90);
-            itemProperties.floorYOffset = 0;
+            base.Awake();
             mask = LayerMask.GetMask("Player", "Enemies", "Room", "Terrain", "Colliders");
             animator = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
-            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
-        }
-
-        public void SetFluidColor(ChemistryLiquidAppearance color)
-        {
-            syringeFluidRenderer.material.color = color.liquidColor;
-            syringeFluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
-            syringeFluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
         }
 
         public override void EquipItem()
@@ -68,16 +52,6 @@ namespace LethalDiseases.Items
         {
             playerHeldBy.equippedUsableItemQE = false;
             base.PocketItem();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
-            if (!string.IsNullOrWhiteSpace(StoredDisease))
-            {
-                scanNode.subText = Disease.GetNameFromString(StoredDisease);
-            }
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -102,7 +76,6 @@ namespace LethalDiseases.Items
                 return;
             }
 
-            // scp4666 knife
             GetEndPoint();
 
             if (hitSomething)
@@ -154,7 +127,7 @@ namespace LethalDiseases.Items
                 return;
             }
 
-            string diseaseId = ((Syringe)localPlayer.ItemSlots[ammoSlot]).StoredDisease;
+            string diseaseId = ((Syringe)localPlayer.ItemSlots[ammoSlot]).StoredFluid;
             localPlayer.DestroyItemInSlotAndSync(ammoSlot);
             ReloadRpc(diseaseId);
         }
@@ -166,7 +139,7 @@ namespace LethalDiseases.Items
                 if (!(playerHeldBy.ItemSlots[i] == null))
                 {
                     Syringe? syringe = playerHeldBy.ItemSlots[i] as Syringe;
-                    if (syringe != null && syringe.isFilled)
+                    if (syringe != null && syringe.IsFilled)
                     {
                         return i;
                     }
@@ -175,15 +148,13 @@ namespace LethalDiseases.Items
             if (playerHeldBy.ItemOnlySlot != null)
             {
                 Syringe? syringe = playerHeldBy.ItemOnlySlot as Syringe;
-                if (syringe != null && syringe.isFilled)
+                if (syringe != null && syringe.IsFilled)
                 {
                     return 50;
                 }
             }
             return -1;
         }
-
-
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void ReloadRpc(string diseaseId)
@@ -202,20 +173,9 @@ namespace LethalDiseases.Items
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
 
-            string diseaseId = StoredDisease;
-            StoredDisease = "";
-
             if (!IsServer) { return; }
-            Syringe? syringe = Utils.SpawnItem(LethalDiseasesKeys.Syringe, position) as Syringe;
-            if (syringe == null) { logger.LogError($"Failed to spawn syringe at {position}"); return; }
-
-            IEnumerator setDiseaseAfterNetworkSpawn()
-            {
-                yield return new WaitUntil(() => syringe.gameObject.GetComponent<NetworkObject>() != null && syringe.gameObject.GetComponent<NetworkObject>().IsSpawned);
-                syringe.SetDiseaseRpc(diseaseId, false);
-            }
-
-            StartCoroutine(setDiseaseAfterNetworkSpawn());
+            Utils.SpawnItem(LethalDiseasesKeys.Syringe, position, actionAfterSpawn: (x) => ((Syringe)x).FillRpc(StoredDisease, Disease.GetChemistryLiquidAppearance(StoredDisease)));
+            EmptyRpc();
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -294,6 +254,11 @@ namespace LethalDiseases.Items
 
             StartCoroutine(parentSyringeProjectile());
             enemy.InfectSynced(diseaseId);
+        }
+
+        public override bool AllowChemistryOutputContainer()
+        {
+            throw new System.NotImplementedException();
         }
     }
 
