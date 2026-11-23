@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e80ae96b3eb9177eea5c8f9dadbcda1, type: 3}
   m_Name: SyringeInfo
   m_EditorClassIdentifier: 
-  displayText: "\nWith an extra battery life and even brighter bulb, your colleagues
-    can never leave you in the dark again!\n\n"
+  displayText: '
+
+    Allows you to inject diseases into players and enemies
+
+'
   terminalEvent: 
   clearPreviousText: 1
   maxCharactersToType: 25

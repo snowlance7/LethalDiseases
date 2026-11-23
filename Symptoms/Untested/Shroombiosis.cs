@@ -12,7 +12,7 @@ namespace LethalDiseases.Symptoms
             return new RandomIntervalActionEffect(new BoundedRange(60f, 120f), () =>
             {
                 if (disease.player == null) { return; }
-                AttachableObjectManager.TrySpawnItemOnPlayer(Mushroom.mushroomKeys.GetRandom(), disease.player);
+                AttachableObject.TrySpawnItemOnPlayer(Mushroom.mushroomKeys.GetRandom(), disease.player);
             }, disease.ToString(), "Shroombiosis", disease.strengthTime, SetHighestDurationAndDeny);
         }
     }

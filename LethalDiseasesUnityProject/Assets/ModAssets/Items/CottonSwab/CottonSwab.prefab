@@ -399,8 +399,9 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
-  tipRenderer: {fileID: 7794369760161496611}
-  storedDisease: 
+  fluidMaterials:
+  - renderer: {fileID: 7794369760161496611}
+    materialIndex: 0
 --- !u!1 &5443481674401987059
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,28 +1,17 @@
 ﻿using Dawn;
-using Dawn.Interfaces;
 using GameNetcodeStuff;
-using Newtonsoft.Json.Linq;
 using SnowyCraftingCore;
 using SnowyLib;
 using System;
 using System.Linq;
 using Unity.Netcode;
-using UnityEngine;
 using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class TestTube : PhysicsProp, IAnalyzableIngredient, IMixableIngredient, IDawnSaveData, IDiseaseStorable // TODO: Test analyzable ingredient to make sure its synced between all clients
+    internal class TestTube : DiseaseStorable, IAnalyzableIngredient, IMixableIngredient // TODO: Test analyzable ingredient to make sure its synced between all clients
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.TestTube] != null;
-
-        public MeshRenderer fluidRenderer = null!;
-
-        ScanNodeProperties scanNode = null!;
-
-        public string StoredDisease { get; set; } = "";
-
-        public bool IsFilled => !string.IsNullOrWhiteSpace(StoredDisease);
 
         [StaticInit]
         public static void Init()
@@ -60,24 +49,11 @@ namespace LethalDiseases.Items
             });
         }
 
-        public void Awake()
-        {
-            itemProperties.positionOffset = new Vector3(0.05f, 0.05f, 0.01f);
-            itemProperties.rotationOffset = new Vector3(0, 10, 0);
-            itemProperties.floorYOffset = 90;
-            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
-        }
-
         public override void Update()
         {
             grabbable = localPlayer.currentlyHeldObjectServer is not IChemistryOutputContainer;
             customGrabTooltip = localPlayer.currentlyHeldObjectServer is IChemistryOutputContainer ? $"Fill {localPlayer.currentlyHeldObjectServer.itemProperties.itemName} : [E]" : "";
             
-            if (!string.IsNullOrWhiteSpace(StoredDisease))
-            {
-                scanNode.subText = Disease.GetNameFromString(StoredDisease);
-            }
-
             base.Update();
         }
 
@@ -85,31 +61,6 @@ namespace LethalDiseases.Items
         {
             if (localPlayer.currentlyHeldObjectServer is not IChemistryOutputContainer) { return; }
             FillOutputContainerRpc(localPlayer.actualClientId);
-        }
-
-        public void SetFluidColor(ChemistryLiquidAppearance color)
-        {
-            logger.LogDebug("Setting fluid color to " + color.ToString());
-            fluidRenderer.enabled = true;
-            fluidRenderer.material.color = color.liquidColor;
-            fluidRenderer.material.SetColor("_EmissiveColor", color.liquidColor);
-            fluidRenderer.material.SetFloat("_EmissiveIntensity", color.emissionIntensity);
-        }
-
-        public override void EnableItemMeshes(bool enable)
-        {
-            base.EnableItemMeshes(enable);
-            fluidRenderer.enabled = IsFilled && enable;
-        }
-
-        public ChemistryIngredient GetIngredient()
-        {
-            return new ChemistryIngredient(LethalDiseasesKeys.TestTube, new ChemistryLiquidAppearance(fluidRenderer.material.color, fluidRenderer.material.GetFloat("_EmissiveIntensity")), StoredDisease);
-        }
-
-        public void OnChemicalOutput(ChemistryIngredient ingredient)
-        {
-            SetDisease(ingredient.specialInstructions);
         }
 
         Action<AnalyzableIngredient, PlayerControllerB> IAnalyzableIngredient.OnAnalyze()
@@ -135,42 +86,6 @@ namespace LethalDiseases.Items
             return true;
         }
 
-        public void SetDisease(string diseaseString)
-        {
-            logger.LogDebug($"Setting stored disease to disease with id: {diseaseString}");
-            Disease? disease = Disease.GetDiseaseFromString(diseaseString);
-            if (disease == null)
-            {
-                logger.LogDebug($"Unable to parse disease from id ({diseaseString})");
-                SetFluidColor(new ChemistryLiquidAppearance(Color.black, 1f));
-                scanNode.subText = "Toxic Sludge";
-                return;
-            }
-
-            StoredDisease = diseaseString;
-
-            SetFluidColor(disease.GetChemistryLiquidAppearance());
-            return;
-        }
-
-        public JToken GetDawnDataToSave()
-        {
-            return JToken.FromObject(StoredDisease != null ? StoredDisease : "");
-        }
-
-        public void LoadDawnSaveData(JToken saveData)
-        {
-            StoredDisease = saveData.Value<string>();
-            if (string.IsNullOrWhiteSpace(StoredDisease)) { return; }
-            SetDisease(StoredDisease);
-        }
-
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SetDiseaseRpc(string diseaseId)
-        {
-            SetDisease(diseaseId);
-        }
-
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void FillOutputContainerRpc(ulong clientId)
         {
@@ -179,10 +94,17 @@ namespace LethalDiseases.Items
             var outputContainer = localPlayer.currentlyHeldObjectServer as IChemistryOutputContainer;
             if (outputContainer == null) { return; }
 
-            if (!outputContainer.ReceiveChemistryOutput(GetIngredient())) { return; }
+            var ingredient = GetIngredient();
+
+            if (ingredient == null || !outputContainer.ReceiveChemistryOutput(ingredient)) { return; }
             
             if (!IsServer) { return; }
             NetworkObject.Despawn(destroy: true);
+        }
+
+        public override bool AllowChemistryOutputContainer()
+        {
+            return true;
         }
     }
 }

@@ -311,7 +311,7 @@ namespace LethalDiseases
         {
             PlayerControllerB? player = PlayerFromId(clientId);
             if (player == null) { return; }
-            AttachableObjectManager.TrySpawnItemOnPlayer(LethalDiseasesKeys.Leech, player);
+            AttachableObject.TrySpawnItemOnPlayer(LethalDiseasesKeys.Leech, player);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

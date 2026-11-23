@@ -232,13 +232,13 @@ public static class TESTING
                 if (now) { disease.latency = 0; }
 
                 if (localPlayer.currentlyHeldObjectServer is CottonSwab cottonSwab)
-                    cottonSwab.SetDiseaseRpc(disease.ToString(), disease.GetChemistryLiquidAppearance());
+                    cottonSwab.FillRpc(disease.ToString(), disease.GetChemistryLiquidAppearance());
                 else if (localPlayer.currentlyHeldObjectServer is Syringe syringe)
-                    syringe.SetDiseaseRpc(disease.ToString(), true);
+                    syringe.FillRpc(disease.ToString(), disease.GetChemistryLiquidAppearance(), true);
                 else if (localPlayer.currentlyHeldObjectServer is TestTube testTube)
-                    testTube.SetDiseaseRpc(disease.ToString());
+                    testTube.FillRpc(disease.ToString(), disease.GetChemistryLiquidAppearance());
                 else if (localPlayer.currentlyHeldObjectServer is DartGunAmmo ammo)
-                    ammo.SetDiseaseRpc(disease.ToString());
+                    ammo.FillRpc(disease.ToString(), disease.GetChemistryLiquidAppearance());
                 else
                     localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<NetworkObject>().InfectSynced(disease);
 

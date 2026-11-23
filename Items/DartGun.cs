@@ -67,9 +67,9 @@ internal class DartGun : PhysicsProp
             loadedAmmo.transform.position = transform.position;
         }
 
-        if (loadedAmmo != null && !string.IsNullOrWhiteSpace(loadedAmmo.StoredDisease))
+        if (loadedAmmo != null && !string.IsNullOrWhiteSpace(loadedAmmo.StoredFluid))
         {
-            scanNode.subText = Disease.GetNameFromString(loadedAmmo.StoredDisease);
+            scanNode.subText = Disease.GetNameFromString(loadedAmmo.StoredFluid);
         }
     }
 
@@ -267,7 +267,7 @@ internal class DartGun : PhysicsProp
         if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
 
         if (IsServer)
-            player.InfectSynced(loadedAmmo!.StoredDisease);
+            player.InfectSynced(loadedAmmo!.StoredFluid);
 
         if (localPlayer == player)
         {
@@ -292,7 +292,7 @@ internal class DartGun : PhysicsProp
         EnemyAI enemy = netObj.GetComponent<EnemyAI>();
 
         if (IsServer)
-            enemy.InfectSynced(loadedAmmo!.StoredDisease);
+            enemy.InfectSynced(loadedAmmo!.StoredFluid);
 
         GameObject dartObj = Instantiate(dartPrefab, position, rotation, enemy.transform); // TODO: Test this
         Destroy(dartObj, DartLifetime);

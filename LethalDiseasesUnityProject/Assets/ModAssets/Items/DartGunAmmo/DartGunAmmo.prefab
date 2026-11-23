@@ -242,13 +242,23 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
+  fluidMaterials:
+  - renderer: {fileID: 6321730368755182760}
+    materialIndex: 2
+  - renderer: {fileID: 6478892800292031600}
+    materialIndex: 2
+  - renderer: {fileID: 8238893880956615309}
+    materialIndex: 2
+  - renderer: {fileID: 6455990078871917818}
+    materialIndex: 2
+  - renderer: {fileID: 3176696494743746654}
+    materialIndex: 2
   dartRenderers:
   - {fileID: 6321730368755182760}
   - {fileID: 6478892800292031600}
   - {fileID: 8238893880956615309}
   - {fileID: 6455990078871917818}
   - {fileID: 3176696494743746654}
-  storedDisease: 
 --- !u!1 &969498702102398707
 GameObject:
   m_ObjectHideFlags: 0

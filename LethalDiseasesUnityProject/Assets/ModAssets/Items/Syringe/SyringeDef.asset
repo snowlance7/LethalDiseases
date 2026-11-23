@@ -22,7 +22,8 @@ MonoBehaviour:
   <ShopItemPreset>k__BackingField:
     <OrderRequestNode>k__BackingField: {fileID: 0}
     <OrderReceiptNode>k__BackingField: {fileID: 0}
-    <ItemInfoNode>k__BackingField: {fileID: 0}
+    <ItemInfoNode>k__BackingField: {fileID: 11400000, guid: 07f19f4a10ea27d47a29eefb7753bf97,
+      type: 2}
   <TerminalPredicate>k__BackingField: {fileID: 0}
   <PricingStrategy>k__BackingField: {fileID: 0}
   <MoonSpawnWeightsConfig>k__BackingField: []

@@ -552,13 +552,14 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
-  syringeFluidRenderer: {fileID: 3988862671445623291}
+  fluidMaterials:
+  - renderer: {fileID: 3988862671445623291}
+    materialIndex: 0
   syringeProjectilePrefab: {fileID: 1521272316618449946, guid: 783ec992ac9d53d459ae167a5636d5f8,
     type: 3}
   reloadSFX: {fileID: 8300000, guid: e363a9ec0700f1244835b2858ba1ccaf, type: 3}
   fireSFX: {fileID: 8300000, guid: bd19aedc16ae56c4cb5416cc92db664c, type: 3}
   clickSFX: {fileID: 8300000, guid: 7237be7f9f565e14699fc224c3495b6c, type: 3}
-  storedDisease: 
 --- !u!1 &5097772755200006844
 GameObject:
   m_ObjectHideFlags: 0

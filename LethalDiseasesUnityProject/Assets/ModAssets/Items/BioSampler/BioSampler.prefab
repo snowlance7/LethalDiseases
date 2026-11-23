@@ -1196,9 +1196,9 @@ MonoBehaviour:
   grabbableToEnemies: 0
   hasBeenHeld: 0
   rotateObject: 0
-  fluidRenderer: {fileID: 6091451328217629084}
-  storedDisease: 
-  freezingLocalPlayer: 0
+  fluidMaterials:
+  - renderer: {fileID: 6091451328217629084}
+    materialIndex: 0
 --- !u!1 &8713948293215487872
 GameObject:
   m_ObjectHideFlags: 0

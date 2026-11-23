@@ -2,7 +2,6 @@
 using GameNetcodeStuff;
 using SnowyCraftingCore;
 using SnowyLib;
-using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalDiseases.Plugin;
@@ -23,9 +22,8 @@ namespace LethalDiseases.Items
 
         int mask;
 
-        bool hitSomething;
+        Ray ray => new Ray(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward);
         RaycastHit hit;
-
         public static float maxDistance = 400f;
 
         public override void Awake()
@@ -70,13 +68,21 @@ namespace LethalDiseases.Items
 
         public void Fire()
         {
-            if (!IsLoaded)
+            if (!IsFilled)
             {
                 audioSource.PlayOneShot(clickSFX);
                 return;
             }
 
-            GetEndPoint();
+            bool hitSomething = false;
+            if (Physics.Raycast(ray, out hit, maxDistance, mask))
+            {
+                hitSomething = true;
+            }
+            else
+            {
+                hit.point = ray.GetPoint(maxDistance);
+            }
 
             if (hitSomething)
             {
@@ -86,12 +92,52 @@ namespace LethalDiseases.Items
                 if (hit.collider.CompareTag("Player"))
                 {
                     PlayerControllerB player = hit.collider.gameObject.GetComponent<PlayerControllerB>();
-                    SpawnSyringeProjectileRpc(player.actualClientId, position, rotation);
+
+                    if (!player.thisPlayerModel.TryGetMeshHit(ray, out hit, maxDistance))
+                    {
+                        SpawnSyringeProjectileRpc(player.actualClientId, position, rotation);
+                        return;
+                    }
+
+                    var boneHit = player.thisPlayerModel.GetDominantBone(hit);
+                    if (boneHit == null)
+                    {
+                        boneHit = player.bodyParts.GetClosestToPosition(hit.point, (x) => x.position);
+                    }
+
+                    string boneHitPath = Utils.GetTransformPath(boneHit, player.transform);
+                    SpawnSyringeProjectileRpc(player.actualClientId, hit.point, rotation, boneHitPath);
                 }
                 else if (hit.collider.CompareTag("Enemy"))
                 {
                     EnemyAI enemy = hit.collider.gameObject.GetComponent<EnemyAICollisionDetect>().mainScript;
-                    SpawnSyringeProjectileRpc(enemy.gameObject.GetComponent<NetworkObject>(), position, rotation);
+
+                    SkinnedMeshRenderer? rendererHit = null;
+
+                    foreach (var skinnedRenderer in enemy.skinnedMeshRenderers)
+                    {
+                        if (skinnedRenderer.TryGetMeshHit(ray, out hit, maxDistance))
+                        {
+                            rendererHit = skinnedRenderer;
+                            break;
+                        }
+                    }
+
+                    if (rendererHit == null)
+                    {
+                        SpawnSyringeProjectileRpc(enemy.gameObject.GetComponent<NetworkObject>(), position, rotation);
+                        return;
+                    }
+
+                    var boneHit = rendererHit.GetDominantBone(hit);
+                    if (boneHit == null)
+                    {
+                        SpawnSyringeProjectileRpc(enemy.gameObject.GetComponent<NetworkObject>(), position, rotation);
+                        return;
+                    }
+
+                    string boneHitPath = Utils.GetTransformPath(boneHit, enemy.transform);
+                    SpawnSyringeProjectileRpc(enemy.gameObject.GetComponent<NetworkObject>(), hit.point, rotation, boneHitPath);
                 }
                 else
                 {
@@ -104,18 +150,17 @@ namespace LethalDiseases.Items
             }
         }
 
-        void GetEndPoint()
+        public SkinnedMeshRenderer? TryGetEnemyMeshHit(EnemyAI enemy)
         {
-            hitSomething = false;
-            Ray ray = new Ray(playerHeldBy.gameplayCamera.transform.position + playerHeldBy.gameplayCamera.transform.forward, playerHeldBy.gameplayCamera.transform.forward);
-            if (Physics.Raycast(ray, out hit, maxDistance, mask))
+            foreach (var skinnedRenderer in enemy.skinnedMeshRenderers)
             {
-                hitSomething = true;
-                return;
+                if (skinnedRenderer.TryGetMeshHit(ray, out hit, maxDistance))
+                {
+                    return skinnedRenderer;
+                }
             }
 
-            logger.LogDebug("Couldnt find hittable surface");
-            hit.point = ray.GetPoint(maxDistance);
+            return null;
         }
 
         public void Reload()
@@ -127,9 +172,11 @@ namespace LethalDiseases.Items
                 return;
             }
 
-            string diseaseId = ((Syringe)localPlayer.ItemSlots[ammoSlot]).StoredFluid;
+            Syringe syringe = (Syringe)localPlayer.ItemSlots[ammoSlot];
+            string diseaseString = syringe.StoredFluid;
+            var color = syringe.FluidColor;
             localPlayer.DestroyItemInSlotAndSync(ammoSlot);
-            ReloadRpc(diseaseId);
+            FillRpc(diseaseString, color, true);
         }
 
         private int FindAmmoInInventory()
@@ -156,14 +203,9 @@ namespace LethalDiseases.Items
             return -1;
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void ReloadRpc(string diseaseId)
+        public override void Fill(string fluidString, ChemistryLiquidAppearance color, bool doAnimation = false)
         {
-            Disease? disease = Disease.GetDiseaseFromString(diseaseId);
-            if (disease == null) { logger.LogError("Failed to parse disease from disease id"); return; }
-            StoredDisease = diseaseId;
-            SetFluidColor(disease.GetChemistryLiquidAppearance());
-            animator.SetTrigger("reload");
+            base.Fill(fluidString, color, doAnimation);
             audioSource.PlayOneShot(reloadSFX);
         }
 
@@ -174,7 +216,9 @@ namespace LethalDiseases.Items
             audioSource.PlayOneShot(fireSFX);
 
             if (!IsServer) { return; }
-            Utils.SpawnItem(LethalDiseasesKeys.Syringe, position, actionAfterSpawn: (x) => ((Syringe)x).FillRpc(StoredDisease, Disease.GetChemistryLiquidAppearance(StoredDisease)));
+            string diseaseString = StoredFluid;
+            var color = FluidColor;
+            Utils.SpawnItem(LethalDiseasesKeys.Syringe, position, actionAfterSpawn: (x) => ((Syringe)x).FillRpc(diseaseString, color));
             EmptyRpc();
         }
 
@@ -184,81 +228,91 @@ namespace LethalDiseases.Items
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
 
-            string diseaseId = StoredDisease;
-            StoredDisease = "";
-
             if (!IsServer) { return; }
             GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
             syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+            EmptyRpc();
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SpawnSyringeProjectileRpc(ulong clientId, Vector3 position, Quaternion rotation)
+        public void SpawnSyringeProjectileRpc(ulong clientId, Vector3 position, Quaternion rotation, string boneHitPath = "")
         {
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
 
-            string diseaseId = StoredDisease;
-            StoredDisease = "";
-
-            PlayerControllerB? player = PlayerFromId(clientId);
-            if (player == null) { logger.LogError("Failed to get player from player client id"); return; }
+            PlayerControllerB player = PlayerFromId(clientId);
 
             if (localPlayer == player)
             {
-                if (localPlayer.health != 1)
-                {
-                    localPlayer.inSpecialInteractAnimation = true;
-                    localPlayer.DamagePlayer(1, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
-                    localPlayer.inSpecialInteractAnimation = false;
-                }
+                localPlayer.inSpecialInteractAnimation = true;
+                localPlayer.DamagePlayer(localPlayer.health > 1 ? 1 : 0, hasDamageSFX: false, causeOfDeath: CauseOfDeath.Stabbing);
+                localPlayer.inSpecialInteractAnimation = false;
             }
 
             if (!IsServer) { return; }
             GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
-            var syringe = syringeObj.GetComponent<SyringeProjectile>();
-            syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
 
-            IEnumerator parentSyringeProjectile()
+            if (!string.IsNullOrWhiteSpace(boneHitPath))
             {
-                yield return new WaitUntil(() => syringe.gameObject.GetComponent<NetworkObject>() != null && syringe.gameObject.GetComponent<NetworkObject>().IsSpawned);
-                syringe.gameObject.GetComponent<NetworkObject>().TrySetParent(player.gameObject.GetComponent<NetworkObject>(), worldPositionStays: true);
+                syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true, actionAfterSpawn: (x) => ParentSyringeToBoneRpc(x, clientId, boneHitPath)); // TODO: Test this
+            }
+            else
+            {
+                syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true, actionAfterSpawn: (x) => x.TrySetParent(player.gameObject.GetComponent<NetworkObject>(), worldPositionStays: true)); // TODO: Test this
             }
 
-            StartCoroutine(parentSyringeProjectile());
-            player.InfectSynced(diseaseId);
+            player.InfectSynced(StoredFluid);
+            EmptyRpc();
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        public void SpawnSyringeProjectileRpc(NetworkObjectReference enemyNetRef, Vector3 position, Quaternion rotation)
+        public void ParentSyringeToBoneRpc(NetworkObjectReference syringeNetRef, ulong clientId, string boneHitPath)
+        {
+            if (!syringeNetRef.TryGet(out NetworkObject syringeNetObj)) { logger.LogError("ParentSyringeToBoneRpc: Failed to get networkobject from networkobjectreference"); return; }
+            PlayerControllerB player = PlayerFromId(clientId);
+            Transform bone = player.transform.Find(boneHitPath);
+            syringeNetObj.transform.SetParent(bone, worldPositionStays: true);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void SpawnSyringeProjectileRpc(NetworkObjectReference enemyNetRef, Vector3 position, Quaternion rotation, string boneHitPath = "")
         {
             animator.SetTrigger("fire");
             audioSource.PlayOneShot(fireSFX);
-
-            string diseaseId = StoredDisease;
-            StoredDisease = "";
 
             if (!IsServer) { return; }
             if (!enemyNetRef.TryGet(out NetworkObject netObj)) { logger.LogError("Failed to get networkobject from networkobjectreference"); return; }
             EnemyAI enemy = netObj.GetComponent<EnemyAI>();
 
-            GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
-            var syringe = syringeObj.GetComponent<SyringeProjectile>();
-            syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+            enemy.HitEnemyServerRpc(0, (int)playerHeldBy.actualClientId, false);
 
-            IEnumerator parentSyringeProjectile()
+            GameObject syringeObj = Instantiate(syringeProjectilePrefab, position, rotation);
+
+            if (!string.IsNullOrWhiteSpace(boneHitPath))
             {
-                yield return new WaitUntil(() => syringe.gameObject.GetComponent<NetworkObject>() != null && syringe.gameObject.GetComponent<NetworkObject>().IsSpawned);
-                syringe.gameObject.GetComponent<NetworkObject>().TrySetParent(enemy.gameObject.GetComponent<NetworkObject>(), worldPositionStays: true);
+                syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true, actionAfterSpawn: (x) => ParentSyringeToBoneRpc(x, enemyNetRef, boneHitPath)); // TODO: Test this
+            }
+            else
+            {
+                syringeObj.GetComponent<NetworkObject>().Spawn(destroyWithScene: true, actionAfterSpawn: (x) => x.TrySetParent(enemy.gameObject.GetComponent<NetworkObject>(), worldPositionStays: true)); // TODO: Test this
             }
 
-            StartCoroutine(parentSyringeProjectile());
-            enemy.InfectSynced(diseaseId);
+            enemy.InfectSynced(StoredFluid);
+            EmptyRpc();
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        public void ParentSyringeToBoneRpc(NetworkObjectReference syringeNetRef, NetworkObjectReference enemyNetRef, string boneHitPath)
+        {
+            if (!syringeNetRef.TryGet(out NetworkObject syringeNetObj)) { logger.LogError("ParentSyringeToBoneRpc: Failed to get networkobject from networkobjectreference"); return; }
+            if (!enemyNetRef.TryGet(out NetworkObject enemyNetObj)) { logger.LogError("ParentSyringeToBoneRpc: Failed to get networkobject from networkobjectreference"); return; }
+            Transform bone = enemyNetObj.transform.Find(boneHitPath);
+            syringeNetObj.transform.SetParent(bone, worldPositionStays: true);
         }
 
         public override bool AllowChemistryOutputContainer()
         {
-            throw new System.NotImplementedException();
+            return false;
         }
     }
 
