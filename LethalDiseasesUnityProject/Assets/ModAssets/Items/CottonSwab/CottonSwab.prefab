@@ -402,6 +402,9 @@ MonoBehaviour:
   fluidMaterials:
   - renderer: {fileID: 7794369760161496611}
     materialIndex: 0
+  defaultFluidColor:
+    liquidColor: {r: 1, g: 1, b: 1, a: 1}
+    emissionIntensity: 0
 --- !u!1 &5443481674401987059
 GameObject:
   m_ObjectHideFlags: 0

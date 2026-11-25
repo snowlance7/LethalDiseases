@@ -1197,8 +1197,12 @@ MonoBehaviour:
   hasBeenHeld: 0
   rotateObject: 0
   fluidMaterials:
-  - renderer: {fileID: 6091451328217629084}
+  - disableRendererWhenEmpty: 1
+    renderer: {fileID: 6091451328217629084}
     materialIndex: 0
+  defaultFluidColor:
+    liquidColor: {r: 0, g: 0, b: 0, a: 0}
+    emissionIntensity: 0
 --- !u!1 &8713948293215487872
 GameObject:
   m_ObjectHideFlags: 0
