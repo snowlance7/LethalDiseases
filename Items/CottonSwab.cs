@@ -47,6 +47,7 @@ internal class CottonSwab : DiseaseStorable, IDistillableIngredient
 
     public ChemistryIngredient? DistilleryOutput()
     {
+        if (!IsFilled) { return null; }
         return new ChemistryIngredient(LethalDiseasesKeys.TestTube, FluidColor, StoredFluid);
     }
 
@@ -58,10 +59,5 @@ internal class CottonSwab : DiseaseStorable, IDistillableIngredient
     public bool DespawnItemAfterDistilleryInput()
     {
         return true;
-    }
-
-    public override bool AllowChemistryOutputContainer()
-    {
-        return false;
     }
 }

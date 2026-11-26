@@ -58,20 +58,10 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient, IAnalyz
         return new SpawnDefinition(spawnPosition, Quaternion.identity, destroyWithScene: true);
     }
 
-    public bool DespawnItemAfterInput()
-    {
-        return true;
-    }
-
     public ChemistryIngredient? GetIngredient()
     {
         Plugin.logger.LogDebug("Getting mushroom ingredient");
         return new ChemistryIngredient(LethalDiseasesKeys.Mushroom, new ChemistryLiquidAppearance(color, 5f), MushroomTypes[GetType()]);
-    }
-
-    public void OnChemicalOutput(ChemistryIngredient ingredient)
-    {
-        return;
     }
 
     public abstract void OnEatMushroom();
@@ -93,8 +83,18 @@ internal abstract class Mushroom : AttachableObject, IMixableIngredient, IAnalyz
         };
     }
 
-    public bool HoldItem()
+    public bool HoldItemDuringAnalysis()
     {
         return false;
+    }
+
+    public bool OnChemicalOutput(ChemistryIngredient ingredient)
+    {
+        return false;
+    }
+
+    public bool DespawnItemAfterChemicalMixerInput()
+    {
+        return true;
     }
 }

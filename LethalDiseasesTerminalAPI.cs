@@ -103,7 +103,7 @@ namespace LethalDiseases
             int count = 1;
             if (args.Length == 3 && int.TryParse(args[2], out int _count))
             {
-                count = Mathf.Min(1, _count);
+                count = Mathf.Max(1, _count);
             }
 
             int totalCost = count * (shopInfo.DawnPurchaseInfo.Cost.Provide() + disease.CalculateSynthesisCost());
@@ -142,7 +142,7 @@ namespace LethalDiseases
             int count = 1;
             if (args.Length == 3 && int.TryParse(args[2], out int _count))
             {
-                count = Mathf.Min(1, _count);
+                count = Mathf.Max(1, _count);
             }
 
             int totalCost = count * (shopInfo.DawnPurchaseInfo.Cost.Provide() + disease.CalculateSynthesisCost());
@@ -181,7 +181,7 @@ namespace LethalDiseases
             int count = 1;
             if (args.Length == 3 && int.TryParse(args[2], out int _count))
             {
-                count = Mathf.Min(1, _count);
+                count = Mathf.Max(1, _count);
             }
 
             int totalCost = count * (shopInfo.DawnPurchaseInfo.Cost.Provide() + (disease.CalculateSynthesisCost() * DartGunAmmo.MaxDartsInAmmo));

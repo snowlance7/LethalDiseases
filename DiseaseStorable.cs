@@ -5,7 +5,7 @@ namespace LethalDiseases;
 
 public abstract class DiseaseStorable : FluidStorable
 {
-    ScanNodeProperties scanNode = null!;
+    public ScanNodeProperties scanNode = null!;
 
     public virtual void Awake()
     {

@@ -13,7 +13,7 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class Syringe : DiseaseStorable
+    internal class Syringe : DiseaseStorable, IChemistryOutputContainer
     {
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.Syringe] != null;
 
@@ -356,11 +356,6 @@ namespace LethalDiseases.Items
         {
             audioSource.PlayOneShot(StartOfRound.Instance.footstepSurfaces[hitSurfaceID].hitSurfaceSFX);
             WalkieTalkie.TransmitOneShotAudio(audioSource, StartOfRound.Instance.footstepSurfaces[hitSurfaceID].hitSurfaceSFX);
-        }
-
-        public override bool AllowChemistryOutputContainer()
-        {
-            return true;
         }
     }
 }

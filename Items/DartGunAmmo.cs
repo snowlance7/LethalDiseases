@@ -91,10 +91,5 @@ namespace LethalDiseases.Items
 
             Fill(data.ingredient.specialInstructions, data.ingredient.chemistryLiquidAppearance, data.ammoCount);
         }
-
-        public override bool AllowChemistryOutputContainer()
-        {
-            return false;
-        }
     }
 }

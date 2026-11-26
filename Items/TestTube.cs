@@ -17,7 +17,6 @@ namespace LethalDiseases.Items
         public static void Init()
         {
             var testTubeIngredient = new ChemistryIngredient(LethalDiseasesKeys.TestTube);
-            ChemistryIngredient.Register(testTubeIngredient);
 
             ChemistryRecipe.Register(testTubeIngredient, testTubeIngredient, (ingredientA, ingredientB) =>
             {
@@ -30,9 +29,9 @@ namespace LethalDiseases.Items
                     var array2 = disease2.symptoms;
 
                     var result = array1.Except(array2).Concat(array2.Except(array1)).ToList();
-                    Disease disease3 = Disease.MergeDiseases(disease1, disease2);
-                    disease3.symptoms = result.ToHashSet();
-                    return new ChemistryIngredient(LethalDiseasesKeys.TestTube, disease3.GetChemistryLiquidAppearance(), disease3.ToString());
+                    Disease diseaseOutput = Disease.MergeDiseases(disease1, disease2);
+                    diseaseOutput.symptoms = result.ToHashSet();
+                    return new ChemistryIngredient(LethalDiseasesKeys.TestTube, diseaseOutput.GetChemistryLiquidAppearance(), diseaseOutput.ToString());
                 }
                 else if (disease1 != null)
                 {
@@ -44,7 +43,7 @@ namespace LethalDiseases.Items
                 }
                 else
                 {
-                    return null; // TODO
+                    return null;
                 }
             });
         }
@@ -63,7 +62,7 @@ namespace LethalDiseases.Items
             FillOutputContainerRpc(localPlayer.actualClientId);
         }
 
-        Action<AnalyzableIngredient, PlayerControllerB> IAnalyzableIngredient.OnAnalyze()
+        public Action<AnalyzableIngredient, PlayerControllerB> OnAnalyze()
         {
             return static (ingredient, player) =>
             {
@@ -76,16 +75,6 @@ namespace LethalDiseases.Items
             };
         }
 
-        bool IMixableIngredient.DespawnItemAfterInput()
-        {
-            return true;
-        }
-
-        bool IAnalyzableIngredient.HoldItem()
-        {
-            return true;
-        }
-
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void FillOutputContainerRpc(ulong clientId)
         {
@@ -96,13 +85,18 @@ namespace LethalDiseases.Items
 
             var ingredient = GetIngredient();
 
-            if (ingredient == null || !outputContainer.ReceiveChemistryOutput(ingredient)) { return; }
+            if (ingredient == null || !outputContainer.OnChemicalOutput(ingredient)) { return; }
             
             if (!IsServer) { return; }
             NetworkObject.Despawn(destroy: true);
         }
 
-        public override bool AllowChemistryOutputContainer()
+        public bool HoldItemDuringAnalysis()
+        {
+            return true;
+        }
+
+        public bool DespawnItemAfterChemicalMixerInput()
         {
             return true;
         }

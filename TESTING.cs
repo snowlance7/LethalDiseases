@@ -8,6 +8,7 @@ using UnityEngine;
 using Unity.Netcode;
 using static LethalDiseases.Plugin;
 using GameNetcodeStuff;
+using SnowyCraftingCore;
 
 /* bodyparts
  * 0 head

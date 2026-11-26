@@ -176,7 +176,7 @@ namespace LethalDiseases.Items
             string diseaseString = syringe.StoredFluid;
             var color = syringe.FluidColor;
             localPlayer.DestroyItemInSlotAndSync(ammoSlot);
-            FillRpc(diseaseString, color, true);
+            FillRpc(diseaseString, color);
         }
 
         private int FindAmmoInInventory()
@@ -309,18 +309,13 @@ namespace LethalDiseases.Items
             Transform bone = enemyNetObj.transform.Find(boneHitPath);
             syringeNetObj.transform.SetParent(bone, worldPositionStays: true);
         }
-
-        public override bool AllowChemistryOutputContainer()
-        {
-            return false;
-        }
     }
 
     public class SyringeProjectile : NetworkBehaviour // TODO: Test this on player
     {
         public void OnTriggerInteract() // InteractTrigger
         {
-            localPlayer.SpawnAndGrabItem(LethalDiseasesKeys.Syringe);
+            localPlayer.SpawnAndGrabGrabbableObjectSynced(LethalDiseasesKeys.Syringe);
             DespawnRpc();
         }
 

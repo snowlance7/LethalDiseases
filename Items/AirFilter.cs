@@ -8,6 +8,7 @@ namespace LethalDiseases.Items
 {
     internal class AirFilter : PhysicsProp // UPDATE: Make an advanced air filter that also filters cadavar spores
     {
+        // info: Replacable air filter that can filter out airborne diseases for a limited time
         public static float Usage => PluginInstance.Config.Bind("Air Filter Options", "Air Filter | Usage", 0.05f, "How much of the air filter get used when filtering airborne diseases").Value;
         public static float Multiplier => PluginInstance.Config.Bind("Air Filter Options", "Air Filter | Multiplier", 0.5f, "When a player would be infected by an airborne disease, its infection chance is multiplied by this number if the air filter is installed").Value;
 

@@ -234,7 +234,7 @@ namespace LethalDiseases
         [Rpc(SendTo.Server, RequireOwnership = false)]
         public void SynthesizeDiseaseRpc(NamespacedKey<DawnItemInfo> itemKey, string diseaseId, int count)
         {
-            ItemDropshipOperations.DeliverItem(itemKey, (item) =>
+            ItemDropshipOperations.Deliver(itemKey, (item) =>
             {
                 RecieveChemistryOutputRpc(item.NetworkObject, diseaseId);
             }, count);
@@ -247,7 +247,14 @@ namespace LethalDiseases
             var grabbableObject = netObj.gameObject.GetComponent<GrabbableObject>();
             Disease? disease = Disease.GetDiseaseFromString(diseaseId);
             if (disease == null) { logger.LogError("RecieveChemistryOutputRpc: Failed to get disease from id"); return; }
-            ((IChemistryOutputContainer)grabbableObject).ReceiveChemistryOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, disease.GetChemistryLiquidAppearance(), diseaseId));
+            if (grabbableObject is IChemistryOutputContainer container)
+            {
+                container.OnChemicalOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, disease.GetChemistryLiquidAppearance(), diseaseId));
+            }
+            else if (grabbableObject is IChemistryIngredient ingredient)
+            {
+                ingredient.OnChemicalOutput(new ChemistryIngredient(LethalDiseasesKeys.TestTube, disease.GetChemistryLiquidAppearance(), diseaseId));
+            }
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

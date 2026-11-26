@@ -12,8 +12,9 @@ using static LethalDiseases.Plugin;
 
 namespace LethalDiseases.Items
 {
-    internal class Biosampler : DiseaseStorable, IDistillableIngredient
+    internal class Biosampler : DiseaseStorable, IDistillableIngredient, IMixableIngredient, IChemistryOutputContainer
     {
+        // info: A sampling device capable of extracting and merging multiple diseases into one from a single host.
         public static bool IsEnabled => LethalContent.Items[LethalDiseasesKeys.Biosampler] != null;
 
         AudioSource audioSource = null!;
@@ -356,6 +357,7 @@ namespace LethalDiseases.Items
 
         public ChemistryIngredient? DistilleryOutput()
         {
+            if (!IsFilled) { return null; }
             var ingredient = new ChemistryIngredient(LethalDiseasesKeys.TestTube, FluidColor, StoredFluid);
             Empty();
             return ingredient;
@@ -371,9 +373,9 @@ namespace LethalDiseases.Items
             return false;
         }
 
-        public override bool AllowChemistryOutputContainer()
+        public bool DespawnItemAfterChemicalMixerInput()
         {
-            return true;
+            return false;
         }
     }
 }

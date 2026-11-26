@@ -77,9 +77,10 @@ internal class Tonic : PhysicsProp, IChemistryIngredient
         return new ChemistryIngredient(LethalDiseasesKeys.Tonic, GetChemistryLiquidAppearance(), tonicDefIndex.ToString());
     }
 
-    public void OnChemicalOutput(ChemistryIngredient ingredient)
+    public bool OnChemicalOutput(ChemistryIngredient ingredient)
     {
         SetTonicDefinition(int.Parse(ingredient.specialInstructions));
+        return true;
     }
 }
 
@@ -215,38 +216,24 @@ internal class TonicDefinition : IEquatable<TonicDefinition>
     public static void Init()
     {
         ChemistryIngredient tonicIngredient = new ChemistryIngredient(LethalDiseasesKeys.Tonic);
-        ChemistryIngredient.Register(tonicIngredient);
 
         ChemistryRecipe.Register(new ChemistryIngredient(LethalDiseasesKeys.TestTube), tonicIngredient, (ingredientA, ingredientB) =>
         {
             Disease? disease = GetDiseaseFromIngredient(ingredientA);
             if (disease == null) { disease = GetDiseaseFromIngredient(ingredientB); }
-            if (disease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
+            if (disease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube, Color.black); }
 
             int tonicDefIndex;
             if (!int.TryParse(ingredientA.specialInstructions, out tonicDefIndex)) { tonicDefIndex = int.Parse(ingredientB.specialInstructions); }
             var tonicDef = RegisteredTonicDefinitions[tonicDefIndex];
 
             Disease? newDisease = tonicDef.diseaseModification.Invoke(disease);
-            if (newDisease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
+            if (newDisease == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube, Color.black); }
 
             return new ChemistryIngredient(LethalDiseasesKeys.TestTube, newDisease.GetChemistryLiquidAppearance(), newDisease.ToString());
         });
 
         ChemistryIngredient mushroomIngredient = new ChemistryIngredient(LethalDiseasesKeys.Mushroom);
-        ChemistryIngredient.Register(mushroomIngredient);
-        ChemistryIngredient.Register(LethalDiseasesKeys.BeechMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.BellcapMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.BlackTrumpetMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.CaveMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.ChanterelleMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.DeathCapMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.JackOLanternMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.JellyMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.MonsterMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.OysterMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.RadioMushroom);
-        ChemistryIngredient.Register(LethalDiseasesKeys.ShaggyManeMushroom);
 
         ChemistryRecipe.Register(mushroomIngredient, mushroomIngredient, (ingredientA, ingredientB) =>
         {
@@ -259,7 +246,7 @@ internal class TonicDefinition : IEquatable<TonicDefinition>
             tonicType = TryParseTonicType(ingredientA.specialInstructions);
             tonicType ??= TryParseTonicType(ingredientB.specialInstructions);
 
-            if (tonicAction == null || tonicType == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube); }
+            if (tonicAction == null || tonicType == null) { return new ChemistryIngredient(LethalDiseasesKeys.TestTube, Color.black); }
 
             int tonicDefIndex = RegisteredTonicDefinitions.IndexOf(RegisteredTonicDefinitions.Where(x => x.tonicType == tonicType && x.tonicAction == tonicAction && !x.wild).GetRandom(Utils.randomGlobal));
 
